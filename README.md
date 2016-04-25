@@ -54,9 +54,9 @@ Outstanding questions:
 How to view
 ------------
 
-See the swagger editor to view our [schema in progress](http://editor.swagger.io/#/?import=https://raw.githubusercontent.com/ga4gh/tool-registry-schemas/develop/src/main/resources/swagger/ga4gh-tool-discovery.yaml).
+See the swagger editor to view our [schema in progress](http://editor.swagger.io/#/?import=https://raw.githubusercontent.com/ga4gh/workflow-execution-schemas/develop/src/main/resources/swagger/ga4gh-tool-discovery.yaml).
 
-If the current schema fails to validate, visit [debugging](http://online.swagger.io/validator/debug?url=https://raw.githubusercontent.com/ga4gh/tool-registry-schemas/develop/src/main/resources/swagger/ga4gh-tool-discovery.yaml)
+If the current schema fails to validate, visit [debugging](http://online.swagger.io/validator/debug?url=https://raw.githubusercontent.com/ga4gh/workflow-execution-schemas/develop/src/main/resources/swagger/ga4gh-tool-discovery.yaml)
 
 
 
