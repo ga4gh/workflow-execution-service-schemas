@@ -1,8 +1,9 @@
-Design sketch for workflow submission API.
+Design sketch for workflow submission API.  Proof of concept implementation at
+https://github.com/common-workflow-language/cwltool-service
 
 # Submission
 ```
-POST http://example.com/workflows/submit?tool=http://example.com/tools/bwa/version/1.0/descriptor
+POST http://example.com/run?wf=http://example.com/tools/bwa/version/1.0/descriptor
 Headers: ...
 
 {
@@ -14,15 +15,15 @@ Headers: ...
 }
 ```
 
--> 303 See Other http://example.com/workflows/123
+-> 303 See Other http://example.com/jobs/123
 
 # Workflow status
 ```
-GET http://example.com/workflows/123
+GET http://example.com/jobs/123
 
 -> 200 Ok
 {
-  "tool": "http://example.com/tools/bwa/version/1.0/descriptor",
+  "run": "http://example.com/tools/bwa/version/1.0/descriptor",
   "input": {
     "stringparameter": "value",
     "fileparameter": {
@@ -32,41 +33,33 @@ GET http://example.com/workflows/123
   },
   "output": null,
   "state": "Running",
-  "message": "Ok",
-  "jobs": [
-    {
-      "label": "step1",
-      "state": "Running"
-    },
-    {
-      "label": "step2",
-      "state": "Queued"
-      "jobs": [
-        {
-          "label": "step2.1",
-          "state": "Queued"
-        },
-        {
-          "label": "step2.2",
-          "state": "Queued"
-        }
-      ]
-    }
-  ]
+  "log": "http://example.com/jobs/123/log"
 }
 ```
 
+```
+GET http://example.com/jobs/123
+->
+(...job log as multipart streaming http response...)
+```
+
 # Workflow states
-States: Queued, Running, Paused, Complete, Error, Canceled
+States: Running, Paused, Success, Failed, Canceled
 
 ```
-POST http://example.com/workflows/123?action=Cancel
+POST http://example.com/jobs/123?action=Cancel
 ```
 
 -> cancel workflow
 
 ```
-POST http://example.com/workflows/123?action=Pause
+POST http://example.com/jobs/123?action=Pause
 ```
 
 -> pause workflow
+
+```
+POST http://example.com/jobs/123?action=Resume
+```
+
+-> resume paused workflow
