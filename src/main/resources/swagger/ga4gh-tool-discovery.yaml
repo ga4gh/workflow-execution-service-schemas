@@ -12,6 +12,10 @@ info:
 produces:
   - application/json
 
+tags:
+  - name: GA4GH-workflow-execution
+    description: A set of resources proposed as a common standard for workflow execution
+
 # Describe your paths here
 paths:
   /run:
@@ -20,6 +24,8 @@ paths:
       # Describe this verb here. Note: you can use markdown
       description: |
         Submit launch of a workflow
+      tags:
+        - GA4GH-workflow-execution
       # This is array of GET operation parameters:
       parameters:
         # An example parameter that is in query and is required
@@ -43,6 +49,8 @@ paths:
       # Describe this verb here. Note: you can use markdown
       description: |
         Get status for a workflow
+      tags:
+        - GA4GH-workflow-execution
       # This is array of GET operation parameters:
       parameters:
         # An example parameter that is in query and is required
