@@ -21,6 +21,8 @@ paths:
   /run:
     # This is a HTTP operation
     post:
+      consumes:
+        - application/json
       # Describe this verb here. Note: you can use markdown
       description: |
         Submit launch of a workflow
@@ -29,21 +31,25 @@ paths:
       # This is array of GET operation parameters:
       parameters:
         # An example parameter that is in query and is required
-        -
-          name: descriptor_url
-          in: query
+        - in: query
+          name: wf
           description: URL to descriptor for workflow
           required: true
           type: string
-          format: string
+        - in: formData
+          name: body
+          description: parameters for the workflow
+          required: true
+          type: file
+            
       # Expected responses for this operation:
       responses:
         # Response code
-        200:
+        303:
           description: Successful response
           # A schema describing your response object.
           # Use JSON Schema format
-  /jobs:
+  /jobs/{descriptor_url}:
     # This is a HTTP operation
     get:
       # Describe this verb here. Note: you can use markdown
@@ -53,14 +59,13 @@ paths:
         - GA4GH-workflow-execution
       # This is array of GET operation parameters:
       parameters:
-        # An example parameter that is in query and is required
+        # An example parameter that is in path and is required
         -
           name: descriptor_url
-          in: query
+          in: path
           description: URL to descriptor for workflow
           required: true
           type: string
-          format: string
       # Expected responses for this operation:
       responses:
         # Response code
