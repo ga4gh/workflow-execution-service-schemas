@@ -3,14 +3,6 @@ info:
   version: 1.0.0
   title: Compute Service API
 paths:
-  /:
-    get:
-      summary: 'Check if the server is working at all, returns some status info.'
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
   /jobs:
     post:
       summary: submit a new job
