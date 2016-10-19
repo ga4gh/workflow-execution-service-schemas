@@ -82,6 +82,7 @@ paths:
                 workflow: https://github.com/common-workflow-language/common-workflow-language/raw/master/v1.0/v1.0/wc-tool.cwl
   '/jobs/{jobId}':
     get:
+      summary: Get a job
       operationId: getJobById
       parameters:
         - name: jobId
@@ -106,7 +107,7 @@ paths:
                     "location": "whale.txt"
                   }
                 },
-                "log": "http://localhost:5000/jobs/afcd1554-9604-11e6-bd3f-080027e8b32a/stderr",
+                "log": "http://localhost:5000/jobs/afcd1554-9604-11e6-bd3f-080027e8b32a/log",
                 "name": "myjob1",
                 "output": {
                       "output": {
@@ -124,6 +125,8 @@ paths:
         '404':
           description: Job not found
     delete:
+      summary: Deleta a job
+      description: Delete a job, if job is in waiting or running state then job will be cancelled first.
       operationId: deleteJobById
       parameters:
         - name: jobId
@@ -133,11 +136,12 @@ paths:
           required: true
       responses:
         '200':
-          description: Job deleted (will cancel if still running)
+          description: Job deleted
         '404':
           description: Job not found
   '/jobs/{jobId}/cancel':
     post:
+      summary: Cancel a job
       operationId: cancelJobById
       parameters:
         - name: jobId
@@ -147,7 +151,69 @@ paths:
           required: true
       responses:
         '200':
-          description: Job cancelled if still running
+          description: Job has been cancelled if job was still running or waiting
+          schema:
+            $ref: '#/definitions/job'
+          headers:
+            Location:
+              description: uri of the cancelled job
+              type: string
+              format: uri
+          examples:
+            'application/json':
+              {
+                "id": "afcd1554-9604-11e6-bd3f-080027e8b32a",
+                "input": {
+                   "file1": {
+                    "class": "File",
+                    "location": "whale.txt"
+                  }
+                },
+                "log": "http://localhost:5000/jobs/afcd1554-9604-11e6-bd3f-080027e8b32a/log",
+                "name": "myjob1",
+                "output": {
+                      "output": {
+                      "checksum": "sha1$6f9bd042bff934443cc65f7ef769613222f7b136",
+                      "basename": "output",
+                      "location": "file:///tmp/afcd1554-9604-11e6-bd3f-080027e8b32a/output",
+                      "path": "/tmp/afcd1554-9604-11e6-bd3f-080027e8b32a/output",
+                      "class": "File",
+                      "size": 9
+                  }
+                },
+                "state": "Cancelled",
+                "workflow": "https://github.com/common-workflow-language/common-workflow-language/raw/master/v1.0/v1.0/wc-tool.cwl"
+              }
+        '404':
+          description: Job not found
+  '/jobs/{jobId}/log':
+    get:
+      summary: Log of a job
+      operationId: getJobLogById
+      produces:
+        - text/plain
+      parameters:
+        - name: jobId
+          in: path
+          type: string
+          description: Job ID
+          required: true
+      responses:
+        '200':
+          description: Job log
+          schema:
+            type: string
+        '302':
+          description: Job log redirect
+          headers:
+            Location:
+              description: uri of the log of the job
+              type: string
+              format: uri
+          examples:
+            'text/plain': |
+              [job wc-tool.cwl] /tmp/afcd1554-9604-11e6-bd3f-080027e8b32a$ wc < /tmp/afcd1554-9604-11e6-bd3f-080027e8b32a/stge84d1078-e33f-41c3-8714-aafe955d1b53/whale.txt > /tmp/afcd1554-9604-11e6-bd3f-080027e8b32a/output
+              Final process status is success
         '404':
           description: Job not found
 definitions:
@@ -220,3 +286,4 @@ definitions:
       log:
         type: string
         format: uri
+        example: http://localhost:5000/jobs/afcd1554-9604-11e6-bd3f-080027e8b32a/log
