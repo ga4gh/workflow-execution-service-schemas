@@ -1,0 +1,138 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Compute Service API
+paths:
+  /:
+    get:
+      summary: 'Check if the server is working at all, returns some status info.'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+  /jobs:
+    post:
+      summary: submit a new job
+      description: Submit a new job from a workflow definition.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Input binding for cwl workflow.
+          schema:
+            $ref: '#/definitions/job-description'
+      responses:
+        '201':
+          description: OK
+          schema:
+            $ref: '#/definitions/job'
+          headers:
+            Location:
+              description: uri of the created job
+              type: string
+              format: uri
+    get:
+      summary: list of jobs
+      description: 'get a list of all jobs, running, cancelled, or otherwise.'
+      responses:
+        '200':
+          description: list of jobs
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/job'
+  '/jobs/{jobId}':
+    get:
+      parameters:
+        - name: jobId
+          in: path
+          type: string
+          description: Job ID
+          required: true
+      responses:
+        '200':
+          description: Status of job
+          schema:
+            $ref: '#/definitions/job'
+    delete:
+      parameters:
+        - name: jobId
+          in: path
+          type: string
+          description: Job ID
+          required: true
+      responses:
+        '200':
+          description: Job deleted (will cancel if still running)
+  '/jobs/{jobId}/cancel':
+    post:
+      parameters:
+        - name: jobId
+          in: path
+          type: string
+          description: Job ID
+          required: true
+      responses:
+        '200':
+          description: Job cancelled if still running
+definitions:
+  cwl-binding:
+    type: object
+    additionalProperties: true
+  job-description:
+    type: object
+    required:
+      - workflow
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        description: user supplied (non unique) name for this job
+      workflow:
+        type: string
+        format: uri
+        description: location of the workflow
+      input:
+        $ref: '#/definitions/cwl-binding'
+  job:
+    type: object
+    required:
+      - id
+      - name
+      - workflow
+      - input
+      - state
+      - output
+      - log
+    properties:
+      id:
+        type: string
+        format: uri
+      name:
+        type: string
+        description: user supplied (non unique) name for this job
+      workflow:
+        type: string
+        format: uri
+        description: location of the workflow
+      input:
+        $ref: '#/definitions/cwl-binding'
+      state:
+        type: string
+        enum:
+          - Waiting
+          - Running
+          - Success
+          - Cancelled
+          - SystemError
+          - TemporaryFailure
+          - PermanentFailure
+      output:
+        $ref: '#/definitions/cwl-binding'
+      log:
+        type: string
+        format: uri
