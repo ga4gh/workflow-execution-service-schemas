@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: 1.0.0
-  title: Compute Service API
+  title: CWL workflow execution service API
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -135,7 +135,7 @@ paths:
           description: Job ID
           required: true
       responses:
-        '200':
+        '204':
           description: Job deleted
         '404':
           description: Job not found
