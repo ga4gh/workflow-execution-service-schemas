@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: 1.0.0
-  title: CWL workflow execution service API
+  title: GA4GH workflow execution service API
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -18,7 +18,7 @@ paths:
       parameters:
         - in: body
           name: body
-          description: Input binding for cwl workflow.
+          description: Input binding for workflow.
           required: true
           schema:
             $ref: '#/definitions/job-description'
@@ -217,7 +217,7 @@ paths:
         '404':
           description: Job not found
 definitions:
-  cwl-binding:
+  workflow-binding:
     type: object
     additionalProperties: true
   job-description:
@@ -236,7 +236,7 @@ definitions:
         description: location of the workflow
         example: https://github.com/common-workflow-language/common-workflow-language/raw/master/v1.0/v1.0/wc-tool.cwl
       input:
-        $ref: '#/definitions/cwl-binding'
+        $ref: '#/definitions/workflow-binding'
     example:
       name: myjob1
       workflow: https://github.com/common-workflow-language/common-workflow-language/raw/master/v1.0/v1.0/wc-tool.cwl
@@ -269,7 +269,7 @@ definitions:
         description: location of the workflow
         example: https://github.com/common-workflow-language/common-workflow-language/raw/master/v1.0/v1.0/wc-tool.cwl
       input:
-        $ref: '#/definitions/cwl-binding'
+        $ref: '#/definitions/workflow-binding'
       state:
         type: string
         enum:
@@ -282,7 +282,7 @@ definitions:
           - PermanentFailure
         example: Running
       output:
-        $ref: '#/definitions/cwl-binding'
+        $ref: '#/definitions/workflow-binding'
       log:
         type: string
         format: uri
