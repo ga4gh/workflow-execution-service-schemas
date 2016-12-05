@@ -1,0 +1,63 @@
+
+syntax = "proto3";
+
+package ga4gh_workflow_exec;
+
+// Import HTTP RESTful annotations
+import "google/api/annotations.proto";
+import "google/protobuf/struct.proto";
+import "task_execution.proto";
+
+
+message WorkflowRequest {
+  google.protobuf.Struct inputs = 1;
+  string workflow_url = 2;
+}
+
+message WorkflowRunID {
+  string workflow_ID = 1;
+}
+
+message WorkflowStatus {
+  string workflow_ID = 1;
+}
+
+message WorkflowLog {
+  WorkflowRequest request = 1;
+  map<string, ga4gh_task_exec.JobLog> logs = 2;
+}
+
+//Web service to get, create, list and delete Workflows
+service WorkflowService {
+
+  //Run a task
+  rpc RunWorkflow(WorkflowRequest) returns (WorkflowRunID) {
+    option (google.api.http) = {
+      post: "/v1/workflows"
+      body: "*"
+    };
+  }
+
+  //Get info about a running workflow
+  rpc GetWorkflowStatus(WorkflowRunID) returns (WorkflowStatus) {
+      option (google.api.http) = {
+        get: "/v1/workflows/{workflow_ID}/status"
+      };
+  }
+  
+  //Get info about a running workflow
+  rpc GetWorkflowLog(WorkflowRunID) returns (WorkflowLog) {
+      option (google.api.http) = {
+        get: "/v1/workflows/{workflow_ID}"
+      };
+  }
+
+
+  //Cancel a running task
+  rpc CancelJob(WorkflowRunID) returns (WorkflowRunID) {
+    option (google.api.http) = {
+      delete: "/v1/workflows/{workflow_ID}"
+    };
+  }
+
+}
