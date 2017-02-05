@@ -1,0 +1,9 @@
+includes:
+  - class: Directory
+    location: proto
+  - class: Directory
+    location: task-execution-schemas/proto
+proto:
+  class: File
+  location: proto/workflow_execution.proto
+cwl:tool: protoc.cwl
