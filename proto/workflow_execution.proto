@@ -8,10 +8,16 @@ import "google/api/annotations.proto";
 import "google/protobuf/struct.proto";
 import "task_execution.proto";
 
+enum WorkflowType {
+    UNKNOWN = 0;
+    CWL = 1;
+    WDL = 2;
+}
 
 message WorkflowRequest {
-  google.protobuf.Struct inputs = 1;
-  string workflow_url = 2;
+  string workflow_params = 1;
+  string workflow_content = 2;
+  WorkflowType workflow_type = 3;
 }
 
 message WorkflowRunID {
@@ -30,7 +36,7 @@ message WorkflowLog {
 //Web service to get, create, list and delete Workflows
 service WorkflowService {
 
-  //Run a task
+  //Run a workflow
   rpc RunWorkflow(WorkflowRequest) returns (WorkflowRunID) {
     option (google.api.http) = {
       post: "/v1/workflows"
@@ -38,14 +44,14 @@ service WorkflowService {
     };
   }
 
-  //Get info about a running workflow
+  //Get quick status info about a running workflow
   rpc GetWorkflowStatus(WorkflowRunID) returns (WorkflowStatus) {
       option (google.api.http) = {
         get: "/v1/workflows/{workflow_ID}/status"
       };
   }
-  
-  //Get info about a running workflow
+
+  //Get detailed info about a running workflow
   rpc GetWorkflowLog(WorkflowRunID) returns (WorkflowLog) {
       option (google.api.http) = {
         get: "/v1/workflows/{workflow_ID}"
@@ -53,7 +59,7 @@ service WorkflowService {
   }
 
 
-  //Cancel a running task
+  //Cancel a running workflow
   rpc CancelJob(WorkflowRunID) returns (WorkflowRunID) {
     option (google.api.http) = {
       delete: "/v1/workflows/{workflow_ID}"
