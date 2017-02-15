@@ -5,7 +5,7 @@ Schemas for the Workflow Execution API
 
 This is used by the Data Working Group - Containers and Workflows Task Team
 
-![swagger_editor.png](http://editor.swagger.io/#/?import=https://raw.githubusercontent.com/ga4gh/workflow-execution-schemas/feature/protobuf-bdo/src/main/resources/swagger/ga4gh-tool-discovery.yaml)
+[![View in Swagger](swagger_editor.png)]](http://editor.swagger.io/#/?import=https://raw.githubusercontent.com/ga4gh/workflow-execution-schemas/feature/protobuf-bdo/src/main/resources/swagger/ga4gh-tool-discovery.yaml)
 
 The [Global Alliance for Genomics and Health](http://genomicsandhealth.org/) is an international
 coalition, formed to enable the sharing of genomic and clinical data.
