@@ -58,7 +58,10 @@ See the swagger editor to view our [schema in progress](http://editor.swagger.io
 
 If the current schema fails to validate, visit [debugging](http://online.swagger.io/validator/debug?url=https://raw.githubusercontent.com/ga4gh/workflow-execution-schemas/develop/src/main/resources/swagger/ga4gh-tool-discovery.yaml)
 
+Building Documents
+------------------
 
+You can generate the swagger yaml from the the 
 
 How to contribute changes
 -------------------------
