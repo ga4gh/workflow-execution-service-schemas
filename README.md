@@ -61,7 +61,22 @@ If the current schema fails to validate, visit [debugging](http://online.swagger
 Building Documents
 ------------------
 
-You can generate the swagger yaml from the the 
+Make sure you have Docker installed for your platform and the `cwltool`.
+
+    virtualenv env
+    source env/bin/activate
+    pip install setuptools==28.8.0
+    pip install cwl-runner cwltool==1.0.20161114152756 schema-salad==1.18.20161005190847 avro==1.8.1
+
+Make sure you have the [submodule](http://stackoverflow.com/questions/3939055/submodules-files-are-not-checked-out) checked out:
+
+    git submodule update --init --recursive
+
+You can generate the [Swagger](http://swagger.io/) YAML from the Protocol Buffers:
+
+    cwltool CWLFile
+
+Find the output in `workflow_execution.swagger.json` and this can be loaded in the [Swagger editor](http://swagger.io/swagger-editor/).
 
 How to contribute changes
 -------------------------
