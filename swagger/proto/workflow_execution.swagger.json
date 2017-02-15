@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "proto/workflow_execution.proto",
+    "title": "workflow_execution.proto",
     "version": "version not set"
   },
   "schemes": [
@@ -59,8 +59,7 @@
             "name": "workflow_ID",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "string"
           }
         ],
         "tags": [
@@ -83,8 +82,7 @@
             "name": "workflow_ID",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "string"
           }
         ],
         "tags": [
@@ -109,8 +107,7 @@
             "name": "workflow_ID",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "string"
           }
         ],
         "tags": [
@@ -126,49 +123,44 @@
         "cmd": {
           "type": "array",
           "items": {
-            "type": "string",
-            "format": "string"
+            "type": "string"
           },
           "title": "The command line that was run"
         },
+        "startTime": {
+          "type": "string",
+          "title": "When the command was executed"
+        },
         "endTime": {
           "type": "string",
-          "format": "string",
           "title": "When the command completed"
+        },
+        "stdout": {
+          "type": "string",
+          "title": "Sample of stdout (not guaranteed to be entire log)"
+        },
+        "stderr": {
+          "type": "string",
+          "title": "Sample of stderr (not guaranteed to be entire log)"
         },
         "exitCode": {
           "type": "integer",
           "format": "int32",
           "title": "Exit code of the program"
-        },
-        "startTime": {
-          "type": "string",
-          "format": "string",
-          "title": "When the command was executed"
-        },
-        "stderr": {
-          "type": "string",
-          "format": "string",
-          "title": "Sample of stderr (not guaranteed to be entire log)"
-        },
-        "stdout": {
-          "type": "string",
-          "format": "string",
-          "title": "Sample of stdout (not guaranteed to be entire log)"
         }
       }
     },
     "ga4gh_workflow_execWorkflowLog": {
       "type": "object",
       "properties": {
+        "request": {
+          "$ref": "#/definitions/ga4gh_workflow_execWorkflowRequest"
+        },
         "logs": {
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/ga4gh_task_execJobLog"
           }
-        },
-        "request": {
-          "$ref": "#/definitions/ga4gh_workflow_execWorkflowRequest"
         }
       }
     },
@@ -179,8 +171,7 @@
           "$ref": "#/definitions/protobufStruct"
         },
         "workflow_url": {
-          "type": "string",
-          "format": "string"
+          "type": "string"
         }
       }
     },
@@ -188,8 +179,7 @@
       "type": "object",
       "properties": {
         "workflow_ID": {
-          "type": "string",
-          "format": "string"
+          "type": "string"
         }
       }
     },
@@ -197,8 +187,7 @@
       "type": "object",
       "properties": {
         "workflow_ID": {
-          "type": "string",
-          "format": "string"
+          "type": "string"
         }
       }
     },
@@ -231,7 +220,7 @@
           "additionalProperties": {
             "$ref": "#/definitions/protobufValue"
           },
-          "description": "Map of dynamically typed values."
+          "description": "Unordered map of dynamically typed values."
         }
       },
       "description": "`Struct` represents a structured data value, consisting of fields\nwhich map to dynamically typed values. In some languages, `Struct`\nmight be supported by a native representation. For example, in\nscripting languages like JS a struct is represented as an\nobject. The details of that representation are described together\nwith the proto support for the language.\n\nThe JSON representation for `Struct` is JSON object."
@@ -239,15 +228,6 @@
     "protobufValue": {
       "type": "object",
       "properties": {
-        "bool_value": {
-          "type": "boolean",
-          "format": "boolean",
-          "description": "Represents a boolean value."
-        },
-        "list_value": {
-          "$ref": "#/definitions/protobufListValue",
-          "description": "Represents a repeated `Value`."
-        },
         "null_value": {
           "$ref": "#/definitions/protobufNullValue",
           "description": "Represents a null value."
@@ -259,12 +239,20 @@
         },
         "string_value": {
           "type": "string",
-          "format": "string",
           "description": "Represents a string value."
+        },
+        "bool_value": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Represents a boolean value."
         },
         "struct_value": {
           "$ref": "#/definitions/protobufStruct",
           "description": "Represents a structured value."
+        },
+        "list_value": {
+          "$ref": "#/definitions/protobufListValue",
+          "description": "Represents a repeated `Value`."
         }
       },
       "description": "`Value` represents a dynamically typed value which can be either\nnull, a number, a string, a boolean, a recursive struct value, or a\nlist of values. A producer of value is expected to set one of that\nvariants, absence of any variant indicates an error.\n\nThe JSON representation for `Value` is JSON value."

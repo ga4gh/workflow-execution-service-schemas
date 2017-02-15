@@ -76,7 +76,13 @@ You can generate the [Swagger](http://swagger.io/) YAML from the Protocol Buffer
 
     cwltool CWLFile
 
-Find the output in `workflow_execution.swagger.json` and this can be loaded in the [Swagger editor](http://swagger.io/swagger-editor/).
+Find the output in `workflow_execution.swagger.json` and this can be loaded in the [Swagger editor](http://swagger.io/swagger-editor/).  Use the GitHub raw feature to generate a URL you can load.
+
+When you're happy with the changes, checkin this file:
+
+    mv workflow_execution.swagger.json swagger/proto/
+
+And commit your changes.
 
 How to contribute changes
 -------------------------
