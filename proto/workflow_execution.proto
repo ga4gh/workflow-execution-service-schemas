@@ -27,10 +27,7 @@ message WorkflowRunID {
 
 message WorkflowStatus {
   string workflow_ID = 1;
-  map<string,string> metadata = 2;
-  ga4gh_task_exec.State state = 3;
-  repeated ga4gh_task_exec.JobLog logs = 4;
-  repeated ga4gh_task_exec.TaskParameter outputs = 5;
+  ga4gh_task_exec.State state = 2;
 }
 
 message Job {
@@ -42,8 +39,12 @@ message Job {
 }
 
 message WorkflowLog {
-  WorkflowRequest request = 1;
-  map<string, ga4gh_task_exec.JobLog> logs = 2;
+  string workflow_ID = 1;
+  WorkflowRequest request = 2;
+  map<string,string> metadata = 3;
+  ga4gh_task_exec.State state = 4;
+  repeated ga4gh_task_exec.JobLog logs = 5;
+  repeated ga4gh_task_exec.TaskParameter outputs = 6;
 }
 
 //Web service to get, create, list and delete Workflows

@@ -198,13 +198,31 @@
     "ga4gh_workflow_execWorkflowLog": {
       "type": "object",
       "properties": {
+        "workflow_ID": {
+          "type": "string"
+        },
         "request": {
           "$ref": "#/definitions/ga4gh_workflow_execWorkflowRequest"
         },
-        "logs": {
+        "metadata": {
           "type": "object",
           "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "state": {
+          "$ref": "#/definitions/ga4gh_task_execState"
+        },
+        "logs": {
+          "type": "array",
+          "items": {
             "$ref": "#/definitions/ga4gh_task_execJobLog"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ga4gh_task_execTaskParameter"
           }
         }
       }
@@ -240,26 +258,8 @@
         "workflow_ID": {
           "type": "string"
         },
-        "metadata": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
         "state": {
           "$ref": "#/definitions/ga4gh_task_execState"
-        },
-        "logs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ga4gh_task_execJobLog"
-          }
-        },
-        "outputs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ga4gh_task_execTaskParameter"
-          }
         }
       }
     },
