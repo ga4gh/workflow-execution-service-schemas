@@ -150,6 +150,51 @@
         }
       }
     },
+    "ga4gh_task_execState": {
+      "type": "string",
+      "enum": [
+        "Unknown",
+        "Queued",
+        "Running",
+        "Paused",
+        "Complete",
+        "Error",
+        "SystemError",
+        "Canceled"
+      ],
+      "default": "Unknown"
+    },
+    "ga4gh_task_execTaskParameter": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "name of the parameter"
+        },
+        "description": {
+          "type": "string",
+          "title": "optional text description"
+        },
+        "location": {
+          "type": "string",
+          "title": "location in long term storage, is a url specific to the implementing \nsystem. For example s3://my-object-store/file1 or gs://my-bucket/file2 or\nfile:///path/to/my/file"
+        },
+        "path": {
+          "type": "string",
+          "title": "path in the machine file system. Note, this MUST be a path that exists\nwithin one of the defined volumes"
+        },
+        "class": {
+          "type": "string",
+          "title": "Type of data, \"File\" or \"Directory\"\nif used for an output all the files in the directory\nwill be copied to the storage location"
+        },
+        "create": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "if the parameter is an output, should the element be created before executing\nthe command. For example if saving the working directory as an output,\nthe directory needs to exist before the command is called. If false, it is\nassumed that the user will create the element as a part of the operation"
+        }
+      },
+      "title": "Parameters for Task"
+    },
     "ga4gh_workflow_execWorkflowLog": {
       "type": "object",
       "properties": {
@@ -170,11 +215,14 @@
         "workflow_params": {
           "type": "string"
         },
-        "workflow_content": {
+        "workflow_descriptor": {
           "type": "string"
         },
         "workflow_type": {
           "$ref": "#/definitions/ga4gh_workflow_execWorkflowType"
+        },
+        "workflow_version": {
+          "type": "string"
         }
       }
     },
@@ -191,6 +239,27 @@
       "properties": {
         "workflow_ID": {
           "type": "string"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "state": {
+          "$ref": "#/definitions/ga4gh_task_execState"
+        },
+        "logs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ga4gh_task_execJobLog"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ga4gh_task_execTaskParameter"
+          }
         }
       }
     },

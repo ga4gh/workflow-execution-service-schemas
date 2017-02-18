@@ -16,8 +16,9 @@ enum WorkflowType {
 
 message WorkflowRequest {
   string workflow_params = 1;
-  string workflow_content = 2;
+  string workflow_descriptor = 2;
   WorkflowType workflow_type = 3;
+  string workflow_version = 4;
 }
 
 message WorkflowRunID {
@@ -26,6 +27,18 @@ message WorkflowRunID {
 
 message WorkflowStatus {
   string workflow_ID = 1;
+  map<string,string> metadata = 2;
+  ga4gh_task_exec.State state = 3;
+  repeated ga4gh_task_exec.JobLog logs = 4;
+  repeated ga4gh_task_exec.TaskParameter outputs = 5;
+}
+
+message Job {
+  string jobID = 1;
+  map<string,string> metadata = 2;
+  ga4gh_task_exec.Task task = 3;
+  ga4gh_task_exec.State state = 4;
+  repeated ga4gh_task_exec.JobLog logs = 5;
 }
 
 message WorkflowLog {
