@@ -10,8 +10,8 @@ import "task_execution.proto";
 
 
 message WorkflowRequest {
-  google.protobuf.Struct inputs = 1;
-  string workflow_url = 2;
+  string workflow_url = 1;
+  google.protobuf.Struct input = 2;
 }
 
 message WorkflowRunID {
@@ -20,18 +20,22 @@ message WorkflowRunID {
 
 message WorkflowStatus {
   string workflow_ID = 1;
+  string workflow_url = 2;
+  google.protobuf.Struct input = 3;
+  google.protobuf.Struct output = 4;
+  ga4gh_task_exec.State state = 5;
 }
 
 message WorkflowLog {
-  WorkflowRequest request = 1;
-  map<string, ga4gh_task_exec.JobLog> logs = 2;
+  WorkflowRunID workflow_ID = 1;
+  ga4gh_task_exec.JobLog log = 2;
 }
 
 //Web service to get, create, list and delete Workflows
 service WorkflowService {
 
   //Run a task
-  rpc RunWorkflow(WorkflowRequest) returns (WorkflowRunID) {
+  rpc RunWorkflow(WorkflowRequest) returns (WorkflowStatus) {
     option (google.api.http) = {
       post: "/v1/workflows"
       body: "*"
@@ -41,20 +45,19 @@ service WorkflowService {
   //Get info about a running workflow
   rpc GetWorkflowStatus(WorkflowRunID) returns (WorkflowStatus) {
       option (google.api.http) = {
-        get: "/v1/workflows/{workflow_ID}/status"
-      };
-  }
-  
-  //Get info about a running workflow
-  rpc GetWorkflowLog(WorkflowRunID) returns (WorkflowLog) {
-      option (google.api.http) = {
         get: "/v1/workflows/{workflow_ID}"
       };
   }
 
+  //Get info about a running workflow
+  rpc GetWorkflowLog(WorkflowRunID) returns (WorkflowLog) {
+      option (google.api.http) = {
+        get: "/v1/workflows/{workflow_ID}/log"
+      };
+  }
 
   //Cancel a running task
-  rpc CancelJob(WorkflowRunID) returns (WorkflowRunID) {
+  rpc CancelWorkflow(WorkflowRunID) returns (WorkflowRunID) {
     option (google.api.http) = {
       delete: "/v1/workflows/{workflow_ID}"
     };
