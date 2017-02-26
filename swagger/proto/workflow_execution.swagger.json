@@ -30,21 +30,21 @@
         "parameters": [
           {
             "name": "projectID",
-            "description": "Required. The name of the project to search for pipelines. Caller must have READ access to this project.",
+            "description": "OPTIONAL\nThe name of the project to search for pipelines. Caller must have READ access to this project.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "namePrefix",
-            "description": "Pipelines with names that match this prefix should be returned. If unspecified, all pipelines in the project, up to pageSize, will be returned.",
+            "description": "OPTIONAL\nPipelines with names that match this prefix should be returned. If unspecified, all pipelines in the project, up to pageSize, will be returned.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "pageSize",
-            "description": "Number of pipelines to return at once. Defaults to 256, and max is 2048.",
+            "description": "OPTIONAL\nNumber of pipelines to return at once. Defaults to 256, and max is 2048.",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -52,7 +52,7 @@
           },
           {
             "name": "pageToken",
-            "description": "Token to use to indicate where to start getting results. If unspecified, returns the first page of results.",
+            "description": "OPTIONAL\nToken to use to indicate where to start getting results. If unspecified, returns the first page of results.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -89,14 +89,14 @@
       }
     },
     "/v1/workflows/{workflow_id}": {
-      "delete": {
-        "summary": "Cancel a running workflow",
-        "operationId": "CancelJob",
+      "get": {
+        "summary": "Get detailed info about a running workflow",
+        "operationId": "GetWorkflowLog",
         "responses": {
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/ga4gh_workflow_execWorkflowRunID"
+              "$ref": "#/definitions/ga4gh_workflow_execWorkflowLog"
             }
           }
         },
@@ -111,17 +111,15 @@
         "tags": [
           "WorkflowService"
         ]
-      }
-    },
-    "/v1/workflows/{workflow_id}/log": {
-      "get": {
-        "summary": "Get detailed info about a running workflow",
-        "operationId": "GetWorkflowLog",
+      },
+      "delete": {
+        "summary": "Cancel a running workflow",
+        "operationId": "CancelJob",
         "responses": {
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/ga4gh_workflow_execWorkflowLog"
+              "$ref": "#/definitions/ga4gh_workflow_execWorkflowRunID"
             }
           }
         },
@@ -170,22 +168,23 @@
       "properties": {
         "projectID": {
           "type": "string",
-          "description": "Required. The name of the project to search for pipelines. Caller must have READ access to this project."
+          "description": "OPTIONAL\nThe name of the project to search for pipelines. Caller must have READ access to this project."
         },
         "namePrefix": {
           "type": "string",
-          "description": "Pipelines with names that match this prefix should be returned. If unspecified, all pipelines in the project, up to pageSize, will be returned."
+          "description": "OPTIONAL\nPipelines with names that match this prefix should be returned. If unspecified, all pipelines in the project, up to pageSize, will be returned."
         },
         "pageSize": {
           "type": "integer",
           "format": "int64",
-          "description": "Number of pipelines to return at once. Defaults to 256, and max is 2048."
+          "description": "OPTIONAL\nNumber of pipelines to return at once. Defaults to 256, and max is 2048."
         },
         "pageToken": {
           "type": "string",
-          "description": "Token to use to indicate where to start getting results. If unspecified, returns the first page of results."
+          "description": "OPTIONAL\nToken to use to indicate where to start getting results. If unspecified, returns the first page of results."
         }
-      }
+      },
+      "title": "Request listing of jobs tracked by server"
     },
     "ga4gh_task_execJobLog": {
       "type": "object",
@@ -217,8 +216,35 @@
           "type": "integer",
           "format": "int32",
           "title": "Exit code of the program"
+        },
+        "hostIP": {
+          "type": "string",
+          "title": "ip of worker host"
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ga4gh_task_execPorts"
+          },
+          "title": "ports bound from container to host"
         }
       }
+    },
+    "ga4gh_task_execPorts": {
+      "type": "object",
+      "properties": {
+        "container": {
+          "type": "integer",
+          "format": "int32",
+          "title": "REQUIRED \nExposed port on container"
+        },
+        "host": {
+          "type": "integer",
+          "format": "int32",
+          "title": "OPTIONAL \nMust be greater than 1024;\nDefaults to 0"
+        }
+      },
+      "title": "host to container port mappings"
     },
     "ga4gh_task_execState": {
       "type": "string",
@@ -230,7 +256,8 @@
         "Complete",
         "Error",
         "SystemError",
-        "Canceled"
+        "Canceled",
+        "Initializing"
       ],
       "default": "Unknown"
     },
@@ -239,28 +266,28 @@
       "properties": {
         "name": {
           "type": "string",
-          "title": "name of the parameter"
+          "title": "OPTIONAL\nname of the parameter"
         },
         "description": {
           "type": "string",
-          "title": "optional text description"
+          "title": "OPTIONAL\nText description"
         },
         "location": {
           "type": "string",
-          "title": "location in long term storage, is a url specific to the implementing \nsystem. For example s3://my-object-store/file1 or gs://my-bucket/file2 or\nfile:///path/to/my/file"
+          "title": "REQUIRED\nlocation in long term storage, is a url specific to the implementing\nsystem. For example s3://my-object-store/file1 or gs://my-bucket/file2 or\nfile:///path/to/my/file"
         },
         "path": {
           "type": "string",
-          "title": "path in the machine file system. Note, this MUST be a path that exists\nwithin one of the defined volumes"
+          "title": "REQUIRED\npath in the machine file system. Note, this MUST be a path that exists\nwithin one of the defined volumes\nIf the file is mounted in a volume that is mounted read/write the file must\nbe accessable to processes in the container. Optimizations, suc as hard linking\nto a source file, or providing a streaming input from a FUSE mount should only\nbe done if the volume is mounted as read only"
         },
         "class": {
           "type": "string",
-          "title": "Type of data, \"File\" or \"Directory\"\nif used for an output all the files in the directory\nwill be copied to the storage location"
+          "title": "REQUIRED\nType of data, \"File\" or \"Directory\"\nif used for an output all the files in the directory\nwill be copied to the storage location"
         },
         "create": {
           "type": "boolean",
           "format": "boolean",
-          "title": "if the parameter is an output, should the element be created before executing\nthe command. For example if saving the working directory as an output,\nthe directory needs to exist before the command is called. If false, it is\nassumed that the user will create the element as a part of the operation"
+          "title": "OPTIONAL: default false\nif the parameter is an output, should the element be created before executing\nthe command. For example if saving the working directory as an output,\nthe directory needs to exist before the command is called. If false, it is\nassumed that the user will create the element as a part of the operation"
         }
       },
       "title": "Parameters for Task"
