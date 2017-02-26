@@ -89,14 +89,14 @@
       }
     },
     "/v1/workflows/{workflow_id}": {
-      "get": {
-        "summary": "Get detailed info about a running workflow",
-        "operationId": "GetWorkflowLog",
+      "delete": {
+        "summary": "Cancel a running workflow",
+        "operationId": "CancelJob",
         "responses": {
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/ga4gh_workflow_execWorkflowLog"
+              "$ref": "#/definitions/ga4gh_workflow_execWorkflowRunID"
             }
           }
         },
@@ -111,15 +111,17 @@
         "tags": [
           "WorkflowService"
         ]
-      },
-      "delete": {
-        "summary": "Cancel a running workflow",
-        "operationId": "CancelJob",
+      }
+    },
+    "/v1/workflows/{workflow_id}/log": {
+      "get": {
+        "summary": "Get detailed info about a running workflow",
+        "operationId": "GetWorkflowLog",
         "responses": {
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/ga4gh_workflow_execWorkflowRunID"
+              "$ref": "#/definitions/ga4gh_workflow_execWorkflowLog"
             }
           }
         },

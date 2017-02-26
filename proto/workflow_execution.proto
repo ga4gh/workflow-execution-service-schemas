@@ -105,7 +105,7 @@ service WorkflowService {
   //Get detailed info about a running workflow
   rpc GetWorkflowLog(WorkflowRunID) returns (WorkflowLog) {
       option (google.api.http) = {
-        get: "/v1/workflows/{workflow_id}"
+        get: "/v1/workflows/{workflow_id}/log"
       };
   }
 
