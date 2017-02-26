@@ -1,0 +1,284 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "workflow_execution.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/workflows": {
+      "post": {
+        "summary": "Run a task",
+        "operationId": "RunWorkflow",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ga4gh_workflow_execWorkflowStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ga4gh_workflow_execWorkflowRequest"
+            }
+          }
+        ],
+        "tags": [
+          "WorkflowService"
+        ]
+      }
+    },
+    "/v1/workflows/{workflow_ID}": {
+      "get": {
+        "summary": "Get info about a running workflow",
+        "operationId": "GetWorkflowStatus",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ga4gh_workflow_execWorkflowStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "workflow_ID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "WorkflowService"
+        ]
+      },
+      "delete": {
+        "summary": "Cancel a running task",
+        "operationId": "CancelWorkflow",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ga4gh_workflow_execWorkflowRunID"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "workflow_ID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "WorkflowService"
+        ]
+      }
+    },
+    "/v1/workflows/{workflow_ID}/log": {
+      "get": {
+        "summary": "Get info about a running workflow",
+        "operationId": "GetWorkflowLog",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ga4gh_workflow_execWorkflowLog"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "workflow_ID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "WorkflowService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ga4gh_task_execJobLog": {
+      "type": "object",
+      "properties": {
+        "cmd": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "The command line that was run"
+        },
+        "startTime": {
+          "type": "string",
+          "title": "When the command was executed"
+        },
+        "endTime": {
+          "type": "string",
+          "title": "When the command completed"
+        },
+        "stdout": {
+          "type": "string",
+          "title": "Sample of stdout (not guaranteed to be entire log)"
+        },
+        "stderr": {
+          "type": "string",
+          "title": "Sample of stderr (not guaranteed to be entire log)"
+        },
+        "exitCode": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Exit code of the program"
+        }
+      }
+    },
+    "ga4gh_task_execState": {
+      "type": "string",
+      "enum": [
+        "Unknown",
+        "Queued",
+        "Running",
+        "Paused",
+        "Complete",
+        "Error",
+        "SystemError",
+        "Canceled"
+      ],
+      "default": "Unknown"
+    },
+    "ga4gh_workflow_execWorkflowLog": {
+      "type": "object",
+      "properties": {
+        "workflow_ID": {
+          "$ref": "#/definitions/ga4gh_workflow_execWorkflowRunID"
+        },
+        "log": {
+          "$ref": "#/definitions/ga4gh_task_execJobLog"
+        }
+      }
+    },
+    "ga4gh_workflow_execWorkflowRequest": {
+      "type": "object",
+      "properties": {
+        "workflow_url": {
+          "type": "string"
+        },
+        "input": {
+          "$ref": "#/definitions/protobufStruct"
+        }
+      }
+    },
+    "ga4gh_workflow_execWorkflowRunID": {
+      "type": "object",
+      "properties": {
+        "workflow_ID": {
+          "type": "string"
+        }
+      }
+    },
+    "ga4gh_workflow_execWorkflowStatus": {
+      "type": "object",
+      "properties": {
+        "workflow_ID": {
+          "type": "string"
+        },
+        "workflow_url": {
+          "type": "string"
+        },
+        "input": {
+          "$ref": "#/definitions/protobufStruct"
+        },
+        "output": {
+          "$ref": "#/definitions/protobufStruct"
+        },
+        "state": {
+          "$ref": "#/definitions/ga4gh_task_execState"
+        }
+      }
+    },
+    "protobufListValue": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufValue"
+          },
+          "description": "Repeated field of dynamically typed values."
+        }
+      },
+      "description": "`ListValue` is a wrapper around a repeated field of values.\n\nThe JSON representation for `ListValue` is JSON array."
+    },
+    "protobufNullValue": {
+      "type": "string",
+      "enum": [
+        "NULL_VALUE"
+      ],
+      "default": "NULL_VALUE",
+      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
+    },
+    "protobufStruct": {
+      "type": "object",
+      "properties": {
+        "fields": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/protobufValue"
+          },
+          "description": "Unordered map of dynamically typed values."
+        }
+      },
+      "description": "`Struct` represents a structured data value, consisting of fields\nwhich map to dynamically typed values. In some languages, `Struct`\nmight be supported by a native representation. For example, in\nscripting languages like JS a struct is represented as an\nobject. The details of that representation are described together\nwith the proto support for the language.\n\nThe JSON representation for `Struct` is JSON object."
+    },
+    "protobufValue": {
+      "type": "object",
+      "properties": {
+        "null_value": {
+          "$ref": "#/definitions/protobufNullValue",
+          "description": "Represents a null value."
+        },
+        "number_value": {
+          "type": "number",
+          "format": "double",
+          "description": "Represents a double value."
+        },
+        "string_value": {
+          "type": "string",
+          "description": "Represents a string value."
+        },
+        "bool_value": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Represents a boolean value."
+        },
+        "struct_value": {
+          "$ref": "#/definitions/protobufStruct",
+          "description": "Represents a structured value."
+        },
+        "list_value": {
+          "$ref": "#/definitions/protobufListValue",
+          "description": "Represents a repeated `Value`."
+        }
+      },
+      "description": "`Value` represents a dynamically typed value which can be either\nnull, a number, a string, a boolean, a recursive struct value, or a\nlist of values. A producer of value is expected to set one of that\nvariants, absence of any variant indicates an error.\n\nThe JSON representation for `Value` is JSON value."
+    }
+  }
+}
