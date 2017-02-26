@@ -16,6 +16,52 @@
   ],
   "paths": {
     "/v1/workflows": {
+      "get": {
+        "summary": "List the workflows",
+        "operationId": "ListWorkflows",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ga4gh_workflow_execWorkflowListResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "projectID",
+            "description": "Required. The name of the project to search for pipelines. Caller must have READ access to this project.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "namePrefix",
+            "description": "Pipelines with names that match this prefix should be returned. If unspecified, all pipelines in the project, up to pageSize, will be returned.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "description": "Number of pipelines to return at once. Defaults to 256, and max is 2048.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "pageToken",
+            "description": "Token to use to indicate where to start getting results. If unspecified, returns the first page of results.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "WorkflowService"
+        ]
+      },
       "post": {
         "summary": "Run a workflow",
         "operationId": "RunWorkflow",
@@ -42,7 +88,7 @@
         ]
       }
     },
-    "/v1/workflows/{workflow_ID}": {
+    "/v1/workflows/{workflow_id}": {
       "get": {
         "summary": "Get detailed info about a running workflow",
         "operationId": "GetWorkflowLog",
@@ -56,7 +102,7 @@
         },
         "parameters": [
           {
-            "name": "workflow_ID",
+            "name": "workflow_id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -79,7 +125,7 @@
         },
         "parameters": [
           {
-            "name": "workflow_ID",
+            "name": "workflow_id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -90,7 +136,7 @@
         ]
       }
     },
-    "/v1/workflows/{workflow_ID}/status": {
+    "/v1/workflows/{workflow_id}/status": {
       "get": {
         "summary": "Get quick status info about a running workflow",
         "operationId": "GetWorkflowStatus",
@@ -104,7 +150,7 @@
         },
         "parameters": [
           {
-            "name": "workflow_ID",
+            "name": "workflow_id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -117,6 +163,28 @@
     }
   },
   "definitions": {
+    "ga4gh_task_execJobListRequest": {
+      "type": "object",
+      "properties": {
+        "projectID": {
+          "type": "string",
+          "description": "Required. The name of the project to search for pipelines. Caller must have READ access to this project."
+        },
+        "namePrefix": {
+          "type": "string",
+          "description": "Pipelines with names that match this prefix should be returned. If unspecified, all pipelines in the project, up to pageSize, will be returned."
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Number of pipelines to return at once. Defaults to 256, and max is 2048."
+        },
+        "pageToken": {
+          "type": "string",
+          "description": "Token to use to indicate where to start getting results. If unspecified, returns the first page of results."
+        }
+      }
+    },
     "ga4gh_task_execJobLog": {
       "type": "object",
       "properties": {
@@ -195,71 +263,130 @@
       },
       "title": "Parameters for Task"
     },
+    "ga4gh_workflow_execJobDesc": {
+      "type": "object",
+      "properties": {
+        "workflow_id": {
+          "type": "string",
+          "title": "REQUIRED"
+        },
+        "state": {
+          "$ref": "#/definitions/ga4gh_task_execState",
+          "title": "REQUIRED"
+        }
+      },
+      "title": "Small description of workflows, returned by server during listing"
+    },
+    "ga4gh_workflow_execWorkflowListResponse": {
+      "type": "object",
+      "properties": {
+        "workflows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ga4gh_workflow_execJobDesc"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        }
+      },
+      "title": "Return envelope for workflow listing"
+    },
     "ga4gh_workflow_execWorkflowLog": {
       "type": "object",
       "properties": {
-        "workflow_ID": {
-          "type": "string"
+        "workflow_id": {
+          "type": "string",
+          "title": "workflow ID"
         },
         "request": {
-          "$ref": "#/definitions/ga4gh_workflow_execWorkflowRequest"
+          "$ref": "#/definitions/ga4gh_workflow_execWorkflowRequest",
+          "title": "the original request object"
         },
         "metadata": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
-          }
+          },
+          "title": "a key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request"
         },
         "state": {
-          "$ref": "#/definitions/ga4gh_task_execState"
+          "$ref": "#/definitions/ga4gh_task_execState",
+          "title": "state"
         },
         "logs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ga4gh_task_execJobLog"
-          }
+          "$ref": "#/definitions/ga4gh_task_execJobLog",
+          "title": "the log, and other key info like timing and exit code, for the overall run of this workflow"
         },
         "outputs": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/ga4gh_task_execTaskParameter"
-          }
+          },
+          "title": "the outputs"
         }
       }
     },
     "ga4gh_workflow_execWorkflowRequest": {
       "type": "object",
       "properties": {
-        "workflow_params": {
-          "type": "string"
+        "name": {
+          "type": "string",
+          "title": "OPTIONAL\nuser name of the workflow"
+        },
+        "project_id": {
+          "type": "string",
+          "title": "OPTIONAL\nparameter for execution engine to define/store group information"
+        },
+        "description": {
+          "type": "string",
+          "title": "OPTIONAL\nfree text description of task"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "OPTIONAL\na key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request"
         },
         "workflow_descriptor": {
-          "type": "string"
+          "type": "string",
+          "title": "REQUIRED\nthe workflow CWL or WDL document"
+        },
+        "workflow_params": {
+          "type": "string",
+          "title": "REQUIRED\nthe workflow parameterization (typically a JSON file)"
         },
         "workflow_type": {
-          "$ref": "#/definitions/ga4gh_workflow_execWorkflowType"
+          "$ref": "#/definitions/ga4gh_workflow_execWorkflowType",
+          "title": "REQUIRED\nthe workflow descriptor type"
         },
-        "workflow_version": {
-          "type": "string"
+        "workflow_type_version": {
+          "type": "string",
+          "title": "REQUIRED\nthe workflow descriptor type version"
         }
-      }
+      },
+      "title": "workflow request object"
     },
     "ga4gh_workflow_execWorkflowRunID": {
       "type": "object",
       "properties": {
-        "workflow_ID": {
-          "type": "string"
+        "workflow_id": {
+          "type": "string",
+          "title": "workflow ID"
         }
       }
     },
     "ga4gh_workflow_execWorkflowStatus": {
       "type": "object",
       "properties": {
-        "workflow_ID": {
-          "type": "string"
+        "workflow_id": {
+          "type": "string",
+          "title": "workflow ID"
         },
         "state": {
-          "$ref": "#/definitions/ga4gh_task_execState"
+          "$ref": "#/definitions/ga4gh_task_execState",
+          "title": "state"
         }
       }
     },
@@ -270,7 +397,8 @@
         "CWL",
         "WDL"
       ],
-      "default": "UNKNOWN"
+      "default": "UNKNOWN",
+      "title": "available workflow types supported by this WES"
     }
   }
 }

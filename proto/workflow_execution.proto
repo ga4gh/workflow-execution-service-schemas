@@ -8,42 +8,79 @@ import "google/api/annotations.proto";
 import "google/protobuf/struct.proto";
 import "task_execution.proto";
 
+//available workflow types supported by this WES
 enum WorkflowType {
     UNKNOWN = 0;
     CWL = 1;
     WDL = 2;
 }
 
-message WorkflowRequest {
-  string workflow_params = 1;
-  string workflow_descriptor = 2;
-  WorkflowType workflow_type = 3;
-  string workflow_version = 4;
+//Return envelope for workflow listing
+message WorkflowListResponse {
+   repeated JobDesc workflows = 1;
+   string nextPageToken = 2;
 }
 
-message WorkflowRunID {
-  string workflow_ID = 1;
-}
-
-message WorkflowStatus {
-  string workflow_ID = 1;
+//Small description of workflows, returned by server during listing
+message JobDesc {
+  //REQUIRED
+  string workflow_id  = 1;
+  //REQUIRED
   ga4gh_task_exec.State state = 2;
 }
 
-message Job {
-  string jobID = 1;
-  map<string,string> metadata = 2;
-  ga4gh_task_exec.Task task = 3;
-  ga4gh_task_exec.State state = 4;
-  repeated ga4gh_task_exec.JobLog logs = 5;
+//workflow request object
+message WorkflowRequest {
+  //OPTIONAL
+  //user name of the workflow
+  string name = 1;
+  //OPTIONAL
+  //parameter for execution engine to define/store group information
+  string project_id = 2;
+  //OPTIONAL
+  //free text description of task
+  string description = 3;
+  //OPTIONAL
+  //a key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request
+  map<string,string> metadata = 4;
+  //REQUIRED
+  //the workflow CWL or WDL document
+  string workflow_descriptor = 5;
+  //REQUIRED
+  //the workflow parameterization (typically a JSON file)
+  string workflow_params = 6;
+  //REQUIRED
+  //the workflow descriptor type
+  WorkflowType workflow_type = 7;
+  //REQUIRED
+  //the workflow descriptor type version
+  string workflow_type_version = 8;
+}
+
+message WorkflowRunID {
+  //workflow ID
+  string workflow_id = 1;
+}
+
+message WorkflowStatus {
+  //workflow ID
+  string workflow_id = 1;
+  //state
+  ga4gh_task_exec.State state = 2;
 }
 
 message WorkflowLog {
-  string workflow_ID = 1;
+  //workflow ID
+  string workflow_id = 1;
+  //the original request object
   WorkflowRequest request = 2;
+  //a key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request
   map<string,string> metadata = 3;
+  //state
   ga4gh_task_exec.State state = 4;
-  repeated ga4gh_task_exec.JobLog logs = 5;
+  //the log, and other key info like timing and exit code, for the overall run of this workflow
+  ga4gh_task_exec.JobLog logs = 5;
+  //the outputs
   repeated ga4gh_task_exec.TaskParameter outputs = 6;
 }
 
@@ -61,22 +98,28 @@ service WorkflowService {
   //Get quick status info about a running workflow
   rpc GetWorkflowStatus(WorkflowRunID) returns (WorkflowStatus) {
       option (google.api.http) = {
-        get: "/v1/workflows/{workflow_ID}/status"
+        get: "/v1/workflows/{workflow_id}/status"
       };
   }
 
   //Get detailed info about a running workflow
   rpc GetWorkflowLog(WorkflowRunID) returns (WorkflowLog) {
       option (google.api.http) = {
-        get: "/v1/workflows/{workflow_ID}"
+        get: "/v1/workflows/{workflow_id}"
       };
   }
-
 
   //Cancel a running workflow
   rpc CancelJob(WorkflowRunID) returns (WorkflowRunID) {
     option (google.api.http) = {
-      delete: "/v1/workflows/{workflow_ID}"
+      delete: "/v1/workflows/{workflow_id}"
+    };
+  }
+
+  //List the workflows
+  rpc ListWorkflows(ga4gh_task_exec.JobListRequest) returns (WorkflowListResponse) {
+    option (google.api.http) = {
+      get: "/v1/workflows"
     };
   }
 
