@@ -20,10 +20,6 @@ Containers and Workflows Task Team
 
 The Containers & Workflows working group is an informal, multi-vendor working group born out of the BOSC 2014 codefest, consisting of various organizations and individuals that have an interest in portability of data analysis workflows. Our goal is to create specifications that enable data scientists to describe analysis tools and workflows that are powerful, easy to use, portable, and support reproducibility for a variety of problem areas including data-intensive science like bioinformatics, physics, and astronomy; and business analytics such as log analysis, data mining, and ETL.
 
-From within this group, two approaches have emerged, resulting in the production of two distinct but complementary specifications: the Common Workflow Language, or CWL, and the Workflow Description Language, or WDL. The CWL approach emphasizes execution features and machine-readability, and serves a core target audience of software and platform developers. The WDL approach, on the other hand, emphasizes scripting  and human-readability, and serves a core target audience of research scientists.
-
-Together, these two specifications cover a very wide spectrum of analysis use cases. Work is underway to ensure interoperability through conversion and related utilities.
-
 What is this?
 ------------
 
