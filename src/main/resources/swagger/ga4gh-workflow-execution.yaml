@@ -1,0 +1,289 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: GA4GH workflow execution service API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+paths:
+  /jobs:
+    post:
+      summary: submit a new job
+      description: Submit a new job from a workflow definition.
+      operationId: postJob
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Input binding for workflow.
+          required: true
+          schema:
+            $ref: '#/definitions/job-description'
+      responses:
+        '201':
+          description: OK
+          schema:
+            $ref: '#/definitions/job'
+          headers:
+            Location:
+              description: uri of the created job
+              type: string
+              format: uri
+          examples:
+            'application/json':
+              {
+                "id": "afcd1554-9604-11e6-bd3f-080027e8b32a",
+                "input": {
+                   "file1": {
+                    "class": "File",
+                    "location": "whale.txt"
+                  }
+                },
+                "log": "http://localhost:5000/jobs/afcd1554-9604-11e6-bd3f-080027e8b32a/log",
+                "name": "myjob1",
+                "output": {},
+                "state": "Running",
+                "workflow": "https://github.com/common-workflow-language/common-workflow-language/raw/master/v1.0/v1.0/wc-tool.cwl"
+              }
+    get:
+      summary: list of jobs
+      description: 'get a list of all jobs, running, cancelled, or otherwise.'
+      operationId: getJobs
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: list of jobs
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/job'
+          examples:
+            'application/json':
+              - id: afcd1554-9604-11e6-bd3f-080027e8b32a
+                input:
+                   file1:
+                    class: File
+                    location: whale.txt
+                log: http://localhost:5000/jobs/afcd1554-9604-11e6-bd3f-080027e8b32a/stderr
+                name: myjob1
+                output:
+                  output:
+                    checksum: sha1$6f9bd042bff934443cc65f7ef769613222f7b136
+                    basename: output
+                    location: file:///tmp/afcd1554-9604-11e6-bd3f-080027e8b32a/output
+                    path: /tmp/afcd1554-9604-11e6-bd3f-080027e8b32a/output
+                    class: File
+                    size: 9
+                state: Success
+                workflow: https://github.com/common-workflow-language/common-workflow-language/raw/master/v1.0/v1.0/wc-tool.cwl
+  '/jobs/{jobId}':
+    get:
+      summary: Get a job
+      operationId: getJobById
+      parameters:
+        - name: jobId
+          in: path
+          type: string
+          description: Job ID
+          required: true
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Status of job
+          schema:
+            $ref: '#/definitions/job'
+          examples:
+            'application/json':
+              {
+                "id": "afcd1554-9604-11e6-bd3f-080027e8b32a",
+                "input": {
+                   "file1": {
+                    "class": "File",
+                    "location": "whale.txt"
+                  }
+                },
+                "log": "http://localhost:5000/jobs/afcd1554-9604-11e6-bd3f-080027e8b32a/log",
+                "name": "myjob1",
+                "output": {
+                      "output": {
+                      "checksum": "sha1$6f9bd042bff934443cc65f7ef769613222f7b136",
+                      "basename": "output",
+                      "location": "file:///tmp/afcd1554-9604-11e6-bd3f-080027e8b32a/output",
+                      "path": "/tmp/afcd1554-9604-11e6-bd3f-080027e8b32a/output",
+                      "class": "File",
+                      "size": 9
+                  }
+                },
+                "state": "Success",
+                "workflow": "https://github.com/common-workflow-language/common-workflow-language/raw/master/v1.0/v1.0/wc-tool.cwl"
+              }
+        '404':
+          description: Job not found
+    delete:
+      summary: Deleta a job
+      description: Delete a job, if job is in waiting or running state then job will be cancelled first.
+      operationId: deleteJobById
+      parameters:
+        - name: jobId
+          in: path
+          type: string
+          description: Job ID
+          required: true
+      responses:
+        '204':
+          description: Job deleted
+        '404':
+          description: Job not found
+  '/jobs/{jobId}/cancel':
+    post:
+      summary: Cancel a job
+      operationId: cancelJobById
+      parameters:
+        - name: jobId
+          in: path
+          type: string
+          description: Job ID
+          required: true
+      responses:
+        '200':
+          description: Job has been cancelled if job was still running or waiting
+          schema:
+            $ref: '#/definitions/job'
+          headers:
+            Location:
+              description: uri of the cancelled job
+              type: string
+              format: uri
+          examples:
+            'application/json':
+              {
+                "id": "afcd1554-9604-11e6-bd3f-080027e8b32a",
+                "input": {
+                   "file1": {
+                    "class": "File",
+                    "location": "whale.txt"
+                  }
+                },
+                "log": "http://localhost:5000/jobs/afcd1554-9604-11e6-bd3f-080027e8b32a/log",
+                "name": "myjob1",
+                "output": {
+                      "output": {
+                      "checksum": "sha1$6f9bd042bff934443cc65f7ef769613222f7b136",
+                      "basename": "output",
+                      "location": "file:///tmp/afcd1554-9604-11e6-bd3f-080027e8b32a/output",
+                      "path": "/tmp/afcd1554-9604-11e6-bd3f-080027e8b32a/output",
+                      "class": "File",
+                      "size": 9
+                  }
+                },
+                "state": "Cancelled",
+                "workflow": "https://github.com/common-workflow-language/common-workflow-language/raw/master/v1.0/v1.0/wc-tool.cwl"
+              }
+        '404':
+          description: Job not found
+  '/jobs/{jobId}/log':
+    get:
+      summary: Log of a job
+      operationId: getJobLogById
+      produces:
+        - text/plain
+      parameters:
+        - name: jobId
+          in: path
+          type: string
+          description: Job ID
+          required: true
+      responses:
+        '200':
+          description: Job log
+          schema:
+            type: string
+        '302':
+          description: Job log redirect
+          headers:
+            Location:
+              description: uri of the log of the job
+              type: string
+              format: uri
+          examples:
+            'text/plain': |
+              [job wc-tool.cwl] /tmp/afcd1554-9604-11e6-bd3f-080027e8b32a$ wc < /tmp/afcd1554-9604-11e6-bd3f-080027e8b32a/stge84d1078-e33f-41c3-8714-aafe955d1b53/whale.txt > /tmp/afcd1554-9604-11e6-bd3f-080027e8b32a/output
+              Final process status is success
+        '404':
+          description: Job not found
+definitions:
+  workflow-binding:
+    type: object
+    additionalProperties: true
+  job-description:
+    type: object
+    required:
+      - workflow
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        description: user supplied (non unique) name for this job
+        example: myjob1
+      workflow:
+        type: string
+        format: uri
+        description: location of the workflow
+        example: https://github.com/common-workflow-language/common-workflow-language/raw/master/v1.0/v1.0/wc-tool.cwl
+      input:
+        $ref: '#/definitions/workflow-binding'
+    example:
+      name: myjob1
+      workflow: https://github.com/common-workflow-language/common-workflow-language/raw/master/v1.0/v1.0/wc-tool.cwl
+      input:
+        file1:
+          class: File
+          location: whale.txt
+  job:
+    type: object
+    required:
+      - id
+      - name
+      - workflow
+      - input
+      - state
+      - output
+      - log
+    properties:
+      id:
+        type: string
+        format: uri
+        example: afcd1554-9604-11e6-bd3f-080027e8b32a
+      name:
+        type: string
+        description: user supplied (non unique) name for this job
+        example: myjob1
+      workflow:
+        type: string
+        format: uri
+        description: location of the workflow
+        example: https://github.com/common-workflow-language/common-workflow-language/raw/master/v1.0/v1.0/wc-tool.cwl
+      input:
+        $ref: '#/definitions/workflow-binding'
+      state:
+        type: string
+        enum:
+          - Waiting
+          - Running
+          - Success
+          - Cancelled
+          - SystemError
+          - TemporaryFailure
+          - PermanentFailure
+        example: Running
+      output:
+        $ref: '#/definitions/workflow-binding'
+      log:
+        type: string
+        format: uri
+        example: http://localhost:5000/jobs/afcd1554-9604-11e6-bd3f-080027e8b32a/log
