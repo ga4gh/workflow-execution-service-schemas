@@ -1,7 +1,7 @@
 ![ga4gh logo](http://genomicsandhealth.org/files/logo_ga.png)
 
-Schemas for the Workflow Execution API
-======================================
+Schemas for the Workflow Execution Service (WES) API
+====================================================
 
 This is used by the Data Working Group - Containers and Workflows Task Team
 
@@ -10,21 +10,15 @@ This is used by the Data Working Group - Containers and Workflows Task Team
 The [Global Alliance for Genomics and Health](http://genomicsandhealth.org/) is an international
 coalition, formed to enable the sharing of genomic and clinical data.
 
-The [Data Working Group](http://ga4gh.org/#/) concentrates on data representation, storage,
-and analysis, including working with platform development partners and
-industry leaders to develop standards that will facilitate
-interoperability.
-
 Containers and Workflows Task Team
 ----------------------------------
 
-The Containers & Workflows working group is an informal, multi-vendor working group born out of the BOSC 2014 codefest, consisting of various organizations and individuals that have an interest in portability of data analysis workflows. Our goal is to create specifications that enable data scientists to describe analysis tools and workflows that are powerful, easy to use, portable, and support reproducibility for a variety of problem areas including data-intensive science like bioinformatics, physics, and astronomy; and business analytics such as log analysis, data mining, and ETL.
+The [Data Working Group](http://ga4gh.org/#/) concentrates on data representation, storage,
+and analysis, including working with platform development partners and
+industry leaders to develop standards that will facilitate
+interoperability.  The Containers & Workflows working group is an informal, multi-vendor working group focused on standards for exchanging Docker-based tools and CWL/WDL workflows, execution of Docker-based tools and workflows on clouds, and abstract access to cloud object stores.
 
-From within this group, two approaches have emerged, resulting in the production of two distinct but complementary specifications: the Common Workflow Language, or CWL, and the Workflow Description Language, or WDL. The CWL approach emphasizes execution features and machine-readability, and serves a core target audience of software and platform developers. The WDL approach, on the other hand, emphasizes scripting  and human-readability, and serves a core target audience of research scientists.
-
-Together, these two specifications cover a very wide spectrum of analysis use cases. Work is underway to ensure interoperability through conversion and related utilities.
-
-What is this?
+What is WES?
 ------------
 
 Currently, this is the home of the Workflow Execution API proposal. The Workflow Execution API is a minimal common API describing how a user can submit workflow requests to workflow execution systems in a standardized ways.
@@ -43,13 +37,16 @@ providers, just an example of how that would work if they did.
 Key features of the current API proposal:
 
 * ability to request a workflow run using CWL or WDL (and maybe future formats)
-* ability to parameterize that workflow using a JSON schema that's simple and used in common between CWL and WDL
+* ability to parameterize that workflow using a JSON schema (ideally a future version would be in common between CWL and WDL)
 * ability to get information about running workflows, status, errors, output file locations etc
+* to search for workflows by arbitrary key/values
 
 Outstanding questions:
 
-* JSON parameterization format, see work by Peter, is that checked in?
+* a common JSON parameterization format, see work by Peter, is that checked in?
 * standardizing terms, job, workflow, steps, tools, etc
+* reference implementation, Peter pointed out https://github.com/common-workflow-language/cwltool-service/tree/ga4gh-wes
+* validation service for testing WES implementations' conformance to the spec
 
 How to view
 ------------
@@ -89,14 +86,15 @@ How to contribute changes
 
 Take cues for now from the [ga4gh/schemas](https://github.com/ga4gh/schemas/blob/master/CONTRIBUTING.rst) document.
 
+We like [HubFlow](https://datasift.github.io/gitflow/) and using pull requests to suggest changes.
+
 License
 -------
 
 See the [LICENSE]
 
-  []: http://genomicsandhealth.org/files/logo_ga.png
-  [Global Alliance for Genomics and Health]: http://genomicsandhealth.org/
-  [INSTALL.md]: INSTALL.md
-  [CONTRIBUTING.md]: CONTRIBUTING.md
-  [LICENSE]: LICENSE
-  [Google Forum]: https://groups.google.com/forum/#!forum/ga4gh-dwg-containers-workflows
+More Information
+----------------
+
+* [Global Alliance for Genomics and Health](http://genomicsandhealth.org)
+* [Google Forum](https://groups.google.com/forum/#!forum/ga4gh-dwg-containers-workflows)
