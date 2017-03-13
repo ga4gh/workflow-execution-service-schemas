@@ -42,6 +42,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "search",
+            "description": "OPTIONAL\nFor each key, if the key's value is empty string then match workflows that are tagged with this key regardless of value.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -337,10 +344,7 @@
           "description": "OPTIONAL\nToken to use to indicate where to start getting results. If unspecified, returns the first page of results."
         },
         "search": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
+          "type": "string",
           "title": "OPTIONAL\nFor each key, if the key's value is empty string then match workflows that are tagged with this key regardless of value"
         }
       },

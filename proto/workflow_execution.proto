@@ -24,7 +24,7 @@ message WorkflowListRequest {
   string page_token = 2;
   //OPTIONAL
   //For each key, if the key's value is empty string then match workflows that are tagged with this key regardless of value
-  map<string,string> search = 3;
+  string search = 3;
 }
 
 //Small description of workflows, returned by server during listing
