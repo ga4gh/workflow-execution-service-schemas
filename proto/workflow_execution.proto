@@ -11,7 +11,7 @@ import "task_execution.proto";
 //Return envelope for workflow listing
 message WorkflowListResponse {
    repeated WorkflowDesc workflows = 1;
-   string nextPageToken = 2;
+   string next_page_token = 2;
 }
 
 //Request listing of jobs tracked by server
@@ -21,10 +21,10 @@ message WorkflowListRequest {
   map <string,string> key_value_search = 1;
   //OPTIONAL
   //Number of workflows to return at once. Defaults to 256, and max is 2048.
-  uint32 pageSize = 2;
+  uint32 page_size = 2;
   //OPTIONAL
   //Token to use to indicate where to start getting results. If unspecified, returns the first page of results.
-  string pageToken = 3;
+  string page_token = 3;
 }
 
 //Small description of workflows, returned by server during listing
