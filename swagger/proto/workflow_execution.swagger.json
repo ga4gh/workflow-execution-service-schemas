@@ -332,7 +332,7 @@
           "additionalProperties": {
             "type": "string"
           },
-          "description": "OPTIONAL\nFor each key, if the key's value is \"\" then match workflows that are tagged with this key regardless of value.  If the key's value is defined, then match workflows that are tagged with this key and also whose value is prefixed with that value string.  You may need to make multiple requests if you need to search for multiple values on the same key."
+          "description": "OPTIONAL\nFor each key, if the key's value is empty string then match workflows that are tagged with this key regardless of value.  If the key's value is defined, then match workflows that are tagged with this key and also whose value is prefixed with that value string.  You may need to make multiple requests if you need to search for multiple values on the same key."
         },
         "page_size": {
           "type": "integer",
