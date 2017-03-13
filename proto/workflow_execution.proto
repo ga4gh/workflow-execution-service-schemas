@@ -17,14 +17,14 @@ message WorkflowListResponse {
 //Request listing of jobs tracked by server
 message WorkflowListRequest {
   //OPTIONAL
-  //For each key, if the key's value is empty string then match workflows that are tagged with this key regardless of value.  If the key's value is defined, then match workflows that are tagged with this key and also whose value is prefixed with that value string.  You may need to make multiple requests if you need to search for multiple values on the same key.
-  map<string,string> key_value_search = 1;
-  //OPTIONAL
   //Number of workflows to return at once. Defaults to 256, and max is 2048.
-  uint32 page_size = 2;
+  uint32 page_size = 1;
   //OPTIONAL
   //Token to use to indicate where to start getting results. If unspecified, returns the first page of results.
-  string page_token = 3;
+  string page_token = 2;
+  //OPTIONAL
+  //For each key, if the key's value is empty string then match workflows that are tagged with this key regardless of value.  If the key's value is defined, then match workflows that are tagged with this key and also whose value is prefixed with that value string.  You may need to make multiple requests if you need to search for multiple values on the same key.
+  map<string,string> key_value_search = 3;
 }
 
 //Small description of workflows, returned by server during listing
