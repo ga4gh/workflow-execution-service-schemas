@@ -29,7 +29,7 @@
         },
         "parameters": [
           {
-            "name": "pageSize",
+            "name": "page_size",
             "description": "OPTIONAL\nNumber of workflows to return at once. Defaults to 256, and max is 2048.",
             "in": "query",
             "required": false,
@@ -37,7 +37,7 @@
             "format": "int64"
           },
           {
-            "name": "pageToken",
+            "name": "page_token",
             "description": "OPTIONAL\nToken to use to indicate where to start getting results. If unspecified, returns the first page of results.",
             "in": "query",
             "required": false,
@@ -334,12 +334,12 @@
           },
           "description": "OPTIONAL\nFor each key, if the key's value is \"\" then match workflows that are tagged with this key regardless of value.  If the key's value is defined, then match workflows that are tagged with this key and also whose value is prefixed with that value string.  You may need to make multiple requests if you need to search for multiple values on the same key."
         },
-        "pageSize": {
+        "page_size": {
           "type": "integer",
           "format": "int64",
           "description": "OPTIONAL\nNumber of workflows to return at once. Defaults to 256, and max is 2048."
         },
-        "pageToken": {
+        "page_token": {
           "type": "string",
           "description": "OPTIONAL\nToken to use to indicate where to start getting results. If unspecified, returns the first page of results."
         }
@@ -355,7 +355,7 @@
             "$ref": "#/definitions/ga4gh_workflow_execWorkflowDesc"
           }
         },
-        "nextPageToken": {
+        "next_page_token": {
           "type": "string"
         }
       },
