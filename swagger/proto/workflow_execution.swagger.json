@@ -29,7 +29,7 @@
         },
         "parameters": [
           {
-            "name": "page_size_foo",
+            "name": "page_size",
             "description": "OPTIONAL\nNumber of workflows to return at once. Defaults to 256, and max is 2048.",
             "in": "query",
             "required": false,
@@ -334,7 +334,7 @@
     "ga4gh_workflow_execWorkflowListRequest": {
       "type": "object",
       "properties": {
-        "page_size_foo": {
+        "page_size": {
           "type": "integer",
           "format": "int64",
           "description": "OPTIONAL\nNumber of workflows to return at once. Defaults to 256, and max is 2048."
