@@ -8,21 +8,27 @@ import "google/api/annotations.proto";
 import "google/protobuf/struct.proto";
 import "task_execution.proto";
 
-//available workflow types supported by this WES
-enum WorkflowType {
-    UNKNOWN = 0;
-    CWL = 1;
-    WDL = 2;
-}
-
 //Return envelope for workflow listing
 message WorkflowListResponse {
-   repeated JobDesc workflows = 1;
+   repeated WorkflowDesc workflows = 1;
    string nextPageToken = 2;
 }
 
+//Request listing of jobs tracked by server
+message WorkflowListRequest {
+  //OPTIONAL
+  //For each key, if the key's value is "" then match workflows that are tagged with this key regardless of value.  If the key's value is defined, then match workflows that are tagged with this key and also whose value is prefixed with that value string.  You may need to make multiple requests if you need to search for multiple values on the same key.
+  map <string,string> key_value_search	= 1;
+  //OPTIONAL
+  //Number of workflows to return at once. Defaults to 256, and max is 2048.
+  uint32 pageSize = 2;
+  //OPTIONAL
+  //Token to use to indicate where to start getting results. If unspecified, returns the first page of results.
+  string pageToken = 3;
+}
+
 //Small description of workflows, returned by server during listing
-message JobDesc {
+message WorkflowDesc {
   //REQUIRED
   string workflow_id  = 1;
   //REQUIRED
@@ -31,30 +37,44 @@ message JobDesc {
 
 //workflow request object
 message WorkflowRequest {
-  //OPTIONAL
-  //user name of the workflow
-  string name = 1;
-  //OPTIONAL
-  //parameter for execution engine to define/store group information
-  string project_id = 2;
-  //OPTIONAL
-  //free text description of task
-  string description = 3;
-  //OPTIONAL
-  //a key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request
-  map<string,string> metadata = 4;
   //REQUIRED
   //the workflow CWL or WDL document
-  string workflow_descriptor = 5;
+  string workflow_descriptor = 1;
   //REQUIRED
-  //the workflow parameterization (typically a JSON file)
-  string workflow_params = 6;
+  //the workflow parameterization document (typically a JSON file)
+  string workflow_params = 2;
   //REQUIRED
-  //the workflow descriptor type
-  WorkflowType workflow_type = 7;
+  //the workflow descriptor type, must be "CWL" or "WDL" currently (or another alternative supported by this WES instance)
+  string workflow_type = 3;
   //REQUIRED
-  //the workflow descriptor type version
-  string workflow_type_version = 8;
+  //the workflow descriptor type version, must be one supported by this WES instance
+  string workflow_type_version = 4;
+  //OPTIONAL
+  //a key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request
+  map<string,string> key_values = 5;
+}
+
+//Blank request message for service request
+message ServiceInfoRequest {}
+
+//available workflow types supported by this WES
+message WorkflowTypeVersion {
+    //an array of one or more version strings
+    repeated string workflow_type_version = 1;
+}
+
+//Information about Workflow Execution Service
+//May include information related (but not limited to)
+//the workflow descriptor formats and versions supported and WES API supported.
+message ServiceInfo {
+  //A map with keys as the workflow format type name (currently only CWL and WDL are used) and value is a WorkflowTypeVersion object which simply contains an array of one or more version strings
+  map<string, WorkflowTypeVersion> workflow_type_versions = 1;
+  //The version(s) of the WES schema supported by this service
+  repeated string supported_wes_versions = 2;
+  //The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version
+  map<string,string> engine_versions = 3;
+  //a key-value map of arbitrary, extended metadata outside the scope of the above but useful to report back
+  map<string,string> key_values = 4;
 }
 
 message WorkflowRunID {
@@ -74,18 +94,23 @@ message WorkflowLog {
   string workflow_id = 1;
   //the original request object
   WorkflowRequest request = 2;
-  //a key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request
-  map<string,string> metadata = 3;
   //state
-  ga4gh_task_exec.State state = 4;
-  //the log, and other key info like timing and exit code, for the overall run of this workflow
-  ga4gh_task_exec.JobLog logs = 5;
+  ga4gh_task_exec.State state = 3;
+  //the logs, and other key info like timing and exit code, for the overall run of this workflow
+  repeated ga4gh_task_exec.JobLog logs = 4;
   //the outputs
-  repeated ga4gh_task_exec.TaskParameter outputs = 6;
+  repeated ga4gh_task_exec.TaskParameter outputs = 5;
 }
 
 //Web service to get, create, list and delete Workflows
 service WorkflowService {
+
+  //Get Service Info
+  rpc GetServiceInfo(ServiceInfoRequest) returns (ServiceInfo) {
+    option (google.api.http) = {
+      get: "/v1/workflows-service"
+    };
+  }
 
   //Run a workflow
   rpc RunWorkflow(WorkflowRequest) returns (WorkflowRunID) {
@@ -117,7 +142,7 @@ service WorkflowService {
   }
 
   //List the workflows
-  rpc ListWorkflows(ga4gh_task_exec.JobListRequest) returns (WorkflowListResponse) {
+  rpc ListWorkflows(WorkflowListRequest) returns (WorkflowListResponse) {
     option (google.api.http) = {
       get: "/v1/workflows"
     };
