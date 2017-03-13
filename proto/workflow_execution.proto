@@ -18,13 +18,13 @@ message WorkflowListResponse {
 message WorkflowListRequest {
   //OPTIONAL
   //Number of workflows to return at once. Defaults to 256, and max is 2048.
-  uint32 page_size = 1;
+  uint32 page_size_foo = 1;
   //OPTIONAL
   //Token to use to indicate where to start getting results. If unspecified, returns the first page of results.
   string page_token = 2;
   //OPTIONAL
   //For each key, if the key's value is empty string then match workflows that are tagged with this key regardless of value
-  map<string,string> key_value_search = 3;
+  map<string,string> search = 3;
 }
 
 //Small description of workflows, returned by server during listing

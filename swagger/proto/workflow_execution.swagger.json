@@ -29,7 +29,7 @@
         },
         "parameters": [
           {
-            "name": "page_size",
+            "name": "page_size_foo",
             "description": "OPTIONAL\nNumber of workflows to return at once. Defaults to 256, and max is 2048.",
             "in": "query",
             "required": false,
@@ -327,7 +327,7 @@
     "ga4gh_workflow_execWorkflowListRequest": {
       "type": "object",
       "properties": {
-        "page_size": {
+        "page_size_foo": {
           "type": "integer",
           "format": "int64",
           "description": "OPTIONAL\nNumber of workflows to return at once. Defaults to 256, and max is 2048."
@@ -336,7 +336,7 @@
           "type": "string",
           "description": "OPTIONAL\nToken to use to indicate where to start getting results. If unspecified, returns the first page of results."
         },
-        "key_value_search": {
+        "search": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
