@@ -44,7 +44,7 @@
             "type": "string"
           },
           {
-            "name": "search",
+            "name": "key_value_search",
             "description": "OPTIONAL\nFor each key, if the key's value is empty string then match workflows that are tagged with this key regardless of value.",
             "in": "query",
             "required": false,
@@ -343,7 +343,7 @@
           "type": "string",
           "description": "OPTIONAL\nToken to use to indicate where to start getting results. If unspecified, returns the first page of results."
         },
-        "search": {
+        "key_value_search": {
           "type": "string",
           "title": "OPTIONAL\nFor each key, if the key's value is empty string then match workflows that are tagged with this key regardless of value"
         }
