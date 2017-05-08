@@ -178,7 +178,7 @@
       "properties": {
         "name": {
           "type": "string",
-          "title": "The command line that was run"
+          "title": "The task or workflow name"
         },
         "cmd": {
           "type": "array",
