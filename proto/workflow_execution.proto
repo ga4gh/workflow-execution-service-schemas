@@ -49,12 +49,12 @@ message WorkflowDesc {
 }
 
 //workflow request object
-message WorkflowRequest {
+message workflow_request {
   //REQUIRED
   //the workflow CWL or WDL document
   string workflow_descriptor = 1;
   //REQUIRED
-  //the workflow parameterization document (typically a JSON file)
+  //the workflow parameterization document (typically a JSON file), includes all parameterizations for the workflow including input and output file locations
   string workflow_params = 2;
   //REQUIRED
   //the workflow descriptor type, must be "CWL" or "WDL" currently (or another alternative supported by this WES instance)
@@ -79,7 +79,7 @@ message WorkflowTypeVersion {
 
 //.
 message service_info {
-  //A map with keys as the workflow format type name (currently only CWL and WDL are used) and value is a WorkflowTypeVersion object which simply contains an array of one or more version strings
+  //A map with keys as the workflow format type name (currently only CWL and WDL are used although a service may support others) and value is a WorkflowTypeVersion object which simply contains an array of one or more version strings
   map<string, WorkflowTypeVersion> workflow_type_versions = 1;
   //The version(s) of the WES schema supported by this service
   repeated string supported_wes_versions = 2;
@@ -91,7 +91,7 @@ message service_info {
   map<string,string> key_values = 5;
 }
 
-message WorkflowRunID {
+message workflow_run_id {
   //workflow ID
   string workflow_id = 1;
 }
@@ -107,7 +107,7 @@ message WorkflowLog {
   //workflow ID
   string workflow_id = 1;
   //the original request object
-  WorkflowRequest request = 2;
+  workflow_request request = 2;
   //state
   state state = 3;
   //the logs, and other key info like timing and exit code, for the overall run of this workflow
@@ -127,7 +127,7 @@ service WorkflowService {
   }
 
   //Run a workflow
-  rpc RunWorkflow(WorkflowRequest) returns (WorkflowRunID) {
+  rpc RunWorkflow(workflow_request) returns (workflow_run_id) {
     option (google.api.http) = {
       post: "/ga4gh/wes/v1/workflows"
       body: "*"
@@ -135,27 +135,27 @@ service WorkflowService {
   }
 
   //Get quick status info about a running workflow
-  rpc GetWorkflowStatus(WorkflowRunID) returns (WorkflowStatus) {
+  rpc GetWorkflowStatus(workflow_run_id) returns (WorkflowStatus) {
       option (google.api.http) = {
         get: "/ga4gh/wes/v1/workflows/{workflow_id}/status"
       };
   }
 
   //Get detailed info about a running workflow
-  rpc GetWorkflowLog(WorkflowRunID) returns (WorkflowLog) {
+  rpc GetWorkflowLog(workflow_run_id) returns (WorkflowLog) {
       option (google.api.http) = {
         get: "/ga4gh/wes/v1/workflows/{workflow_id}"
       };
   }
 
   //Cancel a running workflow
-  rpc CancelJob(WorkflowRunID) returns (WorkflowRunID) {
+  rpc CancelJob(workflow_run_id) returns (workflow_run_id) {
     option (google.api.http) = {
       delete: "/ga4gh/wes/v1/workflows/{workflow_id}"
     };
   }
 
-  //List the workflows
+  //List the workflows, this endpoint will list the workflows in order of oldest to newest.  There is no guarantee of live updates as the user traverses the pages, the behavior should be decided (and documented) by each implementation.
   rpc ListWorkflows(WorkflowListRequest) returns (WorkflowListResponse) {
     option (google.api.http) = {
       get: "/ga4gh/wes/v1/workflows"

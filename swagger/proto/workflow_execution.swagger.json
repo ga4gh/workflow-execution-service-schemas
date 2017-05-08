@@ -34,7 +34,7 @@
     },
     "/ga4gh/wes/v1/workflows": {
       "get": {
-        "summary": "List the workflows",
+        "summary": "List the workflows, this endpoint will list the workflows in order of oldest to newest.  There is no guarantee of live updates as the user traverses the pages, the behavior should be decided (and documented) by each implementation.",
         "operationId": "ListWorkflows",
         "responses": {
           "200": {
@@ -79,7 +79,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/ga4gh_wes_WorkflowRunID"
+              "$ref": "#/definitions/ga4gh_wes_workflow_run_id"
             }
           }
         },
@@ -89,7 +89,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/ga4gh_wes_WorkflowRequest"
+              "$ref": "#/definitions/ga4gh_wes_workflow_request"
             }
           }
         ],
@@ -129,7 +129,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/ga4gh_wes_WorkflowRunID"
+              "$ref": "#/definitions/ga4gh_wes_workflow_run_id"
             }
           }
         },
@@ -320,7 +320,7 @@
           "title": "workflow ID"
         },
         "request": {
-          "$ref": "#/definitions/ga4gh_wes_WorkflowRequest",
+          "$ref": "#/definitions/ga4gh_wes_workflow_request",
           "title": "the original request object"
         },
         "state": {
@@ -340,44 +340,6 @@
             "$ref": "#/definitions/ga4gh_task_execTaskParameter"
           },
           "title": "the outputs"
-        }
-      }
-    },
-    "ga4gh_wes_WorkflowRequest": {
-      "type": "object",
-      "properties": {
-        "workflow_descriptor": {
-          "type": "string",
-          "title": "REQUIRED\nthe workflow CWL or WDL document"
-        },
-        "workflow_params": {
-          "type": "string",
-          "title": "REQUIRED\nthe workflow parameterization document (typically a JSON file)"
-        },
-        "workflow_type": {
-          "type": "string",
-          "title": "REQUIRED\nthe workflow descriptor type, must be \"CWL\" or \"WDL\" currently (or another alternative supported by this WES instance)"
-        },
-        "workflow_type_version": {
-          "type": "string",
-          "title": "REQUIRED\nthe workflow descriptor type version, must be one supported by this WES instance"
-        },
-        "key_values": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "title": "OPTIONAL\na key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request"
-        }
-      },
-      "title": "workflow request object"
-    },
-    "ga4gh_wes_WorkflowRunID": {
-      "type": "object",
-      "properties": {
-        "workflow_id": {
-          "type": "string",
-          "title": "workflow ID"
         }
       }
     },
@@ -415,7 +377,7 @@
           "additionalProperties": {
             "$ref": "#/definitions/ga4gh_wes_WorkflowTypeVersion"
           },
-          "title": "A map with keys as the workflow format type name (currently only CWL and WDL are used) and value is a WorkflowTypeVersion object which simply contains an array of one or more version strings"
+          "title": "A map with keys as the workflow format type name (currently only CWL and WDL are used although a service may support others) and value is a WorkflowTypeVersion object which simply contains an array of one or more version strings"
         },
         "supported_wes_versions": {
           "type": "array",
@@ -468,6 +430,44 @@
       ],
       "default": "Unknown",
       "title": "Enum for states"
+    },
+    "ga4gh_wes_workflow_request": {
+      "type": "object",
+      "properties": {
+        "workflow_descriptor": {
+          "type": "string",
+          "title": "REQUIRED\nthe workflow CWL or WDL document"
+        },
+        "workflow_params": {
+          "type": "string",
+          "title": "REQUIRED\nthe workflow parameterization document (typically a JSON file), includes all parameterizations for the workflow including input and output file locations"
+        },
+        "workflow_type": {
+          "type": "string",
+          "title": "REQUIRED\nthe workflow descriptor type, must be \"CWL\" or \"WDL\" currently (or another alternative supported by this WES instance)"
+        },
+        "workflow_type_version": {
+          "type": "string",
+          "title": "REQUIRED\nthe workflow descriptor type version, must be one supported by this WES instance"
+        },
+        "key_values": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "OPTIONAL\na key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request"
+        }
+      },
+      "title": "workflow request object"
+    },
+    "ga4gh_wes_workflow_run_id": {
+      "type": "object",
+      "properties": {
+        "workflow_id": {
+          "type": "string",
+          "title": "workflow ID"
+        }
+      }
     }
   }
 }
