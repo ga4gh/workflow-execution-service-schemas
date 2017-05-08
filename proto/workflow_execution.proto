@@ -21,6 +21,49 @@ enum state {
   Initializing = 8;
 }
 
+//Enum for parameter types
+enum parameter_types {
+  Directory = 0;
+  File = 1;
+  Parameter = 2;
+}
+
+//Log and other info
+message log {
+  //The command line that was run
+  repeated string cmd = 1;
+  //When the command was executed
+  string startTime = 2;
+  //When the command completed
+  string endTime = 3;
+  //Sample of stdout (not guaranteed to be entire log)
+  string stdout = 4;
+  //Sample of stderr (not guaranteed to be entire log)
+  string stderr = 5;
+  //Exit code of the program
+  int32  exitCode = 6;
+}
+
+//Parameters for workflows or tasks, these are either output parameters, files, or directories, the latter two are stagged to an object store or something similar for hand back to the caller.
+message parameter {
+  //REQUIRED
+  //name of the parameter
+  string name = 1;
+  //OPTIONAL
+  //Value
+  string value = 2;
+  //REQUIRED
+  //location in long term storage, is a url specific to the implementing
+  //system. For example s3://my-object-store/file1 or gs://my-bucket/file2 or
+  //file:///path/to/my/file
+  string location = 3;
+  //REQUIRED
+  //Type of data, "Parameter", "File" or "Directory"
+  //if used for an output all the files in the directory
+  //will be copied to the storage location
+  parameter_types type = 4;
+}
+
 //Return envelope for workflow listing
 message workflow_list_response {
    repeated workflow_desc workflows = 1;
@@ -113,9 +156,11 @@ message workflow_log {
   //state
   state state = 3;
   //the logs, and other key info like timing and exit code, for the overall run of this workflow
-  repeated ga4gh_task_exec.JobLog logs = 4;
+  log workflow_log = 4;
+  //the logs, and other key info like timing and exit code, for each step in the workflow
+  repeated log task_logs = 5;
   //the outputs
-  repeated ga4gh_task_exec.TaskParameter outputs = 5;
+  repeated parameter outputs = 6;
 }
 
 //Web service to get, create, list and delete Workflows
