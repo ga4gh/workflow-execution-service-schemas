@@ -8,6 +8,19 @@ import "google/api/annotations.proto";
 import "google/protobuf/struct.proto";
 import "task_execution.proto";
 
+//Enum for states
+enum state {
+  Unknown = 0;
+  Queued = 1;
+  Running = 2;
+  Paused = 3;
+  Complete = 4;
+  Error = 5;
+  SystemError = 6;
+  Canceled = 7;
+  Initializing = 8;
+}
+
 //Return envelope for workflow listing
 message WorkflowListResponse {
    repeated WorkflowDesc workflows = 1;
@@ -32,7 +45,7 @@ message WorkflowDesc {
   //REQUIRED
   string workflow_id  = 1;
   //REQUIRED
-  ga4gh_task_exec.State state = 2;
+  state state = 2;
 }
 
 //workflow request object
@@ -87,7 +100,7 @@ message WorkflowStatus {
   //workflow ID
   string workflow_id = 1;
   //state
-  ga4gh_task_exec.State state = 2;
+  state state = 2;
 }
 
 message WorkflowLog {
@@ -96,7 +109,7 @@ message WorkflowLog {
   //the original request object
   WorkflowRequest request = 2;
   //state
-  ga4gh_task_exec.State state = 3;
+  state state = 3;
   //the logs, and other key info like timing and exit code, for the overall run of this workflow
   repeated ga4gh_task_exec.JobLog logs = 4;
   //the outputs

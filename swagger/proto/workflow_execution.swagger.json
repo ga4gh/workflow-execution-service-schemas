@@ -233,21 +233,6 @@
       },
       "title": "host to container port mappings"
     },
-    "ga4gh_task_execState": {
-      "type": "string",
-      "enum": [
-        "Unknown",
-        "Queued",
-        "Running",
-        "Paused",
-        "Complete",
-        "Error",
-        "SystemError",
-        "Canceled",
-        "Initializing"
-      ],
-      "default": "Unknown"
-    },
     "ga4gh_task_execTaskParameter": {
       "type": "object",
       "properties": {
@@ -287,7 +272,7 @@
           "title": "REQUIRED"
         },
         "state": {
-          "$ref": "#/definitions/ga4gh_task_execState",
+          "$ref": "#/definitions/ga4gh_wes_state",
           "title": "REQUIRED"
         }
       },
@@ -339,7 +324,7 @@
           "title": "the original request object"
         },
         "state": {
-          "$ref": "#/definitions/ga4gh_task_execState",
+          "$ref": "#/definitions/ga4gh_wes_state",
           "title": "state"
         },
         "logs": {
@@ -404,7 +389,7 @@
           "title": "workflow ID"
         },
         "state": {
-          "$ref": "#/definitions/ga4gh_task_execState",
+          "$ref": "#/definitions/ga4gh_wes_state",
           "title": "state"
         }
       }
@@ -467,6 +452,22 @@
     "ga4gh_wes_service_info_request": {
       "type": "object",
       "title": "Blank request message for service request"
+    },
+    "ga4gh_wes_state": {
+      "type": "string",
+      "enum": [
+        "Unknown",
+        "Queued",
+        "Running",
+        "Paused",
+        "Complete",
+        "Error",
+        "SystemError",
+        "Canceled",
+        "Initializing"
+      ],
+      "default": "Unknown",
+      "title": "Enum for states"
     }
   }
 }
