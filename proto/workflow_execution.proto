@@ -30,7 +30,7 @@ enum parameter_types {
 
 //Log and other info
 message log {
-  //The task or workflow name
+  //The task or workflow name 
   string name = 1;
   //The command line that was run
   repeated string cmd = 2;
