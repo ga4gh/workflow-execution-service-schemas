@@ -22,13 +22,13 @@ enum state {
 }
 
 //Return envelope for workflow listing
-message WorkflowListResponse {
-   repeated WorkflowDesc workflows = 1;
+message workflow_list_response {
+   repeated workflow_desc workflows = 1;
    string next_page_token = 2;
 }
 
 //Request listing of jobs tracked by server
-message WorkflowListRequest {
+message workflow_list_request {
   //OPTIONAL
   //Number of workflows to return at once. Defaults to 256, and max is 2048.
   uint32 page_size = 1;
@@ -41,7 +41,7 @@ message WorkflowListRequest {
 }
 
 //Small description of workflows, returned by server during listing
-message WorkflowDesc {
+message workflow_desc {
   //REQUIRED
   string workflow_id  = 1;
   //REQUIRED
@@ -71,7 +71,7 @@ message workflow_request {
 message service_info_request {}
 
 //available workflow types supported by this WES
-message WorkflowTypeVersion {
+message workflow_type_version {
     //an array of one or more version strings
     repeated string workflow_type_version = 1;
 }
@@ -79,8 +79,8 @@ message WorkflowTypeVersion {
 
 //.
 message service_info {
-  //A map with keys as the workflow format type name (currently only CWL and WDL are used although a service may support others) and value is a WorkflowTypeVersion object which simply contains an array of one or more version strings
-  map<string, WorkflowTypeVersion> workflow_type_versions = 1;
+  //A map with keys as the workflow format type name (currently only CWL and WDL are used although a service may support others) and value is a workflow_type_version object which simply contains an array of one or more version strings
+  map<string, workflow_type_version> workflow_type_versions = 1;
   //The version(s) of the WES schema supported by this service
   repeated string supported_wes_versions = 2;
   //The filesystem protocols supported by this service, currently these may include common protocols such as 'http', 'https', 'sftp', 's3', 'gs', 'file', 'synapse', or others as supported by this service.
@@ -98,14 +98,14 @@ message workflow_run_id {
   string workflow_id = 1;
 }
 
-message WorkflowStatus {
+message workflow_status {
   //workflow ID
   string workflow_id = 1;
   //state
   state state = 2;
 }
 
-message WorkflowLog {
+message workflow_log {
   //workflow ID
   string workflow_id = 1;
   //the original request object
@@ -119,7 +119,7 @@ message WorkflowLog {
 }
 
 //Web service to get, create, list and delete Workflows
-service WorkflowService {
+service WorkflowExecutionService {
 
   //Get information about Workflow Execution Service.  May include information related (but not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general the service availability.
   rpc GetServiceInfo(service_info_request) returns (service_info) {
@@ -137,14 +137,14 @@ service WorkflowService {
   }
 
   //Get quick status info about a running workflow
-  rpc GetWorkflowStatus(workflow_run_id) returns (WorkflowStatus) {
+  rpc GetWorkflowStatus(workflow_run_id) returns (workflow_status) {
       option (google.api.http) = {
         get: "/ga4gh/wes/v1/workflows/{workflow_id}/status"
       };
   }
 
   //Get detailed info about a running workflow
-  rpc GetWorkflowLog(workflow_run_id) returns (WorkflowLog) {
+  rpc GetWorkflowLog(workflow_run_id) returns (workflow_log) {
       option (google.api.http) = {
         get: "/ga4gh/wes/v1/workflows/{workflow_id}"
       };
@@ -158,7 +158,7 @@ service WorkflowService {
   }
 
   //List the workflows, this endpoint will list the workflows in order of oldest to newest.  There is no guarantee of live updates as the user traverses the pages, the behavior should be decided (and documented) by each implementation.
-  rpc ListWorkflows(WorkflowListRequest) returns (WorkflowListResponse) {
+  rpc ListWorkflows(workflow_list_request) returns (workflow_list_response) {
     option (google.api.http) = {
       get: "/ga4gh/wes/v1/workflows"
     };

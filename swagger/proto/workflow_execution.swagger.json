@@ -28,7 +28,7 @@
           }
         },
         "tags": [
-          "WorkflowService"
+          "WorkflowExecutionService"
         ]
       }
     },
@@ -40,7 +40,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/ga4gh_wes_WorkflowListResponse"
+              "$ref": "#/definitions/ga4gh_wes_workflow_list_response"
             }
           }
         },
@@ -69,7 +69,7 @@
           }
         ],
         "tags": [
-          "WorkflowService"
+          "WorkflowExecutionService"
         ]
       },
       "post": {
@@ -94,7 +94,7 @@
           }
         ],
         "tags": [
-          "WorkflowService"
+          "WorkflowExecutionService"
         ]
       }
     },
@@ -106,7 +106,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/ga4gh_wes_WorkflowLog"
+              "$ref": "#/definitions/ga4gh_wes_workflow_log"
             }
           }
         },
@@ -119,7 +119,7 @@
           }
         ],
         "tags": [
-          "WorkflowService"
+          "WorkflowExecutionService"
         ]
       },
       "delete": {
@@ -142,7 +142,7 @@
           }
         ],
         "tags": [
-          "WorkflowService"
+          "WorkflowExecutionService"
         ]
       }
     },
@@ -154,7 +154,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/ga4gh_wes_WorkflowStatus"
+              "$ref": "#/definitions/ga4gh_wes_workflow_status"
             }
           }
         },
@@ -167,7 +167,7 @@
           }
         ],
         "tags": [
-          "WorkflowService"
+          "WorkflowExecutionService"
         ]
       }
     }
@@ -264,120 +264,15 @@
       },
       "title": "Parameters for Task"
     },
-    "ga4gh_wes_WorkflowDesc": {
-      "type": "object",
-      "properties": {
-        "workflow_id": {
-          "type": "string",
-          "title": "REQUIRED"
-        },
-        "state": {
-          "$ref": "#/definitions/ga4gh_wes_state",
-          "title": "REQUIRED"
-        }
-      },
-      "title": "Small description of workflows, returned by server during listing"
-    },
-    "ga4gh_wes_WorkflowListRequest": {
-      "type": "object",
-      "properties": {
-        "page_size": {
-          "type": "integer",
-          "format": "int64",
-          "description": "OPTIONAL\nNumber of workflows to return at once. Defaults to 256, and max is 2048."
-        },
-        "page_token": {
-          "type": "string",
-          "description": "OPTIONAL\nToken to use to indicate where to start getting results. If unspecified, returns the first page of results."
-        },
-        "key_value_search": {
-          "type": "string",
-          "title": "OPTIONAL\nFor each key, if the key's value is empty string then match workflows that are tagged with this key regardless of value"
-        }
-      },
-      "title": "Request listing of jobs tracked by server"
-    },
-    "ga4gh_wes_WorkflowListResponse": {
-      "type": "object",
-      "properties": {
-        "workflows": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ga4gh_wes_WorkflowDesc"
-          }
-        },
-        "next_page_token": {
-          "type": "string"
-        }
-      },
-      "title": "Return envelope for workflow listing"
-    },
-    "ga4gh_wes_WorkflowLog": {
-      "type": "object",
-      "properties": {
-        "workflow_id": {
-          "type": "string",
-          "title": "workflow ID"
-        },
-        "request": {
-          "$ref": "#/definitions/ga4gh_wes_workflow_request",
-          "title": "the original request object"
-        },
-        "state": {
-          "$ref": "#/definitions/ga4gh_wes_state",
-          "title": "state"
-        },
-        "logs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ga4gh_task_execJobLog"
-          },
-          "title": "the logs, and other key info like timing and exit code, for the overall run of this workflow"
-        },
-        "outputs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ga4gh_task_execTaskParameter"
-          },
-          "title": "the outputs"
-        }
-      }
-    },
-    "ga4gh_wes_WorkflowStatus": {
-      "type": "object",
-      "properties": {
-        "workflow_id": {
-          "type": "string",
-          "title": "workflow ID"
-        },
-        "state": {
-          "$ref": "#/definitions/ga4gh_wes_state",
-          "title": "state"
-        }
-      }
-    },
-    "ga4gh_wes_WorkflowTypeVersion": {
-      "type": "object",
-      "properties": {
-        "workflow_type_version": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "title": "an array of one or more version strings"
-        }
-      },
-      "title": "available workflow types supported by this WES"
-    },
     "ga4gh_wes_service_info": {
       "type": "object",
       "properties": {
         "workflow_type_versions": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "#/definitions/ga4gh_wes_WorkflowTypeVersion"
+            "$ref": "#/definitions/ga4gh_wes_workflow_type_version"
           },
-          "title": "A map with keys as the workflow format type name (currently only CWL and WDL are used although a service may support others) and value is a WorkflowTypeVersion object which simply contains an array of one or more version strings"
+          "title": "A map with keys as the workflow format type name (currently only CWL and WDL are used although a service may support others) and value is a workflow_type_version object which simply contains an array of one or more version strings"
         },
         "supported_wes_versions": {
           "type": "array",
@@ -438,6 +333,85 @@
       "default": "Unknown",
       "title": "Enum for states"
     },
+    "ga4gh_wes_workflow_desc": {
+      "type": "object",
+      "properties": {
+        "workflow_id": {
+          "type": "string",
+          "title": "REQUIRED"
+        },
+        "state": {
+          "$ref": "#/definitions/ga4gh_wes_state",
+          "title": "REQUIRED"
+        }
+      },
+      "title": "Small description of workflows, returned by server during listing"
+    },
+    "ga4gh_wes_workflow_list_request": {
+      "type": "object",
+      "properties": {
+        "page_size": {
+          "type": "integer",
+          "format": "int64",
+          "description": "OPTIONAL\nNumber of workflows to return at once. Defaults to 256, and max is 2048."
+        },
+        "page_token": {
+          "type": "string",
+          "description": "OPTIONAL\nToken to use to indicate where to start getting results. If unspecified, returns the first page of results."
+        },
+        "key_value_search": {
+          "type": "string",
+          "title": "OPTIONAL\nFor each key, if the key's value is empty string then match workflows that are tagged with this key regardless of value"
+        }
+      },
+      "title": "Request listing of jobs tracked by server"
+    },
+    "ga4gh_wes_workflow_list_response": {
+      "type": "object",
+      "properties": {
+        "workflows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ga4gh_wes_workflow_desc"
+          }
+        },
+        "next_page_token": {
+          "type": "string"
+        }
+      },
+      "title": "Return envelope for workflow listing"
+    },
+    "ga4gh_wes_workflow_log": {
+      "type": "object",
+      "properties": {
+        "workflow_id": {
+          "type": "string",
+          "title": "workflow ID"
+        },
+        "request": {
+          "$ref": "#/definitions/ga4gh_wes_workflow_request",
+          "title": "the original request object"
+        },
+        "state": {
+          "$ref": "#/definitions/ga4gh_wes_state",
+          "title": "state"
+        },
+        "logs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ga4gh_task_execJobLog"
+          },
+          "title": "the logs, and other key info like timing and exit code, for the overall run of this workflow"
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ga4gh_task_execTaskParameter"
+          },
+          "title": "the outputs"
+        }
+      }
+    },
     "ga4gh_wes_workflow_request": {
       "type": "object",
       "properties": {
@@ -475,6 +449,32 @@
           "title": "workflow ID"
         }
       }
+    },
+    "ga4gh_wes_workflow_status": {
+      "type": "object",
+      "properties": {
+        "workflow_id": {
+          "type": "string",
+          "title": "workflow ID"
+        },
+        "state": {
+          "$ref": "#/definitions/ga4gh_wes_state",
+          "title": "state"
+        }
+      }
+    },
+    "ga4gh_wes_workflow_type_version": {
+      "type": "object",
+      "properties": {
+        "workflow_type_version": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "an array of one or more version strings"
+        }
+      },
+      "title": "available workflow types supported by this WES"
     }
   }
 }
