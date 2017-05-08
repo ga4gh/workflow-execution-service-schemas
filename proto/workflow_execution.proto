@@ -126,7 +126,7 @@ service WorkflowService {
     };
   }
 
-  //Run a workflow
+  //Run a workflow, this endpoint will allow you to create a new workflow request and retrieve its tracking ID to monitor its progress.  An important assumption in this endpoint is that the workflow_params JSON will include parameterizations along with input and output files.  The latter two may be on S3, Google object storage, local filesystems, etc.  This specification makes no distinction.  However, it is assumed that the submitter is using URLs that this system both understands and can access. For Amazon S3, this could be accomplished by given the credentials associated with a WES service access to a particular bucket.  The details are important but outside the scope of this spec. 
   rpc RunWorkflow(workflow_request) returns (workflow_run_id) {
     option (google.api.http) = {
       post: "/ga4gh/wes/v1/workflows"
