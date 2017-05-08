@@ -73,7 +73,7 @@
         ]
       },
       "post": {
-        "summary": "Run a workflow, this endpoint will allow you to create a new workflow request and retrieve its tracking ID to monitor its progress.  An important assumption in this endpoint is that the workflow_params JSON will include parameterizations along with input and output files.  The latter two may be on S3, Google object storage, local filesystems, etc.  This specification makes no distinction.  However, it is assumed that the submitter is using URLs that this system both understands and can access. For Amazon S3, this could be accomplished by given the credentials associated with a WES service access to a particular bucket.  The details are important but outside the scope of this spec.",
+        "summary": "Run a workflow, this endpoint will allow you to create a new workflow request and retrieve its tracking ID to monitor its progress.  An important assumption in this endpoint is that the workflow_params JSON will include parameterizations along with input and output files.  The latter two may be on S3, Google object storage, local filesystems, etc.  This specification makes no distinction.  However, it is assumed that the submitter is using URLs that this system both understands and can access. For Amazon S3, this could be accomplished by given the credentials associated with a WES service access to a particular bucket.  The details are important for a production system and user on-boarding but outside the scope of this spec.",
         "operationId": "RunWorkflow",
         "responses": {
           "200": {
@@ -385,6 +385,13 @@
             "type": "string"
           },
           "title": "The version(s) of the WES schema supported by this service"
+        },
+        "supported_filesystem_protocols": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The filesystem protocols supported by this service, currently these may include common protocols such as 'http', 'https', 'sftp', 's3', 'gs', 'file', 'synapse', or others as supported by this service."
         },
         "engine_versions": {
           "type": "object",

@@ -83,12 +83,14 @@ message service_info {
   map<string, WorkflowTypeVersion> workflow_type_versions = 1;
   //The version(s) of the WES schema supported by this service
   repeated string supported_wes_versions = 2;
+  //The filesystem protocols supported by this service, currently these may include common protocols such as 'http', 'https', 'sftp', 's3', 'gs', 'file', 'synapse', or others as supported by this service.
+  repeated string supported_filesystem_protocols = 3;
   //The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version
-  map<string,string> engine_versions = 3;
+  map<string,string> engine_versions = 4;
   //The system statistics, key is the statistic, value is the count of workflows in that state. See the State enum for the possible keys.
-  map<string,uint32> system_state_counts = 4;
+  map<string,uint32> system_state_counts = 5;
   //a key-value map of arbitrary, extended metadata outside the scope of the above but useful to report back
-  map<string,string> key_values = 5;
+  map<string,string> key_values = 6;
 }
 
 message workflow_run_id {
@@ -126,7 +128,7 @@ service WorkflowService {
     };
   }
 
-  //Run a workflow, this endpoint will allow you to create a new workflow request and retrieve its tracking ID to monitor its progress.  An important assumption in this endpoint is that the workflow_params JSON will include parameterizations along with input and output files.  The latter two may be on S3, Google object storage, local filesystems, etc.  This specification makes no distinction.  However, it is assumed that the submitter is using URLs that this system both understands and can access. For Amazon S3, this could be accomplished by given the credentials associated with a WES service access to a particular bucket.  The details are important but outside the scope of this spec. 
+  //Run a workflow, this endpoint will allow you to create a new workflow request and retrieve its tracking ID to monitor its progress.  An important assumption in this endpoint is that the workflow_params JSON will include parameterizations along with input and output files.  The latter two may be on S3, Google object storage, local filesystems, etc.  This specification makes no distinction.  However, it is assumed that the submitter is using URLs that this system both understands and can access. For Amazon S3, this could be accomplished by given the credentials associated with a WES service access to a particular bucket.  The details are important for a production system and user on-boarding but outside the scope of this spec.
   rpc RunWorkflow(workflow_request) returns (workflow_run_id) {
     option (google.api.http) = {
       post: "/ga4gh/wes/v1/workflows"
