@@ -63,9 +63,8 @@ message WorkflowTypeVersion {
     repeated string workflow_type_version = 1;
 }
 
-//Information about Workflow Execution Service
-//May include information related (but not limited to)
-//the workflow descriptor formats and versions supported and WES API supported.
+
+//.
 message service_info {
   //A map with keys as the workflow format type name (currently only CWL and WDL are used) and value is a WorkflowTypeVersion object which simply contains an array of one or more version strings
   map<string, WorkflowTypeVersion> workflow_type_versions = 1;
@@ -73,8 +72,10 @@ message service_info {
   repeated string supported_wes_versions = 2;
   //The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version
   map<string,string> engine_versions = 3;
+  //The system statistics, key is the statistic, value is the count of workflows in that state. See the State enum for the possible keys.
+  map<string,uint32> system_status = 4;
   //a key-value map of arbitrary, extended metadata outside the scope of the above but useful to report back
-  map<string,string> key_values = 4;
+  map<string,string> key_values = 5;
 }
 
 message WorkflowRunID {
@@ -105,7 +106,7 @@ message WorkflowLog {
 //Web service to get, create, list and delete Workflows
 service WorkflowService {
 
-  //Get Service Info
+  //Get information about Workflow Execution Service.  May include information related (but not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general the service availability.
   rpc GetServiceInfo(service_info_request) returns (service_info) {
     option (google.api.http) = {
       get: "/ga4gh/wes/v1/service-info"

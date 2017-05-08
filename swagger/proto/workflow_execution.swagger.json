@@ -17,7 +17,7 @@
   "paths": {
     "/ga4gh/wes/v1/service-info": {
       "get": {
-        "summary": "Get Service Info",
+        "summary": "Get information about Workflow Execution Service.  May include information related (but not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general the service availability.",
         "operationId": "GetServiceInfo",
         "responses": {
           "200": {
@@ -446,6 +446,14 @@
           },
           "title": "The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version"
         },
+        "system_status": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "The system statistics, key is the statistic, value is the count of workflows in that state. See the State enum for the possible keys."
+        },
         "key_values": {
           "type": "object",
           "additionalProperties": {
@@ -454,7 +462,7 @@
           "title": "a key-value map of arbitrary, extended metadata outside the scope of the above but useful to report back"
         }
       },
-      "description": "Information about Workflow Execution Service\nMay include information related (but not limited to)\nthe workflow descriptor formats and versions supported and WES API supported."
+      "description": "."
     },
     "ga4gh_wes_service_info_request": {
       "type": "object",
