@@ -1,7 +1,7 @@
 
 syntax = "proto3";
 
-package ga4gh_workflow_exec;
+package ga4gh_wes_;
 
 // Import HTTP RESTful annotations
 import "google/api/annotations.proto";
@@ -55,7 +55,7 @@ message WorkflowRequest {
 }
 
 //Blank request message for service request
-message ServiceInfoRequest {}
+message service_info_request {}
 
 //available workflow types supported by this WES
 message WorkflowTypeVersion {
@@ -66,7 +66,7 @@ message WorkflowTypeVersion {
 //Information about Workflow Execution Service
 //May include information related (but not limited to)
 //the workflow descriptor formats and versions supported and WES API supported.
-message ServiceInfo {
+message service_info {
   //A map with keys as the workflow format type name (currently only CWL and WDL are used) and value is a WorkflowTypeVersion object which simply contains an array of one or more version strings
   map<string, WorkflowTypeVersion> workflow_type_versions = 1;
   //The version(s) of the WES schema supported by this service
@@ -106,16 +106,16 @@ message WorkflowLog {
 service WorkflowService {
 
   //Get Service Info
-  rpc GetServiceInfo(ServiceInfoRequest) returns (ServiceInfo) {
+  rpc GetServiceInfo(service_info_request) returns (service_info) {
     option (google.api.http) = {
-      get: "/v1/workflows-service"
+      get: "/ga4gh/wes/v1/service-info"
     };
   }
 
   //Run a workflow
   rpc RunWorkflow(WorkflowRequest) returns (WorkflowRunID) {
     option (google.api.http) = {
-      post: "/v1/workflows"
+      post: "/ga4gh/wes/v1/workflows"
       body: "*"
     };
   }
@@ -123,28 +123,28 @@ service WorkflowService {
   //Get quick status info about a running workflow
   rpc GetWorkflowStatus(WorkflowRunID) returns (WorkflowStatus) {
       option (google.api.http) = {
-        get: "/v1/workflows/{workflow_id}/status"
+        get: "/ga4gh/wes/v1/workflows/{workflow_id}/status"
       };
   }
 
   //Get detailed info about a running workflow
   rpc GetWorkflowLog(WorkflowRunID) returns (WorkflowLog) {
       option (google.api.http) = {
-        get: "/v1/workflows/{workflow_id}"
+        get: "/ga4gh/wes/v1/workflows/{workflow_id}"
       };
   }
 
   //Cancel a running workflow
   rpc CancelJob(WorkflowRunID) returns (WorkflowRunID) {
     option (google.api.http) = {
-      delete: "/v1/workflows/{workflow_id}"
+      delete: "/ga4gh/wes/v1/workflows/{workflow_id}"
     };
   }
 
   //List the workflows
   rpc ListWorkflows(WorkflowListRequest) returns (WorkflowListResponse) {
     option (google.api.http) = {
-      get: "/v1/workflows"
+      get: "/ga4gh/wes/v1/workflows"
     };
   }
 

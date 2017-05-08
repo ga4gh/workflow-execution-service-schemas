@@ -15,7 +15,24 @@
     "application/json"
   ],
   "paths": {
-    "/v1/workflows": {
+    "/ga4gh/wes/v1/service-info": {
+      "get": {
+        "summary": "Get Service Info",
+        "operationId": "GetServiceInfo",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ga4gh_wes_service_info"
+            }
+          }
+        },
+        "tags": [
+          "WorkflowService"
+        ]
+      }
+    },
+    "/ga4gh/wes/v1/workflows": {
       "get": {
         "summary": "List the workflows",
         "operationId": "ListWorkflows",
@@ -23,7 +40,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/ga4gh_workflow_execWorkflowListResponse"
+              "$ref": "#/definitions/ga4gh_wes_WorkflowListResponse"
             }
           }
         },
@@ -62,7 +79,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/ga4gh_workflow_execWorkflowRunID"
+              "$ref": "#/definitions/ga4gh_wes_WorkflowRunID"
             }
           }
         },
@@ -72,7 +89,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/ga4gh_workflow_execWorkflowRequest"
+              "$ref": "#/definitions/ga4gh_wes_WorkflowRequest"
             }
           }
         ],
@@ -81,24 +98,7 @@
         ]
       }
     },
-    "/v1/workflows-service": {
-      "get": {
-        "summary": "Get Service Info",
-        "operationId": "GetServiceInfo",
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/ga4gh_workflow_execServiceInfo"
-            }
-          }
-        },
-        "tags": [
-          "WorkflowService"
-        ]
-      }
-    },
-    "/v1/workflows/{workflow_id}": {
+    "/ga4gh/wes/v1/workflows/{workflow_id}": {
       "get": {
         "summary": "Get detailed info about a running workflow",
         "operationId": "GetWorkflowLog",
@@ -106,7 +106,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/ga4gh_workflow_execWorkflowLog"
+              "$ref": "#/definitions/ga4gh_wes_WorkflowLog"
             }
           }
         },
@@ -129,7 +129,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/ga4gh_workflow_execWorkflowRunID"
+              "$ref": "#/definitions/ga4gh_wes_WorkflowRunID"
             }
           }
         },
@@ -146,7 +146,7 @@
         ]
       }
     },
-    "/v1/workflows/{workflow_id}/status": {
+    "/ga4gh/wes/v1/workflows/{workflow_id}/status": {
       "get": {
         "summary": "Get quick status info about a running workflow",
         "operationId": "GetWorkflowStatus",
@@ -154,7 +154,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/ga4gh_workflow_execWorkflowStatus"
+              "$ref": "#/definitions/ga4gh_wes_WorkflowStatus"
             }
           }
         },
@@ -279,45 +279,7 @@
       },
       "title": "Parameters for Task"
     },
-    "ga4gh_workflow_execServiceInfo": {
-      "type": "object",
-      "properties": {
-        "workflow_type_versions": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/ga4gh_workflow_execWorkflowTypeVersion"
-          },
-          "title": "A map with keys as the workflow format type name (currently only CWL and WDL are used) and value is a WorkflowTypeVersion object which simply contains an array of one or more version strings"
-        },
-        "supported_wes_versions": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "title": "The version(s) of the WES schema supported by this service"
-        },
-        "engine_versions": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "title": "The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version"
-        },
-        "key_values": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "title": "a key-value map of arbitrary, extended metadata outside the scope of the above but useful to report back"
-        }
-      },
-      "description": "Information about Workflow Execution Service\nMay include information related (but not limited to)\nthe workflow descriptor formats and versions supported and WES API supported."
-    },
-    "ga4gh_workflow_execServiceInfoRequest": {
-      "type": "object",
-      "title": "Blank request message for service request"
-    },
-    "ga4gh_workflow_execWorkflowDesc": {
+    "ga4gh_wes_WorkflowDesc": {
       "type": "object",
       "properties": {
         "workflow_id": {
@@ -331,7 +293,7 @@
       },
       "title": "Small description of workflows, returned by server during listing"
     },
-    "ga4gh_workflow_execWorkflowListRequest": {
+    "ga4gh_wes_WorkflowListRequest": {
       "type": "object",
       "properties": {
         "page_size": {
@@ -350,13 +312,13 @@
       },
       "title": "Request listing of jobs tracked by server"
     },
-    "ga4gh_workflow_execWorkflowListResponse": {
+    "ga4gh_wes_WorkflowListResponse": {
       "type": "object",
       "properties": {
         "workflows": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/ga4gh_workflow_execWorkflowDesc"
+            "$ref": "#/definitions/ga4gh_wes_WorkflowDesc"
           }
         },
         "next_page_token": {
@@ -365,7 +327,7 @@
       },
       "title": "Return envelope for workflow listing"
     },
-    "ga4gh_workflow_execWorkflowLog": {
+    "ga4gh_wes_WorkflowLog": {
       "type": "object",
       "properties": {
         "workflow_id": {
@@ -373,7 +335,7 @@
           "title": "workflow ID"
         },
         "request": {
-          "$ref": "#/definitions/ga4gh_workflow_execWorkflowRequest",
+          "$ref": "#/definitions/ga4gh_wes_WorkflowRequest",
           "title": "the original request object"
         },
         "state": {
@@ -396,7 +358,7 @@
         }
       }
     },
-    "ga4gh_workflow_execWorkflowRequest": {
+    "ga4gh_wes_WorkflowRequest": {
       "type": "object",
       "properties": {
         "workflow_descriptor": {
@@ -425,7 +387,7 @@
       },
       "title": "workflow request object"
     },
-    "ga4gh_workflow_execWorkflowRunID": {
+    "ga4gh_wes_WorkflowRunID": {
       "type": "object",
       "properties": {
         "workflow_id": {
@@ -434,7 +396,7 @@
         }
       }
     },
-    "ga4gh_workflow_execWorkflowStatus": {
+    "ga4gh_wes_WorkflowStatus": {
       "type": "object",
       "properties": {
         "workflow_id": {
@@ -447,7 +409,7 @@
         }
       }
     },
-    "ga4gh_workflow_execWorkflowTypeVersion": {
+    "ga4gh_wes_WorkflowTypeVersion": {
       "type": "object",
       "properties": {
         "workflow_type_version": {
@@ -459,6 +421,44 @@
         }
       },
       "title": "available workflow types supported by this WES"
+    },
+    "ga4gh_wes_service_info": {
+      "type": "object",
+      "properties": {
+        "workflow_type_versions": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ga4gh_wes_WorkflowTypeVersion"
+          },
+          "title": "A map with keys as the workflow format type name (currently only CWL and WDL are used) and value is a WorkflowTypeVersion object which simply contains an array of one or more version strings"
+        },
+        "supported_wes_versions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "The version(s) of the WES schema supported by this service"
+        },
+        "engine_versions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version"
+        },
+        "key_values": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "a key-value map of arbitrary, extended metadata outside the scope of the above but useful to report back"
+        }
+      },
+      "description": "Information about Workflow Execution Service\nMay include information related (but not limited to)\nthe workflow descriptor formats and versions supported and WES API supported."
+    },
+    "ga4gh_wes_service_info_request": {
+      "type": "object",
+      "title": "Blank request message for service request"
     }
   }
 }
