@@ -19,7 +19,11 @@ industry leaders to develop standards that will facilitate
 interoperability.  The Containers & Workflows working group is an informal, multi-vendor working group focused on standards for exchanging Docker-based tools and CWL/WDL workflows, execution of Docker-based tools and workflows on clouds, and abstract access to cloud object stores.
 
 What is WES?
-------------
+============
+The Containers & Workflows working group is an informal, multi-vendor working group born out of the BOSC 2014 codefest, consisting of various organizations and individuals that have an interest in portability of data analysis workflows. Our goal is to create specifications that enable data scientists to describe analysis tools and workflows that are powerful, easy to use, portable, and support reproducibility for a variety of problem areas including data-intensive science like bioinformatics, physics, and astronomy; and business analytics such as log analysis, data mining, and ETL.
+
+What is this?
+-------------
 
 Currently, this is the home of the Workflow Execution API proposal. The Workflow Execution API is a minimal common API describing how a user can submit workflow requests to workflow execution systems in a standardized ways.
 Workflow execution engines (SevenBridges, FireCloud, etc) can support this API so users can make workflow requests
