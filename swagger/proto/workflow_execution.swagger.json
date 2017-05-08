@@ -446,7 +446,7 @@
           },
           "title": "The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version"
         },
-        "system_status": {
+        "system_state_counts": {
           "type": "object",
           "additionalProperties": {
             "type": "integer",

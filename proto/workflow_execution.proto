@@ -73,7 +73,7 @@ message service_info {
   //The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version
   map<string,string> engine_versions = 3;
   //The system statistics, key is the statistic, value is the count of workflows in that state. See the State enum for the possible keys.
-  map<string,uint32> system_status = 4;
+  map<string,uint32> system_state_counts = 4;
   //a key-value map of arbitrary, extended metadata outside the scope of the above but useful to report back
   map<string,string> key_values = 5;
 }
