@@ -176,6 +176,10 @@
     "ga4gh_wes_log": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "title": "The command line that was run"
+        },
         "cmd": {
           "type": "array",
           "items": {

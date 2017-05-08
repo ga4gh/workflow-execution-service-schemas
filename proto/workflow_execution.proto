@@ -31,17 +31,19 @@ enum parameter_types {
 //Log and other info
 message log {
   //The command line that was run
-  repeated string cmd = 1;
+  string name = 1;
+  //The command line that was run
+  repeated string cmd = 2;
   //When the command was executed
-  string startTime = 2;
+  string startTime = 3;
   //When the command completed
-  string endTime = 3;
+  string endTime = 4;
   //Sample of stdout (not guaranteed to be entire log)
-  string stdout = 4;
+  string stdout = 5;
   //Sample of stderr (not guaranteed to be entire log)
-  string stderr = 5;
+  string stderr = 6;
   //Exit code of the program
-  int32  exitCode = 6;
+  int32  exitCode = 7;
 }
 
 //Parameters for workflows or tasks, these are either output parameters, files, or directories, the latter two are stagged to an object store or something similar for hand back to the caller.
