@@ -5,7 +5,7 @@ Schemas for the Workflow Execution Service (WES) API
 
 This is used by the Data Working Group - Containers and Workflows Task Team
 
-<img src="swagger_editor.png" width="48">[View in Swagger](http://editor.swagger.io/#/?import=https://raw.githubusercontent.com/ga4gh/workflow-execution-schemas/feature/protobuf-bdo/swagger/proto/workflow_execution.swagger.json)
+<img src="swagger_editor.png" width="48">[View in Swagger](http://editor.swagger.io/#/?import=https://raw.githubusercontent.com/ga4gh/workflow-execution-schemas/0.1.0/swagger/proto/workflow_execution.swagger.json)
 
 The [Global Alliance for Genomics and Health](http://genomicsandhealth.org/) is an international
 coalition, formed to enable the sharing of genomic and clinical data.
