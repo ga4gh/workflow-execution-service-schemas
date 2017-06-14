@@ -30,7 +30,7 @@ enum parameter_types {
 
 //Log and other info
 message log {
-  //The task or workflow name 
+  //The task or workflow name
   string name = 1;
   //The command line that was run
   repeated string cmd = 2;
@@ -95,8 +95,8 @@ message workflow_desc {
 
 //workflow request object
 message workflow_request {
-  //REQUIRED
-  //the workflow CWL or WDL document
+  //OPTIONAL
+  //the workflow CWL or WDL document, must provide either this or workflow_url
   string workflow_descriptor = 1;
   //REQUIRED
   //the workflow parameterization document (typically a JSON file), includes all parameterizations for the workflow including input and output file locations
@@ -110,6 +110,9 @@ message workflow_request {
   //OPTIONAL
   //a key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request
   map<string,string> key_values = 5;
+  //OPTIONAL
+  //the workflow CWL or WDL document, must provide either this or workflow_descriptor
+  string workflow_url = 6;
 }
 
 //Blank request message for service request
