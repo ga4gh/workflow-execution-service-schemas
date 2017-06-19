@@ -51,6 +51,9 @@ Outstanding questions:
 * standardizing terms, job, workflow, steps, tools, etc
 * reference implementation, Peter pointed out https://github.com/common-workflow-language/cwltool-service/tree/ga4gh-wes
 * validation service for testing WES implementations' conformance to the spec
+* Including all task_logs in the workflow log request may present a scaling problem when there are 100s-1000s of tasks
+* Providing a state notification callback URL (eg a webhook)
+* Passing through authentication (user role)
 
 How to view
 ------------
