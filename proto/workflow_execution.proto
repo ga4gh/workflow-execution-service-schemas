@@ -21,16 +21,9 @@ enum state {
   Initializing = 8;
 }
 
-//Enum for parameter types
-enum parameter_types {
-  Directory = 0;
-  File = 1;
-  Parameter = 2;
-}
-
 //Log and other info
 message log {
-  //The task or workflow name 
+  //The task or workflow name
   string name = 1;
   //The command line that was run
   repeated string cmd = 2;
@@ -44,26 +37,6 @@ message log {
   string stderr = 6;
   //Exit code of the program
   int32  exitCode = 7;
-}
-
-//Parameters for workflows or tasks, these are either output parameters, files, or directories, the latter two are stagged to an object store or something similar for hand back to the caller.
-message parameter {
-  //REQUIRED
-  //name of the parameter
-  string name = 1;
-  //OPTIONAL
-  //Value
-  string value = 2;
-  //REQUIRED
-  //location in long term storage, is a url specific to the implementing
-  //system. For example s3://my-object-store/file1 or gs://my-bucket/file2 or
-  //file:///path/to/my/file
-  string location = 3;
-  //REQUIRED
-  //Type of data, "Parameter", "File" or "Directory"
-  //if used for an output all the files in the directory
-  //will be copied to the storage location
-  parameter_types type = 4;
 }
 
 //Return envelope for workflow listing
@@ -95,12 +68,12 @@ message workflow_desc {
 
 //workflow request object
 message workflow_request {
-  //REQUIRED
-  //the workflow CWL or WDL document
+  //OPTIONAL
+  //the workflow CWL or WDL document, must provide either this or workflow_url
   string workflow_descriptor = 1;
   //REQUIRED
   //the workflow parameterization document (typically a JSON file), includes all parameterizations for the workflow including input and output file locations
-  string workflow_params = 2;
+  google.protobuf.Struct workflow_params = 2;
   //REQUIRED
   //the workflow descriptor type, must be "CWL" or "WDL" currently (or another alternative supported by this WES instance)
   string workflow_type = 3;
@@ -110,6 +83,9 @@ message workflow_request {
   //OPTIONAL
   //a key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request
   map<string,string> key_values = 5;
+  //OPTIONAL
+  //the workflow CWL or WDL document, must provide either this or workflow_descriptor
+  string workflow_url = 6;
 }
 
 //Blank request message for service request
@@ -162,7 +138,7 @@ message workflow_log {
   //the logs, and other key info like timing and exit code, for each step in the workflow
   repeated log task_logs = 5;
   //the outputs
-  repeated parameter outputs = 6;
+  google.protobuf.Struct outputs = 6;
 }
 
 //Web service to get, create, list and delete Workflows

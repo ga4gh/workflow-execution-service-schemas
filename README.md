@@ -20,23 +20,19 @@ interoperability.  The Containers & Workflows working group is an informal, mult
 
 What is WES?
 ============
-The Containers & Workflows working group is an informal, multi-vendor working group born out of the BOSC 2014 codefest, consisting of various organizations and individuals that have an interest in portability of data analysis workflows. Our goal is to create specifications that enable data scientists to describe analysis tools and workflows that are powerful, easy to use, portable, and support reproducibility for a variety of problem areas including data-intensive science like bioinformatics, physics, and astronomy; and business analytics such as log analysis, data mining, and ETL.
 
-What is this?
--------------
-
-Currently, this is the home of the Workflow Execution API proposal. The Workflow Execution API is a minimal common API describing how a user can submit workflow requests to workflow execution systems in a standardized ways.
+This is the home of the Workflow Execution Schema proposal. The Workflow
+Execution Schema is a minimal common API describing how a user can submit
+workflow requests to workflow execution systems in a standardized ways.
 Workflow execution engines (SevenBridges, FireCloud, etc) can support this API so users can make workflow requests
 programmatically, adding the ability to scale up.  In addition, these workflow services could have (and probably do have)
 UIs that would (possibly) use this API under the hood to facilitate workflow execution requests.
 
 Having this standard API supported by multiple execution engines will give people options of processing
 the same workflow (CWL or WDL) across different workflow execution platforms running across various clouds/environments.
-As an example use case, I can find a workflow in CWL on [Dockstore.org](http://dockstore.org), use Dockstore to
-generate a JSON parameterization file, and submit this to SevenBridges/FireCloud/Consonance or some other GA4GH-compliant
-workflow execution service.  NOTE: I'm making the leap of faith here that SevenBridges/FireCloud and/or other
-systems support this API, this example is not an endorsement or commitment to support the API by these
-providers, just an example of how that would work if they did.
+As an example use case, one can find a workflow in CWL on [Dockstore.org](http://dockstore.org), use Dockstore to
+generate a JSON parameterization file, and submit this a GA4GH-compliant
+workflow execution service.
 
 Key features of the current API proposal:
 
@@ -49,7 +45,7 @@ Outstanding questions:
 
 * a common JSON parameterization format, see work by Peter, is that checked in?
 * standardizing terms, job, workflow, steps, tools, etc
-* reference implementation, Peter pointed out https://github.com/common-workflow-language/cwltool-service/tree/ga4gh-wes
+* reference implementation at https://github.com/common-workflow-language/cwltool-service/tree/ga4gh-wes
 * validation service for testing WES implementations' conformance to the spec
 * Including all task_logs in the workflow log request may present a scaling problem when there are 100s-1000s of tasks
 * Providing a state notification callback URL (eg a webhook)
