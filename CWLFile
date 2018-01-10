@@ -5,5 +5,5 @@ includes:
     location: proto
 proto:
   class: File
-  location: proto/workflow_execution.proto
+  location: proto/workflow_execution_service.proto
 cwl:tool: protoc.cwl
