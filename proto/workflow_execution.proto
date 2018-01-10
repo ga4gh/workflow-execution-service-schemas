@@ -6,7 +6,6 @@ package ga4gh_wes_;
 // Import HTTP RESTful annotations
 import "google/api/annotations.proto";
 import "google/protobuf/struct.proto";
-import "task_execution.proto";
 
 //Enum for states
 enum state {
