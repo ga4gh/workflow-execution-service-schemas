@@ -1,0 +1,484 @@
+{
+    "basePath": "/", "swagger": "2.0",
+  "info": {
+    "title": "workflow_execution_service.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/ga4gh/wes/v1/service-info": {
+      "get": {
+        "summary": "Get information about Workflow Execution Service.  May include information related (but\nnot limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general the service availability.",
+        "x-swagger-router-controller": "ga4gh.wes.server", 
+        "operationId": "GetServiceInfo",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ga4gh_wes_ServiceInfo"
+            }
+          }
+        },
+        "tags": [
+          "WorkflowExecutionService"
+        ]
+      }
+    },
+    "/ga4gh/wes/v1/workflows": {
+      "get": {
+        "summary": "List the workflows, this endpoint will list the workflows in order of oldest to newest.\nThere is no guarantee of live updates as the user traverses the pages, the behavior should be\ndecided (and documented) by each implementation.\nTo monitor a given execution, use GetWorkflowStatus or GetWorkflowLog.",
+        "x-swagger-router-controller": "ga4gh.wes.server", 
+        "operationId": "ListWorkflows",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ga4gh_wes_WorkflowListResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page_size",
+            "description": "OPTIONAL\nNumber of workflows to return in a page.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "page_token",
+            "description": "OPTIONAL\nToken to use to indicate where to start getting results. If unspecified, returns the first\npage of results.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tag_search",
+            "description": "OPTIONAL\nFor each key, if the key's value is empty string then match workflows that are tagged with\nthis key regardless of value.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "WorkflowExecutionService"
+        ]
+      },
+      "post": {
+        "summary": "Run a workflow, this endpoint will allow you to create a new workflow request and\nretrieve its tracking ID to monitor its progress.  An important assumption in this\nendpoint is that the workflow_params JSON will include parameterizations along with\ninput and output files.  The latter two may be on S3, Google object storage, local filesystems,\netc.  This specification makes no distinction.  However, it is assumed that the submitter\nis using URLs that this system both understands and can access. For Amazon S3, this could\nbe accomplished by given the credentials associated with a WES service access to a\nparticular bucket.  The details are important for a production system and user on-boarding\nbut outside the scope of this spec.",
+        "x-swagger-router-controller": "ga4gh.wes.server", 
+        "operationId": "RunWorkflow",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ga4gh_wes_WorkflowRunId"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ga4gh_wes_WorkflowRequest"
+            }
+          }
+        ],
+        "tags": [
+          "WorkflowExecutionService"
+        ]
+      }
+    },
+    "/ga4gh/wes/v1/workflows/{workflow_id}": {
+      "get": {
+        "summary": "Get detailed info about a running workflow.",
+        "x-swagger-router-controller": "ga4gh.wes.server", 
+        "operationId": "GetWorkflowLog",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ga4gh_wes_WorkflowLog"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "workflow_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "WorkflowExecutionService"
+        ]
+      },
+      "delete": {
+        "summary": "Cancel a running workflow.",
+        "x-swagger-router-controller": "ga4gh.wes.server", 
+        "operationId": "CancelJob",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ga4gh_wes_WorkflowRunId"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "workflow_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "WorkflowExecutionService"
+        ]
+      }
+    },
+    "/ga4gh/wes/v1/workflows/{workflow_id}/status": {
+      "get": {
+        "summary": "Get quick status info about a running workflow.",
+        "x-swagger-router-controller": "ga4gh.wes.server", 
+        "operationId": "GetWorkflowStatus",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ga4gh_wes_WorkflowStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "workflow_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "WorkflowExecutionService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ga4gh_wes_Log": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "The task or workflow name"
+        },
+        "cmd": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "The command line that was run"
+        },
+        "start_time": {
+          "type": "string",
+          "title": "When the command was executed"
+        },
+        "end_time": {
+          "type": "string",
+          "title": "When the command completed"
+        },
+        "stdout": {
+          "type": "string",
+          "title": "Sample of stdout (not guaranteed to be entire log)"
+        },
+        "stderr": {
+          "type": "string",
+          "title": "Sample of stderr (not guaranteed to be entire log)"
+        },
+        "exit_code": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Exit code of the program"
+        }
+      },
+      "title": "Log and other info"
+    },
+    "ga4gh_wes_ServiceInfo": {
+      "type": "object",
+      "properties": {
+        "workflow_type_versions": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ga4gh_wes_WorkflowTypeVersion"
+          },
+          "title": "A map with keys as the workflow format type name (currently only CWL and WDL are used\nalthough a service may support others) and value is a workflow_type_version object which\nsimply contains an array of one or more version strings"
+        },
+        "supported_wes_versions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "The version(s) of the WES schema supported by this service"
+        },
+        "supported_filesystem_protocols": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The filesystem protocols supported by this service, currently these may include common\nprotocols such as 'http', 'https', 'sftp', 's3', 'gs', 'file', 'synapse', or others as\nsupported by this service."
+        },
+        "engine_versions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version"
+        },
+        "system_state_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "The system statistics, key is the statistic, value is the count of workflows in that state.\nSee the State enum for the possible keys."
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "A key-value map of arbitrary, extended metadata outside the scope of the above but useful\nto report back"
+        }
+      },
+      "description": "A message containing useful information about the running service, including supported versions and\ndefault settings."
+    },
+    "ga4gh_wes_State": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "QUEUED",
+        "INITIALIZING",
+        "RUNNING",
+        "PAUSED",
+        "COMPLETE",
+        "EXECUTOR_ERROR",
+        "SYSTEM_ERROR",
+        "CANCELED"
+      ],
+      "default": "UNKNOWN",
+      "description": "- UNKNOWN: The state of the task is unknown.\n\nThis provides a safe default for messages where this field is missing,\nfor example, so that a missing field does not accidentally imply that\nthe state is QUEUED.\n - QUEUED: The task is queued.\n - INITIALIZING: The task has been assigned to a worker and is currently preparing to run.\nFor example, the worker may be turning on, downloading input files, etc.\n - RUNNING: The task is running. Input files are downloaded and the first Executor\nhas been started.\n - PAUSED: The task is paused.\n\nAn implementation may have the ability to pause a task, but this is not required.\n - COMPLETE: The task has completed running. Executors have exited without error\nand output files have been successfully uploaded.\n - EXECUTOR_ERROR: The task encountered an error in one of the Executor processes. Generally,\nthis means that an Executor exited with a non-zero exit code.\n - SYSTEM_ERROR: The task was stopped due to a system error, but not from an Executor,\nfor example an upload failed due to network issues, the worker's ran out\nof disk space, etc.\n - CANCELED: The task was canceled by the user.",
+      "title": "Enumeration of states for a given workflow request"
+    },
+    "ga4gh_wes_WorkflowDesc": {
+      "type": "object",
+      "properties": {
+        "workflow_id": {
+          "type": "string",
+          "title": "REQUIRED"
+        },
+        "state": {
+          "$ref": "#/definitions/ga4gh_wes_State",
+          "title": "REQUIRED"
+        }
+      },
+      "title": "Small description of workflows, returned by server during listing"
+    },
+    "ga4gh_wes_WorkflowListResponse": {
+      "type": "object",
+      "properties": {
+        "workflows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ga4gh_wes_WorkflowDesc"
+          },
+          "description": "A list of workflows that the service has executed or is executing."
+        },
+        "next_page_token": {
+          "type": "string",
+          "description": "A token, which when provided in a workflow_list_request, allows one to retrieve the next page\nof results."
+        }
+      },
+      "description": "The service will return a workflow_list_response when receiving a successful workflow_list_request."
+    },
+    "ga4gh_wes_WorkflowLog": {
+      "type": "object",
+      "properties": {
+        "workflow_id": {
+          "type": "string",
+          "title": "workflow ID"
+        },
+        "request": {
+          "$ref": "#/definitions/ga4gh_wes_WorkflowRequest",
+          "description": "The original request message used to initiate this execution."
+        },
+        "state": {
+          "$ref": "#/definitions/ga4gh_wes_State",
+          "title": "state"
+        },
+        "workflow_log": {
+          "$ref": "#/definitions/ga4gh_wes_Log",
+          "title": "the logs, and other key info like timing and exit code, for the overall run of this workflow"
+        },
+        "task_logs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ga4gh_wes_Log"
+          },
+          "title": "the logs, and other key info like timing and exit code, for each step in the workflow"
+        },
+        "outputs": {
+          "$ref": "#/definitions/protobufStruct",
+          "title": "the outputs"
+        }
+      }
+    },
+    "ga4gh_wes_WorkflowRequest": {
+      "type": "object",
+      "properties": {
+        "workflow_descriptor": {
+          "type": "string",
+          "title": "OPTIONAL\nThe workflow CWL or WDL document, must provide either this or workflow_url"
+        },
+        "workflow_params": {
+          "type": "string",
+          "title": "REQUIRED\nThe workflow parameterization document (typically a JSON string), includes all parameterizations for\nthe workflow including input and output file locations"
+        },
+        "workflow_type": {
+          "type": "string",
+          "title": "REQUIRED\nThe workflow descriptor type, must be \"CWL\" or \"WDL\" currently (or another alternative supported by this WES instance)"
+        },
+        "workflow_type_version": {
+          "type": "string",
+          "title": "REQUIRED\nThe workflow descriptor type version, must be one supported by this WES instance"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "OPTIONAL\nA key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request"
+        },
+        "workflow_url": {
+          "type": "string",
+          "title": "OPTIONAL\nThe workflow CWL or WDL document, must provide either this or workflow_descriptor"
+        }
+      },
+      "description": "To execute a workflow, send a workflow request including all the details needed to begin downloading\nand executing a given workflow."
+    },
+    "ga4gh_wes_WorkflowRunId": {
+      "type": "object",
+      "properties": {
+        "workflow_id": {
+          "type": "string",
+          "title": "workflow ID"
+        }
+      }
+    },
+    "ga4gh_wes_WorkflowStatus": {
+      "type": "object",
+      "properties": {
+        "workflow_id": {
+          "type": "string",
+          "title": "workflow ID"
+        },
+        "state": {
+          "$ref": "#/definitions/ga4gh_wes_State",
+          "title": "state"
+        }
+      }
+    },
+    "ga4gh_wes_WorkflowTypeVersion": {
+      "type": "object",
+      "properties": {
+        "workflow_type_version": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "an array of one or more version strings"
+        }
+      },
+      "description": "Available workflow types supported by a given instance of the service."
+    },
+    "protobufListValue": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufValue"
+          },
+          "description": "Repeated field of dynamically typed values."
+        }
+      },
+      "description": "`ListValue` is a wrapper around a repeated field of values.\n\nThe JSON representation for `ListValue` is JSON array."
+    },
+    "protobufNullValue": {
+      "type": "string",
+      "enum": [
+        "NULL_VALUE"
+      ],
+      "default": "NULL_VALUE",
+      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
+    },
+    "protobufStruct": {
+      "type": "object",
+      "properties": {
+        "fields": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/protobufValue"
+          },
+          "description": "Unordered map of dynamically typed values."
+        }
+      },
+      "description": "`Struct` represents a structured data value, consisting of fields\nwhich map to dynamically typed values. In some languages, `Struct`\nmight be supported by a native representation. For example, in\nscripting languages like JS a struct is represented as an\nobject. The details of that representation are described together\nwith the proto support for the language.\n\nThe JSON representation for `Struct` is JSON object."
+    },
+    "protobufValue": {
+      "type": "object",
+      "properties": {
+        "null_value": {
+          "$ref": "#/definitions/protobufNullValue",
+          "description": "Represents a null value."
+        },
+        "number_value": {
+          "type": "number",
+          "format": "double",
+          "description": "Represents a double value."
+        },
+        "string_value": {
+          "type": "string",
+          "description": "Represents a string value."
+        },
+        "bool_value": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Represents a boolean value."
+        },
+        "struct_value": {
+          "$ref": "#/definitions/protobufStruct",
+          "description": "Represents a structured value."
+        },
+        "list_value": {
+          "$ref": "#/definitions/protobufListValue",
+          "description": "Represents a repeated `Value`."
+        }
+      },
+      "description": "`Value` represents a dynamically typed value which can be either\nnull, a number, a string, a boolean, a recursive struct value, or a\nlist of values. A producer of value is expected to set one of that\nvariants, absence of any variant indicates an error.\n\nThe JSON representation for `Value` is JSON value."
+    }
+  }
+}

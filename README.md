@@ -68,21 +68,12 @@ Make sure you have Docker installed for your platform and the `cwltool`.
     pip install setuptools==28.8.0
     pip install cwl-runner cwltool==1.0.20161114152756 schema-salad==1.18.20161005190847 avro==1.8.1
 
-Make sure you have the [submodule](http://stackoverflow.com/questions/3939055/submodules-files-are-not-checked-out) checked out:
-
-    git submodule update --init --recursive
-
 You can generate the [Swagger](http://swagger.io/) YAML from the Protocol Buffers:
 
     cwltool CWLFile
+    sh tools/prepare_openapi.sh
 
-Find the output in `workflow_execution.swagger.json` and this can be loaded in the [Swagger editor](http://swagger.io/swagger-editor/).  Use the GitHub raw feature to generate a URL you can load.
-
-When you're happy with the changes, checkin this file:
-
-    mv workflow_execution.swagger.json swagger/proto/
-
-And commit your changes.
+The resulting OpenAPI description will be in the `swagger` directory.
 
 How to contribute changes
 -------------------------
