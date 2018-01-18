@@ -91,7 +91,7 @@ message workflow_request {
 
   // OPTIONAL
   // A key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request
-  map<string,string> key_values = 5;
+  map<string,string> tags = 5;
 
   // OPTIONAL
   // The workflow CWL or WDL document, must provide either this or workflow_descriptor
@@ -112,7 +112,7 @@ message workflow_list_request {
   // OPTIONAL
   // For each key, if the key's value is empty string then match workflows that are tagged with
   // this key regardless of value
-  string key_value_search = 3;
+  string tag_search = 3;
 }
 
 
@@ -154,7 +154,7 @@ message service_info {
 
   // A key-value map of arbitrary, extended metadata outside the scope of the above but useful
   // to report back
-  map<string,string> key_values = 6;
+  map<string,string> tags = 6;
 }
 
 // Small description of workflows, returned by server during listing
