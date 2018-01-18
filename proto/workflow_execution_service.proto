@@ -163,7 +163,7 @@ message workflow_desc {
   string workflow_id  = 1;
   
   // REQUIRED
-  state state = 2;
+  State state = 2;
 }
 
 // Available workflow types supported by a given instance of the service.
@@ -182,7 +182,7 @@ message workflow_status {
   string workflow_id = 1;
 
   // state
-  state state = 2;
+  State state = 2;
 }
 
 message workflow_log {
@@ -193,7 +193,7 @@ message workflow_log {
   workflow_request request = 2;
 
   // state
-  state state = 3;
+  State state = 3;
 
   // the logs, and other key info like timing and exit code, for the overall run of this workflow
   log workflow_log = 4;
@@ -230,14 +230,44 @@ message log {
 }
 
 // Enumeration of states for a given workflow request
-enum state {
-  Unknown = 0;
-  Queued = 1;
-  Running = 2;
-  Paused = 3;
-  Complete = 4;
-  Error = 5;
-  SystemError = 6;
-  Canceled = 7;
-  Initializing = 8;
+enum State {
+
+  // The state of the task is unknown.
+  //
+  // This provides a safe default for messages where this field is missing,
+  // for example, so that a missing field does not accidentally imply that
+  // the state is QUEUED.
+  UNKNOWN = 0;
+
+  // The task is queued.
+  QUEUED = 1;
+
+  // The task has been assigned to a worker and is currently preparing to run.
+  // For example, the worker may be turning on, downloading input files, etc.
+  INITIALIZING = 2;
+
+  // The task is running. Input files are downloaded and the first Executor
+  // has been started.
+  RUNNING = 3;
+
+  // The task is paused.
+  //
+  // An implementation may have the ability to pause a task, but this is not required.
+  PAUSED = 4;
+
+  // The task has completed running. Executors have exited without error
+  // and output files have been successfully uploaded.
+  COMPLETE = 5;
+
+  // The task encountered an error in one of the Executor processes. Generally,
+  // this means that an Executor exited with a non-zero exit code.
+  EXECUTOR_ERROR = 6;
+
+  // The task was stopped due to a system error, but not from an Executor,
+  // for example an upload failed due to network issues, the worker's ran out
+  // of disk space, etc.
+  SYSTEM_ERROR = 7;
+
+  // The task was canceled by the user.
+  CANCELED = 8;
 }
