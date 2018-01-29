@@ -1,11 +1,7 @@
-![ga4gh logo](http://genomicsandhealth.org/files/logo_ga.png)
+<img src="https://www.ga4gh.org/gfx/GA-logo-horizontal-tag-RGB.svg" alt="GA4GH Logo" style="width: 100px;"/>
 
 Schemas for the Workflow Execution Service (WES) API
 ====================================================
-
-This is used by the Data Working Group - Containers and Workflows Task Team
-
-<img src="swagger_editor.png" width="48">[View in Swagger](http://editor.swagger.io/#/?import=https://raw.githubusercontent.com/ga4gh/workflow-execution-schemas/0.1.0/swagger/proto/workflow_execution.swagger.json)
 
 The [Global Alliance for Genomics and Health](http://genomicsandhealth.org/) is an international
 coalition, formed to enable the sharing of genomic and clinical data.
@@ -21,9 +17,8 @@ interoperability.  The Containers & Workflows working group is an informal, mult
 What is WES?
 ============
 
-This is the home of the Workflow Execution Schema proposal. The Workflow
-Execution Schema is a minimal common API describing how a user can submit
-workflow requests to workflow execution systems in a standardized ways.
+The Workflow Execution Schema is a minimal common API describing how a user can submit
+workflow requests to workflow execution systems in standardized ways.
 Workflow execution engines (SevenBridges, FireCloud, etc) can support this API so users can make workflow requests
 programmatically, adding the ability to scale up.  In addition, these workflow services could have (and probably do have)
 UIs that would (possibly) use this API under the hood to facilitate workflow execution requests.
@@ -54,9 +49,9 @@ Outstanding questions:
 How to view
 ------------
 
-See the swagger editor to view our [schema in progress](http://editor.swagger.io/#/?import=https://raw.githubusercontent.com/ga4gh/workflow-execution-schemas/develop/src/main/resources/swagger/ga4gh-tool-discovery.yaml).
+The file `swagger/workflow_execution_service.swagger.json` contains the API description.
 
-If the current schema fails to validate, visit [debugging](http://online.swagger.io/validator/debug?url=https://raw.githubusercontent.com/ga4gh/workflow-execution-schemas/develop/src/main/resources/swagger/ga4gh-tool-discovery.yaml)
+Please visit http://ga4gh.github.io/workflow-execution-schemas to view this document in Swagger UI.
 
 Building Documents
 ------------------
@@ -68,7 +63,7 @@ Make sure you have Docker installed for your platform and the `cwltool`.
     pip install setuptools==28.8.0
     pip install cwl-runner cwltool==1.0.20161114152756 schema-salad==1.18.20161005190847 avro==1.8.1
 
-You can generate the [Swagger](http://swagger.io/) YAML from the Protocol Buffers:
+You can generate the [Swagger](http://swagger.io/) from the Protocol Buffers:
 
     cwltool CWLFile
     sh tools/prepare_openapi.sh
