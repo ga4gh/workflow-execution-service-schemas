@@ -354,8 +354,8 @@
           "title": "OPTIONAL\nThe workflow CWL or WDL document, must provide either this or workflow_url"
         },
         "workflow_params": {
-          "type": "string",
-          "title": "REQUIRED\nThe workflow parameterization document (typically a JSON string), includes all parameterizations for\nthe workflow including input and output file locations"
+          "$ref": "#/definitions/protobufStruct",
+          "title": "REQUIRED\nThe workflow parameterization document (typically a JSON file), includes all parameterizations for the workflow including input and output file locations"
         },
         "workflow_type": {
           "type": "string",
