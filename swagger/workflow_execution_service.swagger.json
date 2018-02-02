@@ -179,6 +179,20 @@
     }
   },
   "definitions": {
+    "ga4gh_wes_DefaultWorkflowEngineParameter": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Describes the type of the parameter, e.g. float."
+        },
+        "default_value": {
+          "type": "string",
+          "description": "The stringified version of the default parameter. e.g. \"2.45\"."
+        }
+      },
+      "description": "A message that allows one to describe default parameters for a workflow\nengine."
+    },
     "ga4gh_wes_Log": {
       "type": "object",
       "properties": {
@@ -241,12 +255,19 @@
           },
           "description": "The filesystem protocols supported by this service, currently these may include common\nprotocols such as 'http', 'https', 'sftp', 's3', 'gs', 'file', 'synapse', or others as\nsupported by this service."
         },
-        "engine_versions": {
+        "workflow_engine_versions": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
           },
           "title": "The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version"
+        },
+        "default_workflow_engine_parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ga4gh_wes_DefaultWorkflowEngineParameter"
+          },
+          "description": "Each workflow engine can present additional parameters that can be sent to the\nworkflow engine. This message will list the default values, and their types for each\nworkflow engine."
         },
         "system_state_counts": {
           "type": "object",
@@ -255,6 +276,10 @@
             "format": "int64"
           },
           "description": "The system statistics, key is the statistic, value is the count of workflows in that state.\nSee the State enum for the possible keys."
+        },
+        "auth_instructions_url": {
+          "type": "string",
+          "description": "A URL that will help a in generating the tokens necessary to run a workflow using this\nservice."
         },
         "tags": {
           "type": "object",
@@ -351,11 +376,11 @@
       "properties": {
         "workflow_descriptor": {
           "type": "string",
-          "title": "OPTIONAL\nThe workflow CWL or WDL document, must provide either this or workflow_url"
+          "description": "OPTIONAL\nThe workflow CWL or WDL document, must provide either this or workflow_url. By combining\nthis message with a workflow_type_version offered in ServiceInfo, one can initialize\nCWL, WDL, or a base64 encoded gzip of the required workflow descriptors. When files must be\ncreated in this way, the `workflow_url` should be set to the path of the main\nworkflow descriptor."
         },
         "workflow_params": {
           "$ref": "#/definitions/protobufStruct",
-          "title": "REQUIRED\nThe workflow parameterization document (typically a JSON file), includes all parameterizations for the workflow including input and output file locations"
+          "description": "REQUIRED\nThe workflow parameterization document (typically a JSON file), includes all parameterizations for the workflow\nincluding input and output file locations."
         },
         "workflow_type": {
           "type": "string",
@@ -372,9 +397,16 @@
           },
           "title": "OPTIONAL\nA key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request"
         },
+        "workflow_engine_parameters": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "OPTIONAL\nAdditional parameters can be sent to the workflow engine using this field. Default values\nfor these parameters are provided at the ServiceInfo endpoint."
+        },
         "workflow_url": {
           "type": "string",
-          "title": "OPTIONAL\nThe workflow CWL or WDL document, must provide either this or workflow_descriptor"
+          "description": "OPTIONAL\nThe workflow CWL or WDL document, must provide either this or workflow_descriptor. When a base64 encoded gzip of\nworkflow descriptor files is offered, the `workflow_url` should be set to the relative path\nof the main workflow descriptor."
         }
       },
       "description": "To execute a workflow, send a workflow request including all the details needed to begin downloading\nand executing a given workflow."
@@ -409,7 +441,7 @@
           "items": {
             "type": "string"
           },
-          "title": "an array of one or more version strings"
+          "description": "an array of one or more acceptable types for the Workflow Type. For\nexample, to send a base64 encoded WDL gzip, one could would offer\n\"base64_wdl1.0_gzip\". By setting this value, and the path of the main WDL\nto be executed in the workflow_url to \"main.wdl\" in the WorkflowRequest."
         }
       },
       "description": "Available workflow types supported by a given instance of the service."

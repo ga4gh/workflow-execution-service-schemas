@@ -74,7 +74,11 @@ service WorkflowExecutionService {
 // and executing a given workflow.
 message WorkflowRequest {
   // OPTIONAL
-  // The workflow CWL or WDL document, must provide either this or workflow_url
+  // The workflow CWL or WDL document, must provide either this or workflow_url. By combining
+  // this message with a workflow_type_version offered in ServiceInfo, one can initialize
+  // CWL, WDL, or a base64 encoded gzip of the required workflow descriptors. When files must be
+  // created in this way, the `workflow_url` should be set to the path of the main
+  // workflow descriptor.
   string workflow_descriptor = 1;
 
   // REQUIRED
@@ -100,7 +104,9 @@ message WorkflowRequest {
   map <string, string> workflow_engine_parameters = 6;
 
   // OPTIONAL
-  // The workflow CWL or WDL document, must provide either this or workflow_descriptor
+  // The workflow CWL or WDL document, must provide either this or workflow_descriptor. When a base64 encoded gzip of
+  // workflow descriptor files is offered, the `workflow_url` should be set to the relative path
+  // of the main workflow descriptor.
   string workflow_url = 7;
 }
 
@@ -183,7 +189,10 @@ message WorkflowDesc {
 
 // Available workflow types supported by a given instance of the service.
 message WorkflowTypeVersion {
-    // an array of one or more version strings
+    // an array of one or more acceptable types for the Workflow Type. For
+    // example, to send a base64 encoded WDL gzip, one could would offer
+    // "base64_wdl1.0_gzip". By setting this value, and the path of the main WDL
+    // to be executed in the workflow_url to "main.wdl" in the WorkflowRequest.
     repeated string workflow_type_version = 1;
 }
 
