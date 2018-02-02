@@ -78,7 +78,8 @@ message WorkflowRequest {
   string workflow_descriptor = 1;
 
   // REQUIRED
-  // The workflow parameterization document (typically a JSON file), includes all parameterizations for the workflow including input and output file locations
+  // The workflow parameterization document (typically a JSON file), includes all parameterizations for the workflow
+  // including input and output file locations.
   google.protobuf.Struct workflow_params = 2;
 
   // REQUIRED
@@ -94,8 +95,13 @@ message WorkflowRequest {
   map<string,string> tags = 5;
 
   // OPTIONAL
+  // Additional parameters can be sent to the workflow engine using this field. Default values
+  // for these parameters are provided at the ServiceInfo endpoint.
+  map <string, string> workflow_engine_parameters = 6;
+
+  // OPTIONAL
   // The workflow CWL or WDL document, must provide either this or workflow_descriptor
-  string workflow_url = 6;
+  string workflow_url = 7;
 }
 
 // Request listing of jobs tracked by server
@@ -148,17 +154,22 @@ message ServiceInfo {
   // The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version
   map<string,string> workflow_engine_versions = 4;
 
+  // Each workflow engine can present additional parameters that can be sent to the
+  // workflow engine. This message will list the default values, and their types for each
+  // workflow engine.
+  repeated DefaultWorkflowEngineParameter default_workflow_engine_parameters = 5;
+
   // The system statistics, key is the statistic, value is the count of workflows in that state.
   // See the State enum for the possible keys.
-  map<string,uint32> system_state_counts = 5;
+  map<string,uint32> system_state_counts = 6;
 
   // A URL that will help a in generating the tokens necessary to run a workflow using this
   // service.
-  string auth_instructions_url = 6;
+  string auth_instructions_url = 7;
 
   // A key-value map of arbitrary, extended metadata outside the scope of the above but useful
   // to report back
-  map<string,string> tags = 7;
+  map<string,string> tags = 8;
 }
 
 // Small description of workflows, returned by server during listing
@@ -274,4 +285,14 @@ enum State {
 
   // The task was canceled by the user.
   CANCELED = 8;
+}
+
+// A message that allows one to describe default parameters for a workflow
+// engine.
+message DefaultWorkflowEngineParameter {
+    // Describes the type of the parameter, e.g. float.
+    string type = 1;
+
+    // The stringified version of the default parameter. e.g. "2.45".
+    string default_value = 2;
 }
