@@ -152,9 +152,13 @@ message ServiceInfo {
   // See the State enum for the possible keys.
   map<string,uint32> system_state_counts = 5;
 
+  // A URL that will help a in generating the tokens necessary to run a workflow using this
+  // service.
+  string auth_instructions_url = 6;
+
   // A key-value map of arbitrary, extended metadata outside the scope of the above but useful
   // to report back
-  map<string,string> tags = 6;
+  map<string,string> tags = 7;
 }
 
 // Small description of workflows, returned by server during listing
