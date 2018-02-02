@@ -145,10 +145,10 @@ message ServiceInfo {
   // supported by this service.
   repeated string supported_filesystem_protocols = 3;
 
-  //The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version
-  map<string,string> engine_versions = 4;
+  // The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version
+  map<string,string> workflow_engine_versions = 4;
 
-  //The system statistics, key is the statistic, value is the count of workflows in that state.
+  // The system statistics, key is the statistic, value is the count of workflows in that state.
   // See the State enum for the possible keys.
   map<string,uint32> system_state_counts = 5;
 
