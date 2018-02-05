@@ -1,0 +1,307 @@
+
+syntax = "proto3";
+
+package ga4gh_wes_;
+
+// Import HTTP RESTful annotations
+import "google/api/annotations.proto";
+import "google/protobuf/struct.proto";
+
+
+// The Workflow Execution Service presents an interoperable layer for executing workflows
+// using an HTTP interface. By passing WES messages to a service connected to some execution
+// engine one can carry out a computational task.
+service WorkflowExecutionService {
+
+  // Get information about Workflow Execution Service.  May include information related (but
+  // not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general the service availability.
+  rpc GetServiceInfo(ServiceInfoRequest) returns (ServiceInfo) {
+    option (google.api.http) = {
+      get: "/ga4gh/wes/v1/service-info"
+    };
+  }
+
+  // Run a workflow, this endpoint will allow you to create a new workflow request and
+  // retrieve its tracking ID to monitor its progress.  An important assumption in this
+  // endpoint is that the workflow_params JSON will include parameterizations along with
+  // input and output files.  The latter two may be on S3, Google object storage, local filesystems,
+  // etc.  This specification makes no distinction.  However, it is assumed that the submitter
+  // is using URLs that this system both understands and can access. For Amazon S3, this could
+  // be accomplished by given the credentials associated with a WES service access to a
+  // particular bucket.  The details are important for a production system and user on-boarding
+  // but outside the scope of this spec.
+  rpc RunWorkflow(WorkflowRequest) returns (WorkflowRunId) {
+    option (google.api.http) = {
+      post: "/ga4gh/wes/v1/workflows"
+      body: "*"
+    };
+  }
+
+  // Get quick status info about a running workflow.
+  rpc GetWorkflowStatus(WorkflowRunId) returns (WorkflowStatus) {
+      option (google.api.http) = {
+        get: "/ga4gh/wes/v1/workflows/{workflow_id}/status"
+      };
+  }
+
+  // Get detailed info about a running workflow.
+  rpc GetWorkflowLog(WorkflowRunId) returns (WorkflowLog) {
+      option (google.api.http) = {
+        get: "/ga4gh/wes/v1/workflows/{workflow_id}"
+      };
+  }
+
+  // Cancel a running workflow.
+  rpc CancelJob(WorkflowRunId) returns (WorkflowRunId) {
+    option (google.api.http) = {
+      delete: "/ga4gh/wes/v1/workflows/{workflow_id}"
+    };
+  }
+
+  // List the workflows, this endpoint will list the workflows in order of oldest to newest.
+  // There is no guarantee of live updates as the user traverses the pages, the behavior should be
+  // decided (and documented) by each implementation.
+  // To monitor a given execution, use GetWorkflowStatus or GetWorkflowLog.
+  rpc ListWorkflows(WorkflowListRequest) returns (WorkflowListResponse) {
+    option (google.api.http) = {
+      get: "/ga4gh/wes/v1/workflows"
+    };
+  }
+
+}
+
+// To execute a workflow, send a workflow request including all the details needed to begin downloading
+// and executing a given workflow.
+message WorkflowRequest {
+  // OPTIONAL
+  // The workflow CWL or WDL document, must provide either this or workflow_url. By combining
+  // this message with a workflow_type_version offered in ServiceInfo, one can initialize
+  // CWL, WDL, or a base64 encoded gzip of the required workflow descriptors. When files must be
+  // created in this way, the `workflow_url` should be set to the path of the main
+  // workflow descriptor.
+  string workflow_descriptor = 1;
+
+  // REQUIRED
+  // The workflow parameterization document (typically a JSON file), includes all parameterizations for the workflow
+  // including input and output file locations.
+  google.protobuf.Struct workflow_params = 2;
+
+  // REQUIRED
+  // The workflow descriptor type, must be "CWL" or "WDL" currently (or another alternative supported by this WES instance)
+  string workflow_type = 3;
+
+  // REQUIRED
+  // The workflow descriptor type version, must be one supported by this WES instance
+  string workflow_type_version = 4;
+
+  // OPTIONAL
+  // A key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request
+  map<string,string> tags = 5;
+
+  // OPTIONAL
+  // Additional parameters can be sent to the workflow engine using this field. Default values
+  // for these parameters are provided at the ServiceInfo endpoint.
+  map <string, string> workflow_engine_parameters = 6;
+
+  // OPTIONAL
+  // The workflow CWL or WDL document, must provide either this or workflow_descriptor. When a base64 encoded gzip of
+  // workflow descriptor files is offered, the `workflow_url` should be set to the relative path
+  // of the main workflow descriptor.
+  string workflow_url = 7;
+}
+
+// Request listing of jobs tracked by server
+message WorkflowListRequest {
+  // OPTIONAL
+  // Number of workflows to return in a page.
+  uint32 page_size = 1;
+
+  // OPTIONAL
+  // Token to use to indicate where to start getting results. If unspecified, returns the first
+  // page of results.
+  string page_token = 2;
+
+  // OPTIONAL
+  // For each key, if the key's value is empty string then match workflows that are tagged with
+  // this key regardless of value
+  string tag_search = 3;
+}
+
+
+// The service will return a workflow_list_response when receiving a successful workflow_list_request.
+message WorkflowListResponse {
+  // A list of workflows that the service has executed or is executing.
+  repeated WorkflowDesc workflows = 1;
+
+  // A token, which when provided in a workflow_list_request, allows one to retrieve the next page
+  // of results.
+  string next_page_token = 2;
+}
+
+// The service info request is a simple GET request and doesn't take any parameters.
+message ServiceInfoRequest {}
+
+// A message containing useful information about the running service, including supported versions and
+// default settings.
+message ServiceInfo {
+  // A map with keys as the workflow format type name (currently only CWL and WDL are used
+  // although a service may support others) and value is a workflow_type_version object which
+  // simply contains an array of one or more version strings
+  map<string, WorkflowTypeVersion> workflow_type_versions = 1;
+
+  // The version(s) of the WES schema supported by this service
+  repeated string supported_wes_versions = 2;
+
+  // The filesystem protocols supported by this service, currently these may include common
+  // protocols such as 'http', 'https', 'sftp', 's3', 'gs', 'file', 'synapse', or others as
+  // supported by this service.
+  repeated string supported_filesystem_protocols = 3;
+
+  // The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version
+  map<string,string> workflow_engine_versions = 4;
+
+  // Each workflow engine can present additional parameters that can be sent to the
+  // workflow engine. This message will list the default values, and their types for each
+  // workflow engine.
+  repeated DefaultWorkflowEngineParameter default_workflow_engine_parameters = 5;
+
+  // The system statistics, key is the statistic, value is the count of workflows in that state.
+  // See the State enum for the possible keys.
+  map<string,uint32> system_state_counts = 6;
+
+  // A URL that will help a in generating the tokens necessary to run a workflow using this
+  // service.
+  string auth_instructions_url = 7;
+
+  // A key-value map of arbitrary, extended metadata outside the scope of the above but useful
+  // to report back
+  map<string,string> tags = 8;
+}
+
+// Small description of workflows, returned by server during listing
+message WorkflowDesc {
+  // REQUIRED
+  string workflow_id  = 1;
+  
+  // REQUIRED
+  State state = 2;
+}
+
+// Available workflow types supported by a given instance of the service.
+message WorkflowTypeVersion {
+    // an array of one or more acceptable types for the Workflow Type. For
+    // example, to send a base64 encoded WDL gzip, one could would offer
+    // "base64_wdl1.0_gzip". By setting this value, and the path of the main WDL
+    // to be executed in the workflow_url to "main.wdl" in the WorkflowRequest.
+    repeated string workflow_type_version = 1;
+}
+
+message WorkflowRunId {
+  // workflow ID
+  string workflow_id = 1;
+}
+
+message WorkflowStatus {
+  // workflow ID
+  string workflow_id = 1;
+
+  // state
+  State state = 2;
+}
+
+message WorkflowLog {
+  // workflow ID
+  string workflow_id = 1;
+
+  // The original request message used to initiate this execution.
+  WorkflowRequest request = 2;
+
+  // state
+  State state = 3;
+
+  // the logs, and other key info like timing and exit code, for the overall run of this workflow
+  Log workflow_log = 4;
+
+  // the logs, and other key info like timing and exit code, for each step in the workflow
+  repeated Log task_logs = 5;
+
+  // the outputs
+  google.protobuf.Struct outputs = 6;
+}
+
+// Log and other info
+message Log {
+  // The task or workflow name
+  string name = 1;
+
+  // The command line that was run
+  repeated string cmd = 2;
+
+  // When the command was executed
+  string start_time = 3;
+
+  // When the command completed
+  string end_time = 4;
+
+  // Sample of stdout (not guaranteed to be entire log)
+  string stdout = 5;
+
+  // Sample of stderr (not guaranteed to be entire log)
+  string stderr = 6;
+
+  // Exit code of the program
+  int32  exit_code = 7;
+}
+
+// Enumeration of states for a given workflow request
+enum State {
+
+  // The state of the task is unknown.
+  //
+  // This provides a safe default for messages where this field is missing,
+  // for example, so that a missing field does not accidentally imply that
+  // the state is QUEUED.
+  UNKNOWN = 0;
+
+  // The task is queued.
+  QUEUED = 1;
+
+  // The task has been assigned to a worker and is currently preparing to run.
+  // For example, the worker may be turning on, downloading input files, etc.
+  INITIALIZING = 2;
+
+  // The task is running. Input files are downloaded and the first Executor
+  // has been started.
+  RUNNING = 3;
+
+  // The task is paused.
+  //
+  // An implementation may have the ability to pause a task, but this is not required.
+  PAUSED = 4;
+
+  // The task has completed running. Executors have exited without error
+  // and output files have been successfully uploaded.
+  COMPLETE = 5;
+
+  // The task encountered an error in one of the Executor processes. Generally,
+  // this means that an Executor exited with a non-zero exit code.
+  EXECUTOR_ERROR = 6;
+
+  // The task was stopped due to a system error, but not from an Executor,
+  // for example an upload failed due to network issues, the worker's ran out
+  // of disk space, etc.
+  SYSTEM_ERROR = 7;
+
+  // The task was canceled by the user.
+  CANCELED = 8;
+}
+
+// A message that allows one to describe default parameters for a workflow
+// engine.
+message DefaultWorkflowEngineParameter {
+    // Describes the type of the parameter, e.g. float.
+    string type = 1;
+
+    // The stringified version of the default parameter. e.g. "2.45".
+    string default_value = 2;
+}
