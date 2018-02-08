@@ -51,7 +51,7 @@ How to view
 
 The file `swagger/workflow_execution_service.swagger.json` contains the API description.
 
-Please visit http://ga4gh.github.io/workflow-execution-schemas to view this document in Swagger UI.
+Please visit http://ga4gh.github.io/workflow-execution-service-schemas to view this document in Swagger UI.
 
 Building Documents
 ------------------
