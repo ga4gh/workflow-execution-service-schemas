@@ -85,4 +85,4 @@ More Information
 ----------------
 
 * [Global Alliance for Genomics and Health](http://genomicsandhealth.org)
-* [GA4GH Cloud Work Stream)[https://ga4gh.cloud]
+* [GA4GH Cloud Work Stream](https://ga4gh.cloud)
