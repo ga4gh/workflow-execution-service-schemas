@@ -324,7 +324,7 @@ definitions:
           $ref: '#/definitions/Log'
         title: 'the logs, and other key info like timing and exit code, for each step in the workflow'
       outputs:
-        $ref: '#/definitions/protobufStruct'
+        $ref: '#/definitions/WesObject'
         title: the outputs
   WorkflowRequest:
     type: object
@@ -339,7 +339,7 @@ definitions:
           created in this way, the `workflow_url` should be set to the path of the main
           workflow descriptor.
       workflow_params:
-        $ref: '#/definitions/protobufStruct'
+        $ref: '#/definitions/WesObject'
         description: |-
           REQUIRED
           The workflow parameterization document (typically a JSON file), includes all parameterizations for the workflow
@@ -407,75 +407,8 @@ definitions:
           "base64_wdl1.0_gzip". By setting this value, and the path of the main WDL
           to be executed in the workflow_url to "main.wdl" in the WorkflowRequest.
     description: Available workflow types supported by a given instance of the service.
-  protobufListValue:
+  WesObject:
     type: object
-    properties:
-      values:
-        type: array
-        items:
-          $ref: '#/definitions/protobufValue'
-        description: Repeated field of dynamically typed values.
+    additionalProperties: true
     description: |-
-      `ListValue` is a wrapper around a repeated field of values.
-
-      The JSON representation for `ListValue` is JSON array.
-  protobufNullValue:
-    type: string
-    enum:
-      - NULL_VALUE
-    default: NULL_VALUE
-    description: |-
-      `NullValue` is a singleton enumeration to represent the null value for the
-      `Value` type union.
-
-       The JSON representation for `NullValue` is JSON `null`.
-
-       - NULL_VALUE: Null value.
-  protobufStruct:
-    type: object
-    properties:
-      fields:
-        type: object
-        additionalProperties:
-          $ref: '#/definitions/protobufValue'
-        description: Unordered map of dynamically typed values.
-    description: |-
-      `Struct` represents a structured data value, consisting of fields
-      which map to dynamically typed values. In some languages, `Struct`
-      might be supported by a native representation. For example, in
-      scripting languages like JS a struct is represented as an
-      object. The details of that representation are described together
-      with the proto support for the language.
-
-      The JSON representation for `Struct` is JSON object.
-  protobufValue:
-    type: object
-    properties:
-      null_value:
-        $ref: '#/definitions/protobufNullValue'
-        description: Represents a null value.
-      number_value:
-        type: number
-        format: double
-        description: Represents a double value.
-      string_value:
-        type: string
-        description: Represents a string value.
-      bool_value:
-        type: boolean
-        format: boolean
-        description: Represents a boolean value.
-      struct_value:
-        $ref: '#/definitions/protobufStruct'
-        description: Represents a structured value.
-      list_value:
-        $ref: '#/definitions/protobufListValue'
-        description: Represents a repeated `Value`.
-    description: |-
-      `Value` represents a dynamically typed value which can be either
-      null, a number, a string, a boolean, a recursive struct value, or a
-      list of values. A producer of value is expected to set one of that
-      variants, absence of any variant indicates an error.
-
-      The JSON representation for `Value` is JSON value.
-
+        An arbitrary structured object.

@@ -2,7 +2,7 @@
 .idea
 
 # Don't include the python package's copy of the swagger
-python/ga4gh/dos/data_object_service.swagger.yaml
+python/ga4gh/wes/workflow_execution_service.swagger.yaml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
