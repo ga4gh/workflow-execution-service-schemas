@@ -18,7 +18,7 @@ class TestServer(unittest.TestCase):
         # start a test server
         print('setting UP!!!!!!!!!!')
         p = subprocess.Popen(
-            ['ga4gh_dos_server'],
+            ['ga4gh_wes_server'],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             shell=False)

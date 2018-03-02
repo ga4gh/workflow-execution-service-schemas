@@ -23,6 +23,22 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/ServiceInfo'
+        '400':
+          description: The request is malformed.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: The request is unauthorized.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
       tags:
         - WorkflowExecutionService
   /workflows:
@@ -39,6 +55,22 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/WorkflowListResponse'
+        '400':
+          description: The request is malformed.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: The request is unauthorized.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
       parameters:
         - name: page_size
           description: |-
@@ -84,6 +116,22 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/WorkflowRunId'
+        '400':
+          description: The request is malformed.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: The request is unauthorized.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
       parameters:
         - name: body
           in: body
@@ -102,6 +150,22 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/WorkflowLog'
+        '401':
+          description: The request is unauthorized.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '404':
+          description: The requested Workflow found.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
       parameters:
         - name: workflow_id
           in: path
@@ -118,6 +182,22 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/WorkflowRunId'
+        '401':
+          description: The request is unauthorized.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '404':
+          description: The requested Workflow wasn't found.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
       parameters:
         - name: workflow_id
           in: path
@@ -135,6 +215,22 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/WorkflowStatus'
+        '401':
+          description: The request is unauthorized.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '404':
+          description: The requested Workflow wasn't found.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
       parameters:
         - name: workflow_id
           in: path
@@ -279,7 +375,7 @@ definitions:
       of disk space, etc.
        - CANCELED: The task was canceled by the user.
     title: Enumeration of states for a given workflow request
-  WorkflowDesc:
+  WorkflowDescription:
     type: object
     properties:
       workflow_id:
@@ -295,7 +391,7 @@ definitions:
       workflows:
         type: array
         items:
-          $ref: '#/definitions/WorkflowDesc'
+          $ref: '#/definitions/WorkflowDescription'
         description: A list of workflows that the service has executed or is executing.
       next_page_token:
         type: string
@@ -412,3 +508,14 @@ definitions:
     additionalProperties: true
     description: |-
         An arbitrary structured object.
+  ErrorResponse:
+    description: |-
+      An object that can optionally include information about the error.
+    type: object
+    properties:
+      msg:
+        type: string
+        description: A detailed error message.
+      status_code:
+        type: integer
+        description: The integer representing the HTTP status code (e.g. 200, 404).
