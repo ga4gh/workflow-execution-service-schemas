@@ -1,9 +1,0 @@
-includes:
-  - class: Directory
-    location: proto
-  - class: Directory
-    location: proto
-proto:
-  class: File
-  location: proto/workflow_execution_service.proto
-cwl:tool: protoc.cwl
