@@ -1,15 +1,13 @@
 # With app.py running start this test
 import logging
-import uuid
 import unittest
 import subprocess
 import time
 
 # setup connection, models and security
 from bravado.requests_client import RequestsClient
-from bravado.exception import HTTPNotFound
 
-from ga4gh.dos.client import Client
+from ga4gh.wes.client import Client
 
 SERVER_URL = 'http://localhost:8080/ga4gh/wes/v1'
 

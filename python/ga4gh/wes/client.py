@@ -35,7 +35,9 @@ class Client:
     https://github.com/Yelp/bravado/blob/master/docs/source/configuration.rst#client-configuration
     https://github.com/Yelp/bravado#example-with-basic-authentication
     """
-    def __init__(self, url, config=DEFAULT_CONFIG, http_client=None, request_headers=None):
+    def __init__(
+            self, url, config=DEFAULT_CONFIG,
+            http_client=None, request_headers=None):
         swagger_path = '{}/swagger.json'.format(url.rstrip("/"))
         config['formats'] = [int64_format]
         self._config = config
