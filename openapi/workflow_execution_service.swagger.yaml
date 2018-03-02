@@ -1,8 +1,8 @@
-basePath: /
+basePath: /ga4gh/wes/v1
 swagger: '2.0'
 info:
-  title: workflow_execution_service.proto
-  version: version not set
+  title: Workflow Execution Service
+  version: 0.2.1
 schemes:
   - http
   - https
@@ -11,7 +11,7 @@ consumes:
 produces:
   - application/json
 paths:
-  /ga4gh/wes/v1/service-info:
+  /service-info:
     get:
       summary: |-
         Get information about Workflow Execution Service.  May include information related (but
@@ -22,10 +22,10 @@ paths:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/ga4gh_wes_ServiceInfo'
+            $ref: '#/definitions/ServiceInfo'
       tags:
         - WorkflowExecutionService
-  /ga4gh/wes/v1/workflows:
+  /workflows:
     get:
       summary: |-
         List the workflows, this endpoint will list the workflows in order of oldest to newest.
@@ -38,7 +38,7 @@ paths:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/ga4gh_wes_WorkflowListResponse'
+            $ref: '#/definitions/WorkflowListResponse'
       parameters:
         - name: page_size
           description: |-
@@ -83,16 +83,16 @@ paths:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/ga4gh_wes_WorkflowRunId'
+            $ref: '#/definitions/WorkflowRunId'
       parameters:
         - name: body
           in: body
           required: true
           schema:
-            $ref: '#/definitions/ga4gh_wes_WorkflowRequest'
+            $ref: '#/definitions/WorkflowRequest'
       tags:
         - WorkflowExecutionService
-  '/ga4gh/wes/v1/workflows/{workflow_id}':
+  '/workflows/{workflow_id}':
     get:
       summary: Get detailed info about a running workflow.
       x-swagger-router-controller: ga4gh.wes.server
@@ -101,7 +101,7 @@ paths:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/ga4gh_wes_WorkflowLog'
+            $ref: '#/definitions/WorkflowLog'
       parameters:
         - name: workflow_id
           in: path
@@ -117,7 +117,7 @@ paths:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/ga4gh_wes_WorkflowRunId'
+            $ref: '#/definitions/WorkflowRunId'
       parameters:
         - name: workflow_id
           in: path
@@ -125,7 +125,7 @@ paths:
           type: string
       tags:
         - WorkflowExecutionService
-  '/ga4gh/wes/v1/workflows/{workflow_id}/status':
+  '/workflows/{workflow_id}/status':
     get:
       summary: Get quick status info about a running workflow.
       x-swagger-router-controller: ga4gh.wes.server
@@ -134,7 +134,7 @@ paths:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/ga4gh_wes_WorkflowStatus'
+            $ref: '#/definitions/WorkflowStatus'
       parameters:
         - name: workflow_id
           in: path
@@ -143,7 +143,7 @@ paths:
       tags:
         - WorkflowExecutionService
 definitions:
-  ga4gh_wes_DefaultWorkflowEngineParameter:
+  DefaultWorkflowEngineParameter:
     type: object
     properties:
       type:
@@ -155,7 +155,7 @@ definitions:
     description: |-
       A message that allows one to describe default parameters for a workflow
       engine.
-  ga4gh_wes_Log:
+  Log:
     type: object
     properties:
       name:
@@ -183,13 +183,13 @@ definitions:
         format: int32
         title: Exit code of the program
     title: Log and other info
-  ga4gh_wes_ServiceInfo:
+  ServiceInfo:
     type: object
     properties:
       workflow_type_versions:
         type: object
         additionalProperties:
-          $ref: '#/definitions/ga4gh_wes_WorkflowTypeVersion'
+          $ref: '#/definitions/WorkflowTypeVersion'
         title: |-
           A map with keys as the workflow format type name (currently only CWL and WDL are used
           although a service may support others) and value is a workflow_type_version object which
@@ -215,7 +215,7 @@ definitions:
       default_workflow_engine_parameters:
         type: array
         items:
-          $ref: '#/definitions/ga4gh_wes_DefaultWorkflowEngineParameter'
+          $ref: '#/definitions/DefaultWorkflowEngineParameter'
         description: |-
           Each workflow engine can present additional parameters that can be sent to the
           workflow engine. This message will list the default values, and their types for each
@@ -243,7 +243,7 @@ definitions:
     description: |-
       A message containing useful information about the running service, including supported versions and
       default settings.
-  ga4gh_wes_State:
+  State:
     type: string
     enum:
       - UNKNOWN
@@ -279,23 +279,23 @@ definitions:
       of disk space, etc.
        - CANCELED: The task was canceled by the user.
     title: Enumeration of states for a given workflow request
-  ga4gh_wes_WorkflowDesc:
+  WorkflowDesc:
     type: object
     properties:
       workflow_id:
         type: string
         title: REQUIRED
       state:
-        $ref: '#/definitions/ga4gh_wes_State'
+        $ref: '#/definitions/State'
         title: REQUIRED
     title: 'Small description of workflows, returned by server during listing'
-  ga4gh_wes_WorkflowListResponse:
+  WorkflowListResponse:
     type: object
     properties:
       workflows:
         type: array
         items:
-          $ref: '#/definitions/ga4gh_wes_WorkflowDesc'
+          $ref: '#/definitions/WorkflowDesc'
         description: A list of workflows that the service has executed or is executing.
       next_page_token:
         type: string
@@ -303,30 +303,30 @@ definitions:
           A token, which when provided in a workflow_list_request, allows one to retrieve the next page
           of results.
     description: The service will return a workflow_list_response when receiving a successful workflow_list_request.
-  ga4gh_wes_WorkflowLog:
+  WorkflowLog:
     type: object
     properties:
       workflow_id:
         type: string
         title: workflow ID
       request:
-        $ref: '#/definitions/ga4gh_wes_WorkflowRequest'
+        $ref: '#/definitions/WorkflowRequest'
         description: The original request message used to initiate this execution.
       state:
-        $ref: '#/definitions/ga4gh_wes_State'
+        $ref: '#/definitions/State'
         title: state
       workflow_log:
-        $ref: '#/definitions/ga4gh_wes_Log'
+        $ref: '#/definitions/Log'
         title: 'the logs, and other key info like timing and exit code, for the overall run of this workflow'
       task_logs:
         type: array
         items:
-          $ref: '#/definitions/ga4gh_wes_Log'
+          $ref: '#/definitions/Log'
         title: 'the logs, and other key info like timing and exit code, for each step in the workflow'
       outputs:
         $ref: '#/definitions/protobufStruct'
         title: the outputs
-  ga4gh_wes_WorkflowRequest:
+  WorkflowRequest:
     type: object
     properties:
       workflow_descriptor:
@@ -379,22 +379,22 @@ definitions:
     description: |-
       To execute a workflow, send a workflow request including all the details needed to begin downloading
       and executing a given workflow.
-  ga4gh_wes_WorkflowRunId:
+  WorkflowRunId:
     type: object
     properties:
       workflow_id:
         type: string
         title: workflow ID
-  ga4gh_wes_WorkflowStatus:
+  WorkflowStatus:
     type: object
     properties:
       workflow_id:
         type: string
         title: workflow ID
       state:
-        $ref: '#/definitions/ga4gh_wes_State'
+        $ref: '#/definitions/State'
         title: state
-  ga4gh_wes_WorkflowTypeVersion:
+  WorkflowTypeVersion:
     type: object
     properties:
       workflow_type_version:
