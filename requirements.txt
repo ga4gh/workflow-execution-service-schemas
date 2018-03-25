@@ -1,4 +1,0 @@
-cwl-runner
-cwltool==1.0.20161114152756
-schema-salad==1.18.20161005190847
-avro==1.8.1

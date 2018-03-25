@@ -49,25 +49,16 @@ Outstanding questions:
 How to view
 ------------
 
-The file `swagger/workflow_execution_service.swagger.json` contains the API description.
+The file `openapi/workflow_execution_service.swagger.yaml` contains the API description.
 
 Please visit http://ga4gh.github.io/workflow-execution-service-schemas to view this document in Swagger UI.
+
 
 Building Documents
 ------------------
 
-Make sure you have Docker installed for your platform and the `cwltool`.
+The OpenAPI description is in the `openapi` directory.
 
-    virtualenv env
-    source env/bin/activate
-    pip install -r requirements.txt
-
-You can generate the [Swagger](http://swagger.io/) from the Protocol Buffers:
-
-    cwltool CWLFile
-    sh tools/prepare_openapi.sh
-
-The resulting OpenAPI description will be in the `swagger` directory.
 
 How to contribute changes
 -------------------------
