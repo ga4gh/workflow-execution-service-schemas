@@ -5,7 +5,7 @@ Controllers for the workflow execution service
 DEFAULT_PAGE_SIZE = 100
 
 
-def GetWorkflowLog(**kwargs):
+def GetJobLog(**kwargs):
     return {}
 
 
@@ -13,7 +13,7 @@ def CancelJob(**kwargs):
     return {}
 
 
-def ListWorkflows(**kwargs):
+def ListJobs(**kwargs):
     return {}
 
 
@@ -21,9 +21,9 @@ def GetServiceInfo(**kwargs):
     return {}
 
 
-def RunWorkflow(**kwargs):
+def RunJob(**kwargs):
     return {}
 
 
-def GetWorkflowStatus(**kwargs):
+def GetJobStatus(**kwargs):
     return {}

@@ -2,7 +2,7 @@ basePath: /ga4gh/wes/v1
 swagger: '2.0'
 info:
   title: Workflow Execution Service
-  version: 0.2.1
+  version: 0.2.2
 schemes:
   - http
   - https
@@ -41,20 +41,20 @@ paths:
             $ref: '#/definitions/ErrorResponse'
       tags:
         - WorkflowExecutionService
-  /workflows:
+  /workflow-jobs:
     get:
       summary: |-
-        List the workflows, this endpoint will list the workflows in order of oldest to newest.
+        List the workflow jobs, this endpoint will list the jobs in order of oldest to newest.
         There is no guarantee of live updates as the user traverses the pages, the behavior should be
         decided (and documented) by each implementation.
-        To monitor a given execution, use GetWorkflowStatus or GetWorkflowLog.
+        To monitor a given execution, use GetJobStatus or GetJobLog.
       x-swagger-router-controller: ga4gh.wes.server
-      operationId: ListWorkflows
+      operationId: ListJobs
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/WorkflowListResponse'
+            $ref: '#/definitions/JobListResponse'
         '400':
           description: The request is malformed.
           schema:
@@ -75,7 +75,7 @@ paths:
         - name: page_size
           description: |-
             OPTIONAL
-            Number of workflows to return in a page.
+            Number of jobs to return in a page.
           in: query
           required: false
           type: integer
@@ -91,7 +91,7 @@ paths:
         - name: tag_search
           description: |-
             OPTIONAL
-            For each key, if the key's value is empty string then match workflows that are tagged with
+            For each key, if the key's value is empty string then match jobs that are tagged with
             this key regardless of value.
           in: query
           required: false
@@ -100,9 +100,9 @@ paths:
         - WorkflowExecutionService
     post:
       summary: |-
-        Run a workflow, this endpoint will allow you to create a new workflow request and
+        Submit a workflow job, this endpoint will allow you to create a new job request and
         retrieve its tracking ID to monitor its progress.  An important assumption in this
-        endpoint is that the workflow_params JSON will include parameterizations along with
+        endpoint is that the job_params JSON will include parameterizations along with
         input and output files.  The latter two may be on S3, Google object storage, local filesystems,
         etc.  This specification makes no distinction.  However, it is assumed that the submitter
         is using URLs that this system both understands and can access. For Amazon S3, this could
@@ -110,12 +110,12 @@ paths:
         particular bucket.  The details are important for a production system and user on-boarding
         but outside the scope of this spec.
       x-swagger-router-controller: ga4gh.wes.server
-      operationId: RunWorkflow
+      operationId: RunJob
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/WorkflowRunId'
+            $ref: '#/definitions/JobId'
         '400':
           description: The request is malformed.
           schema:
@@ -137,25 +137,25 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/WorkflowRequest'
+            $ref: '#/definitions/JobRequest'
       tags:
         - WorkflowExecutionService
-  '/workflows/{workflow_id}':
+  /workflow-jobs/{job_id}:
     get:
-      summary: Get detailed info about a running workflow.
+      summary: Get detailed info about a workflow job.
       x-swagger-router-controller: ga4gh.wes.server
-      operationId: GetWorkflowLog
+      operationId: GetJobLog
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/WorkflowLog'
+            $ref: '#/definitions/JobLog'
         '401':
           description: The request is unauthorized.
           schema:
             $ref: '#/definitions/ErrorResponse'
         '404':
-          description: The requested Workflow found.
+          description: The requested Workflow job not found.
           schema:
             $ref: '#/definitions/ErrorResponse'
         '403':
@@ -167,21 +167,21 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
       parameters:
-        - name: workflow_id
+        - name: job_id
           in: path
           required: true
           type: string
       tags:
         - WorkflowExecutionService
     delete:
-      summary: Cancel a running workflow.
+      summary: Cancel a running job.
       x-swagger-router-controller: ga4gh.wes.server
       operationId: CancelJob
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/WorkflowRunId'
+            $ref: '#/definitions/JobId'
         '401':
           description: The request is unauthorized.
           schema:
@@ -199,28 +199,28 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
       parameters:
-        - name: workflow_id
+        - name: job_id
           in: path
           required: true
           type: string
       tags:
         - WorkflowExecutionService
-  '/workflows/{workflow_id}/status':
+  /workflow-jobs/{job_id}/status:
     get:
-      summary: Get quick status info about a running workflow.
+      summary: Get quick status info about a workflow job.
       x-swagger-router-controller: ga4gh.wes.server
-      operationId: GetWorkflowStatus
+      operationId: GetJobStatus
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/WorkflowStatus'
+            $ref: '#/definitions/JobStatus'
         '401':
           description: The request is unauthorized.
           schema:
             $ref: '#/definitions/ErrorResponse'
         '404':
-          description: The requested Workflow wasn't found.
+          description: The requested workflow job wasn't found.
           schema:
             $ref: '#/definitions/ErrorResponse'
         '403':
@@ -232,7 +232,7 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
       parameters:
-        - name: workflow_id
+        - name: job_id
           in: path
           required: true
           type: string
@@ -322,12 +322,12 @@ definitions:
           type: integer
           format: int64
         description: |-
-          The system statistics, key is the statistic, value is the count of workflows in that state.
+          The system statistics, key is the statistic, value is the count of jobs in that state.
           See the State enum for the possible keys.
       auth_instructions_url:
         type: string
         description: |-
-          A URL that will help a in generating the tokens necessary to run a workflow using this
+          A URL that will help a in generating the tokens necessary to run a workflow job using this
           service.
       tags:
         type: object
@@ -374,55 +374,55 @@ definitions:
       for example an upload failed due to network issues, the worker's ran out
       of disk space, etc.
        - CANCELED: The task was canceled by the user.
-    title: Enumeration of states for a given workflow request
-  WorkflowDescription:
+    title: Enumeration of states for a given job request
+  JobDescription:
     type: object
     properties:
-      workflow_id:
+      job_id:
         type: string
         title: REQUIRED
       state:
         $ref: '#/definitions/State'
         title: REQUIRED
-    title: 'Small description of workflows, returned by server during listing'
-  WorkflowListResponse:
+    title: 'Small description of jobs, returned by server during listing'
+  JobListResponse:
     type: object
     properties:
-      workflows:
+      jobs:
         type: array
         items:
-          $ref: '#/definitions/WorkflowDescription'
-        description: A list of workflows that the service has executed or is executing.
+          $ref: '#/definitions/JobDescription'
+        description: A list of workflow jobs that the service has executed or is executing.
       next_page_token:
         type: string
         description: |-
-          A token, which when provided in a workflow_list_request, allows one to retrieve the next page
+          A token, which when provided in a job_list_request, allows one to retrieve the next page
           of results.
-    description: The service will return a workflow_list_response when receiving a successful workflow_list_request.
-  WorkflowLog:
+    description: The service will return a job_list_response when receiving a successful job_list_request.
+  JobLog:
     type: object
     properties:
-      workflow_id:
+      job_id:
         type: string
-        title: workflow ID
+        title: job ID
       request:
-        $ref: '#/definitions/WorkflowRequest'
+        $ref: '#/definitions/JobRequest'
         description: The original request message used to initiate this execution.
       state:
         $ref: '#/definitions/State'
         title: state
-      workflow_log:
+      job_log:
         $ref: '#/definitions/Log'
-        title: 'the logs, and other key info like timing and exit code, for the overall run of this workflow'
+        title: 'the logs, and other key info like timing and exit code, for the overall run of this job'
       task_logs:
         type: array
         items:
           $ref: '#/definitions/Log'
-        title: 'the logs, and other key info like timing and exit code, for each step in the workflow'
+        title: 'the logs, and other key info like timing and exit code, for each step in the job'
       outputs:
         $ref: '#/definitions/WesObject'
         title: the outputs
-  WorkflowRequest:
+  JobRequest:
     type: object
     properties:
       workflow_descriptor:
@@ -434,11 +434,11 @@ definitions:
           CWL, WDL, or a base64 encoded gzip of the required workflow descriptors. When files must be
           created in this way, the `workflow_url` should be set to the path of the main
           workflow descriptor.
-      workflow_params:
+      job_params:
         $ref: '#/definitions/WesObject'
         description: |-
           REQUIRED
-          The workflow parameterization document (typically a JSON file), includes all parameterizations for the workflow
+          The workflow job parameterization document (typically a JSON file), includes all parameterizations for the job
           including input and output file locations.
       workflow_type:
         type: string
@@ -456,7 +456,7 @@ definitions:
           type: string
         title: |-
           OPTIONAL
-          A key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request
+          A key-value map of arbitrary metadata outside the scope of the job_params but useful to track with this job request
       workflow_engine_parameters:
         type: object
         additionalProperties:
@@ -473,20 +473,20 @@ definitions:
           workflow descriptor files is offered, the `workflow_url` should be set to the relative path
           of the main workflow descriptor.
     description: |-
-      To execute a workflow, send a workflow request including all the details needed to begin downloading
-      and executing a given workflow.
-  WorkflowRunId:
+      To execute a workflow job, send a job request including all the details needed to begin downloading
+      and executing a given job.
+  JobId:
     type: object
     properties:
-      workflow_id:
+      job_id:
         type: string
-        title: workflow ID
-  WorkflowStatus:
+        title: job ID
+  JobStatus:
     type: object
     properties:
-      workflow_id:
+      job_id:
         type: string
-        title: workflow ID
+        title: job ID
       state:
         $ref: '#/definitions/State'
         title: state
@@ -501,7 +501,7 @@ definitions:
           an array of one or more acceptable types for the Workflow Type. For
           example, to send a base64 encoded WDL gzip, one could would offer
           "base64_wdl1.0_gzip". By setting this value, and the path of the main WDL
-          to be executed in the workflow_url to "main.wdl" in the WorkflowRequest.
+          to be executed in the workflow_url to "main.wdl" in the JobRequest.
     description: Available workflow types supported by a given instance of the service.
   WesObject:
     type: object
