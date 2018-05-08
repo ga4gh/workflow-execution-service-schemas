@@ -2,7 +2,7 @@ basePath: /ga4gh/wes/v1
 swagger: '2.0'
 info:
   title: Workflow Execution Service
-  version: 0.2.1
+  version: 0.3.0
 schemes:
   - http
   - https
