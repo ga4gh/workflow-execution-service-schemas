@@ -256,29 +256,29 @@ definitions:
     properties:
       name:
         type: string
-        title: The task or workflow name
+        description: The task or workflow name
       cmd:
         type: array
         items:
           type: string
-        title: The command line that was run
+        description: The command line that was run
       start_time:
         type: string
-        title: When the command was executed
+        description: When the command was executed
       end_time:
         type: string
-        title: When the command completed
+        description: When the command completed
       stdout:
         type: string
-        title: Sample of stdout (not guaranteed to be entire log)
+        description: Sample of stdout (not guaranteed to be entire log)
       stderr:
         type: string
-        title: Sample of stderr (not guaranteed to be entire log)
+        description: Sample of stderr (not guaranteed to be entire log)
       exit_code:
         type: integer
         format: int32
-        title: Exit code of the program
-    title: Log and other info
+        description: Exit code of the program
+    description: Log and other info
   ServiceInfo:
     type: object
     properties:
@@ -286,7 +286,7 @@ definitions:
         type: object
         additionalProperties:
           $ref: '#/definitions/WorkflowTypeVersion'
-        title: |-
+        description: |-
           A map with keys as the workflow format type name (currently only CWL and WDL are used
           although a service may support others) and value is a workflow_type_version object which
           simply contains an array of one or more version strings
@@ -294,7 +294,7 @@ definitions:
         type: array
         items:
           type: string
-        title: The version(s) of the WES schema supported by this service
+        description: The version(s) of the WES schema supported by this service
       supported_filesystem_protocols:
         type: array
         items:
@@ -307,7 +307,7 @@ definitions:
         type: object
         additionalProperties:
           type: string
-        title: 'The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version'
+        description: 'The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version'
       default_workflow_engine_parameters:
         type: array
         items:
@@ -333,7 +333,7 @@ definitions:
         type: object
         additionalProperties:
           type: string
-        title: |-
+        description: |-
           A key-value map of arbitrary, extended metadata outside the scope of the above but useful
           to report back
     description: |-
@@ -353,6 +353,7 @@ definitions:
       - CANCELED
     default: UNKNOWN
     description: |-
+      Enumeration of states for a given workflow request
       - UNKNOWN: The state of the task is unknown.
 
       This provides a safe default for messages where this field is missing,
@@ -374,17 +375,16 @@ definitions:
       for example an upload failed due to network issues, the worker's ran out
       of disk space, etc.
        - CANCELED: The task was canceled by the user.
-    title: Enumeration of states for a given workflow request
   WorkflowDescription:
     type: object
     properties:
       workflow_id:
         type: string
-        title: REQUIRED
+        description: REQUIRED
       state:
         $ref: '#/definitions/State'
-        title: REQUIRED
-    title: 'Small description of workflows, returned by server during listing'
+        description: REQUIRED
+    description: 'Small description of workflows, returned by server during listing'
   WorkflowListResponse:
     type: object
     properties:
@@ -404,24 +404,24 @@ definitions:
     properties:
       workflow_id:
         type: string
-        title: workflow ID
+        description: workflow ID
       request:
         $ref: '#/definitions/WorkflowRequest'
         description: The original request message used to initiate this execution.
       state:
         $ref: '#/definitions/State'
-        title: state
+        description: state
       workflow_log:
         $ref: '#/definitions/Log'
-        title: 'the logs, and other key info like timing and exit code, for the overall run of this workflow'
+        description: 'the logs, and other key info like timing and exit code, for the overall run of this workflow'
       task_logs:
         type: array
         items:
           $ref: '#/definitions/Log'
-        title: 'the logs, and other key info like timing and exit code, for each step in the workflow'
+        description: 'the logs, and other key info like timing and exit code, for each step in the workflow'
       outputs:
         $ref: '#/definitions/WesObject'
-        title: the outputs
+        description: the outputs
   WorkflowRequest:
     type: object
     properties:
@@ -442,19 +442,19 @@ definitions:
           including input and output file locations.
       workflow_type:
         type: string
-        title: |-
+        description: |-
           REQUIRED
           The workflow descriptor type, must be "CWL" or "WDL" currently (or another alternative supported by this WES instance)
       workflow_type_version:
         type: string
-        title: |-
+        description: |-
           REQUIRED
           The workflow descriptor type version, must be one supported by this WES instance
       tags:
         type: object
         additionalProperties:
           type: string
-        title: |-
+        description: |-
           OPTIONAL
           A key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request
       workflow_engine_parameters:
@@ -480,16 +480,16 @@ definitions:
     properties:
       workflow_id:
         type: string
-        title: workflow ID
+        description: workflow ID
   WorkflowStatus:
     type: object
     properties:
       workflow_id:
         type: string
-        title: workflow ID
+        description: workflow ID
       state:
         $ref: '#/definitions/State'
-        title: state
+        description: state
   WorkflowTypeVersion:
     type: object
     properties:
@@ -519,3 +519,4 @@ definitions:
       status_code:
         type: integer
         description: The integer representing the HTTP status code (e.g. 200, 404).
+
