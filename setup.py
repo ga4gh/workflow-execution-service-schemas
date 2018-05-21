@@ -80,7 +80,7 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
     ],
-    version='0.2.1',
+    version='0.3.0',
     keywords=['genomics'],
     # Use setuptools_scm to set the version number automatically from Git
     setup_requires=['setuptools_scm'],
