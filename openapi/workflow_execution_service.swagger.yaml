@@ -44,10 +44,13 @@ paths:
   /workflows:
     get:
       summary: |-
-        List submitted workflows.  The ordering of this list is implementation dependent.
-        There is no guarantee of live updates as the user traverses the pages, the behavior should be
-        decided (and documented) by each implementation.
-        To monitor a given execution, use GetWorkflowStatus or GetWorkflowLog.
+        List submitted workflows.  This should be provided in a stable
+        ordering, however the ordering of this list is implementation
+        dependent.  When paging through the list, the client should
+        not make assumptions about live updates, but should assume the
+        contents of the list reflect the workflow list at the moment
+        that the first page is requested.  To monitor a specific
+        workflow run, use GetWorkflowStatus or GetWorkflowLog.
       x-swagger-router-controller: ga4gh.wes.server
       operationId: ListWorkflows
       responses:
@@ -75,8 +78,14 @@ paths:
         - name: page_size
           description: |-
             OPTIONAL
-            The preferred number of workflow submissions to return in a page.
-            The actual number of items returned is implementation dependent.
+            The preferred number of workflow runs to return in a page.
+            If not provided, the implementation should use a default page size.
+            The implementation must not return more items
+            than "page_size", but it may return fewer.  Clients should
+            not assume that if fewer than "page_size" items is
+            returned that all items have been returned.  The
+            availability of additional pages is indicated by the value
+            of "next_page_token" in the response.
           in: query
           required: false
           type: integer
@@ -92,7 +101,8 @@ paths:
         - name: tag_search
           description: |-
             OPTIONAL
-            Only return workflow submissions where this key is present in "tags" (regardless of tag value).
+            For each key, if the key's value is empty string then match workflows that are tagged with
+            this key regardless of value.
           in: query
           required: false
           type: string
