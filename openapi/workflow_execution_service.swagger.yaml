@@ -88,11 +88,27 @@ paths:
           in: query
           required: false
           type: string
-        - name: tag_search
+        - name: tag_key
           description: |-
             OPTIONAL
-            For each key, if the key's value is empty string then match workflows that are tagged with
-            this key regardless of value.
+            Filter returned workflow runs to only return those where the specified key is present in "tags".
+          in: query
+          required: false
+          type: string
+        - name: tag_value
+          description: |-
+            OPTIONAL
+            Filter workflow runs to only return those where this exact
+            key-value pair is present in "tags".  Only valid if
+            "tag_key" is also specified.  Filtering by "tag_value" only
+            is not supported.
+          in: query
+          required: false
+          type: string
+        - name: state
+          description: |-
+            OPTIONAL
+            Filter returned workflow runs to only return those with the specified state.
           in: query
           required: false
           type: string
@@ -456,7 +472,11 @@ definitions:
           type: string
         title: |-
           OPTIONAL
-          A key-value map of arbitrary metadata outside the scope of the workflow_params but useful to track with this workflow request
+          A key-value map of arbitrary metadata which may be used by
+          the client to organize and manage workflow runs.  Tags must
+          not be considered part of the workflow run input.  Clients may
+          use the "tag_key" and "tag_value" query parameters to filter
+          the workflow list based on tags.
       workflow_engine_parameters:
         type: object
         additionalProperties:
