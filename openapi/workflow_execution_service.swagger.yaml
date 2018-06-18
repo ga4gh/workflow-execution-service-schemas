@@ -347,8 +347,13 @@ definitions:
       auth_instructions_url:
         type: string
         description: |-
-          A URL that will help a in generating the tokens necessary to run a workflow using this
-          service.
+          A web page URL with information about how to get an
+          authorization token necessary to use a specific endpoint.
+     contact_info:
+        type: string
+        description: |-
+          An email address or web page URL with contact information
+          for the operator of a specific WES endpoint.
       tags:
         type: object
         additionalProperties:
