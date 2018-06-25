@@ -103,32 +103,35 @@ paths:
         Run a workflow.  This endpoint creates a new workflow run and
         returns the workflow ID to monitor its progress.
 
-        The workflow_params JSON object specifies input parameters,
+        The request may upload files that are required to execute the
+        workflow identified as `workflow_attachment`.  The parts
+        supplied in `workflow_attachment` may include the primary
+        workflow, tools imported by the workflow, other files
+        referenced by the workflow, or files which are part of the
+        input.  The implementation should stage these files to a
+        temporary directory and execute the workflow from there.
+        These parts must have a Content-Disposition header with a
+        "filename" provided for each part.  Filenames may include
+        subdirectories, but must not include references to parent
+        directories with '..', implementations should guard against
+        maliciously constructed filenames.
+
+        The `workflow_url` is either an absolute URL to a workflow
+        file that is accessible by the WES endpoint, or a relative URL
+        corresponding to one of the files attached using
+        `workflow_attachment`.
+
+        The `workflow_params` JSON object specifies input parameters,
         such as input files.  The exact format of the JSON object
         depends on the conventions of the workflow language being
-        used.  Input files should be addressed by URL.  The WES
-        endpoint must understand and be able to access URLs supplied
-        in the input.  This is implementation specific.
+        used.  Input files should either be absolute URLs, or relative
+        URLs corresponding to files uploaded using
+        `workflow_attachment`.  The WES endpoint must understand and
+        be able to access URLs supplied in the input.  This is
+        implementation specific.
 
-        This endpoint can be used two different ways, selected by
-        Content-Type.
-
-        If Content-Type is application/json, the WorkflowRequest JSON
-        is provided in the body of the request.  The "workflow_url"
-        must refer to a workflow file by URL that is accessible by the
-        WES endpoint, in addition any files referenced in
-        workflow_params must be referenced by full URL.
-
-        If Content-Type is multipart/form-data, the request consists
-        of one or more files that are required to execute the
-        workflow.  Form parts MUST have a Content-Disposition header
-        with a "filename" provided for each part.
-
-        Parts may include the primary workflow, tools imported by the
-        workflow, other files referenced by the workflow, or files
-        which are part of the input.  The implementation should stage
-        these files to a temporary directory and execute the workflow
-        from there.
+        See documentation for WorkflowRequest for detail about other
+        fields.
 
       x-swagger-router-controller: ga4gh.wes.server
       operationId: RunWorkflow
@@ -153,12 +156,42 @@ paths:
           description: An unexpected error occurred.
           schema:
             $ref: '#/definitions/ErrorResponse'
+      consumes:
+         - multipart/form-data
       parameters:
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/WorkflowRequest'
+        - in: formData
+          name: workflow_params
+          type: string
+          format: application/json
+
+        - in: formData
+          name: workflow_type
+          type: string
+
+        - in: formData
+          name: workflow_type_version
+          type: string
+
+        - in: formData
+          name: tags
+          type: string
+          format: application/json
+
+        - in: formData
+          name: workflow_engine_parameters
+          type: string
+          format: application/json
+
+        - in: formData
+          name: workflow_url
+          type: string
+
+        - in: formData
+          name: workflow_attachment
+          type: array
+          items:
+            type: string
+            format: binary
       tags:
         - WorkflowExecutionService
   '/workflows/{workflow_id}':
@@ -480,10 +513,10 @@ definitions:
       workflow_url:
         type: string
         description: |-
-          OPTIONAL
-          The workflow CWL or WDL document, must provide either this or workflow_descriptor. When a base64 encoded gzip of
-          workflow descriptor files is offered, the `workflow_url` should be set to the relative path
-          of the main workflow descriptor.
+          REQUIRED
+          The workflow CWL or WDL document.
+          When workflow attachments files are provided, the `workflow_url` may be a relative path
+          corresponding to one of the attachments.
     description: |-
       To execute a workflow, send a workflow request including all the details needed to begin downloading
       and executing a given workflow.
