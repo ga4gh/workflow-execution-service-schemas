@@ -44,10 +44,13 @@ paths:
   /workflow-runs:
     get:
       summary: |-
-        List the workflow runs, this endpoint will list the runs in order of oldest to newest.
-        There is no guarantee of live updates as the user traverses the pages, the behavior should be
-        decided (and documented) by each implementation.
-        To monitor a given execution, use GetWorkflowRunStatus or GetWorkflowRunLog.
+        List the workflow runs.  This should be provided in a stable
+        ordering, however the ordering of this list is implementation
+        dependent.  When paging through the list, the client should
+        not make assumptions about live updates, but should assume the
+        contents of the list reflect the workflow list at the moment
+        that the first page is requested.  To monitor a specific
+        workflow run, use GetWorkflowRunStatus or GetWorkflowRunLog.
       x-swagger-router-controller: ga4gh.wes.server
       operationId: ListWorkflowRuns
       responses:
@@ -75,7 +78,14 @@ paths:
         - name: page_size
           description: |-
             OPTIONAL
-            Number of workflow runs to return in a page.
+            The preferred number of workflow runs to return in a page.
+            If not provided, the implementation should use a default page size.
+            The implementation must not return more items
+            than "page_size", but it may return fewer.  Clients should
+            not assume that if fewer than "page_size" items is
+            returned that all items have been returned.  The
+            availability of additional pages is indicated by the value
+            of "next_page_token" in the response.
           in: query
           required: false
           type: integer
@@ -83,7 +93,7 @@ paths:
         - name: page_token
           description: |-
             OPTIONAL
-            Token to use to indicate where to start getting results. If unspecified, returns the first
+            Token to use to indicate where to start getting results. If unspecified, return the first
             page of results.
           in: query
           required: false
@@ -264,16 +274,26 @@ definitions:
         title: The command line that was executed
       start_time:
         type: string
-        title: When the command was executed
+        title: When the command started executing, in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
       end_time:
         type: string
-        title: When the command completed
+        title: When the command stopped executing (completed, failed, or cancelled), in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
       stdout:
         type: string
-        title: Sample of stdout (not guaranteed to be entire log)
+        title: |-
+          A URL to retrieve standard output logs of the workflow run or
+          task.  This URL may change between status requests, or may
+          not be available until the task or workflow has finished
+          execution.  Should be available using the same credentials
+          used to access the WES endpoint.
       stderr:
         type: string
-        title: Sample of stderr (not guaranteed to be entire log)
+        title: |-
+          A URL to retrieve standard error logs of the workflow run or
+          task.  This URL may change between status requests, or may
+          not be available until the task or workflow has finished
+          execution.  Should be available using the same credentials
+          used to access the WES endpoint.
       exit_code:
         type: integer
         format: int32
@@ -327,8 +347,15 @@ definitions:
       auth_instructions_url:
         type: string
         description: |-
-          A URL that will help a in generating the tokens necessary to run a workflow run using this
-          service.
+          A web page URL with information about how to get an
+          authorization token necessary to use a specific endpoint.
+     contact_info:
+        type: string
+        description: |-
+          An email address or web page URL with contact information
+          for the operator of a specific WES endpoint.  Users of the
+          endpoint should use this to report problems or security
+          vulnerabilities.
       tags:
         type: object
         additionalProperties:
@@ -396,10 +423,10 @@ definitions:
       next_page_token:
         type: string
         description: |-
-          A token, which when provided in a workflow_run_list_request, allows one to retrieve the next page
-          of results.
+          A token which may be supplied as "page_token" in workflow run list request to get the next page
+          of results.  An empty string indicates there are no more items to return.
     description: The service will return a workflow_run_list_response when receiving a successful workflow_run_list_request.
-  WorkflowRunLog:
+  WorkflowLog:
     type: object
     properties:
       run_id:
