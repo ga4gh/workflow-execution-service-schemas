@@ -403,7 +403,7 @@ definitions:
         description: |-
           A web page URL with information about how to get an
           authorization token necessary to use a specific endpoint.
-     contact_info:
+      contact_info:
         type: string
         description: |-
           An email address or web page URL with contact information
@@ -480,7 +480,7 @@ definitions:
           A token which may be supplied as "page_token" in workflow run list request to get the next page
           of results.  An empty string indicates there are no more items to return.
     description: The service will return a workflow_run_list_response when receiving a successful workflow_run_list_request.
-  WorkflowLog:
+  WorkflowRunLog:
     type: object
     properties:
       run_id:
