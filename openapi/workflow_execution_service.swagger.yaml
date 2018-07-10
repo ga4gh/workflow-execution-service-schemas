@@ -349,7 +349,7 @@ definitions:
         description: |-
           A web page URL with information about how to get an
           authorization token necessary to use a specific endpoint.
-     contact_info:
+      contact_info:
         type: string
         description: |-
           An email address or web page URL with contact information
