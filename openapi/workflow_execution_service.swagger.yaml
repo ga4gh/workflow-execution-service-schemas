@@ -1,4 +1,4 @@
-basePath: /ga4gh/wes/v1
+basePath: '/ga4gh/wes/v1'
 swagger: '2.0'
 info:
   title: Workflow Execution Service
@@ -14,8 +14,7 @@ paths:
   /service-info:
     get:
       summary: |-
-        Get information about Workflow Execution Service.  May include information related (but
-        not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general the service availability.
+        Get information about Workflow Execution Service. May include information related (but not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general the service availability.
       x-swagger-router-controller: ga4gh.wes.server
       operationId: GetServiceInfo
       responses:
@@ -349,7 +348,7 @@ definitions:
         description: |-
           A web page URL with information about how to get an
           authorization token necessary to use a specific endpoint.
-     contact_info:
+      contact_info:
         type: string
         description: |-
           An email address or web page URL with contact information
