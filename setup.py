@@ -21,7 +21,7 @@ except ImportError:
 with open("python/README.pypi.rst") as readmeFile:
     long_description = readmeFile.read()
 
-install_requires = ['PyYAML', 'bravado', 'ez_setup']
+install_requires = []
 with open("python/requirements.txt") as requirementsFile:
     for line in requirementsFile:
         line = line.strip()
