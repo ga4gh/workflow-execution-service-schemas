@@ -11,7 +11,8 @@ class TestPackage(unittest.TestCase):
     def setUpClass(cls):
         cwd = os.path.dirname(os.path.realpath(__file__))
         spec_dir = os.path.join(cwd, '../../openapi')
-        cls.swagger_path = os.path.join(spec_dir, 'workflow_execution_service.swagger.yaml')
+        swagger_file = 'workflow_execution_service.swagger.yaml'      
+        cls.swagger_path = os.path.join(spec_dir, swagger_file)       
 
     def test_version_consensus(self):
         from ga4gh.wes import __version__
@@ -26,3 +27,4 @@ class TestPackage(unittest.TestCase):
         JSON response."""
         path = os.path.abspath(self.swagger_path)
         swagger_spec_validator.validate_spec_url('file://' + path)
+        
