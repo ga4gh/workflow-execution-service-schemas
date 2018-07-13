@@ -110,15 +110,39 @@ paths:
         - WorkflowExecutionService
     post:
       summary: |-
-        Submit a workflow run, this endpoint will allow you to create a new run request and
-        retrieve its tracking ID to monitor its progress.  An important assumption in this
-        endpoint is that the workflow_params JSON will include parameterizations along with
-        input and output files.  The latter two may be on S3, Google object storage, local filesystems,
-        etc.  This specification makes no distinction.  However, it is assumed that the submitter
-        is using URLs that this system both understands and can access. For Amazon S3, this could
-        be accomplished by given the credentials associated with a WES service access to a
-        particular bucket.  The details are important for a production system and user on-boarding
-        but outside the scope of this spec.
+        Run a workflow.  This endpoint creates a new workflow run and
+        returns the workflow ID to monitor its progress.
+
+        The request may upload files that are required to execute the
+        workflow identified as `workflow_attachment`.  The parts
+        supplied in `workflow_attachment` may include the primary
+        workflow, tools imported by the workflow, other files
+        referenced by the workflow, or files which are part of the
+        input.  The implementation should stage these files to a
+        temporary directory and execute the workflow from there.
+        These parts must have a Content-Disposition header with a
+        "filename" provided for each part.  Filenames may include
+        subdirectories, but must not include references to parent
+        directories with '..', implementations should guard against
+        maliciously constructed filenames.
+
+        The `workflow_url` is either an absolute URL to a workflow
+        file that is accessible by the WES endpoint, or a relative URL
+        corresponding to one of the files attached using
+        `workflow_attachment`.
+
+        The `workflow_params` JSON object specifies input parameters,
+        such as input files.  The exact format of the JSON object
+        depends on the conventions of the workflow language being
+        used.  Input files should either be absolute URLs, or relative
+        URLs corresponding to files uploaded using
+        `workflow_attachment`.  The WES endpoint must understand and
+        be able to access URLs supplied in the input.  This is
+        implementation specific.
+
+        See documentation for WorkflowRequest for detail about other
+        fields.
+
       x-swagger-router-controller: ga4gh.wes.server
       operationId: RunWorkflow
       responses:
@@ -142,12 +166,42 @@ paths:
           description: An unexpected error occurred.
           schema:
             $ref: '#/definitions/ErrorResponse'
+      consumes:
+         - multipart/form-data
       parameters:
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/WorkflowRunRequest'
+        - in: formData
+          name: workflow_params
+          type: string
+          format: application/json
+
+        - in: formData
+          name: workflow_type
+          type: string
+
+        - in: formData
+          name: workflow_type_version
+          type: string
+
+        - in: formData
+          name: tags
+          type: string
+          format: application/json
+
+        - in: formData
+          name: workflow_engine_parameters
+          type: string
+          format: application/json
+
+        - in: formData
+          name: workflow_url
+          type: string
+
+        - in: formData
+          name: workflow_attachment
+          type: array
+          items:
+            type: string
+            format: binary
       tags:
         - WorkflowExecutionService
   /workflow-runs/{run_id}:
@@ -349,7 +403,7 @@ definitions:
         description: |-
           A web page URL with information about how to get an
           authorization token necessary to use a specific endpoint.
-     contact_info:
+      contact_info:
         type: string
         description: |-
           An email address or web page URL with contact information
@@ -426,7 +480,7 @@ definitions:
           A token which may be supplied as "page_token" in workflow run list request to get the next page
           of results.  An empty string indicates there are no more items to return.
     description: The service will return a workflow_run_list_response when receiving a successful workflow_run_list_request.
-  WorkflowLog:
+  WorkflowRunLog:
     type: object
     properties:
       run_id:
@@ -452,15 +506,6 @@ definitions:
   WorkflowRunRequest:
     type: object
     properties:
-      workflow_descriptor:
-        type: string
-        description: |-
-          OPTIONAL
-          The workflow CWL or WDL document, must provide either this or workflow_url. By combining
-          this message with a workflow_type_version offered in ServiceInfo, one can initialize
-          CWL, WDL, or a base64 encoded gzip of the required workflow descriptors. When files must be
-          created in this way, the `workflow_url` should be set to the path of the main
-          workflow descriptor.
       workflow_params:
         $ref: '#/definitions/WesObject'
         description: |-
@@ -495,10 +540,10 @@ definitions:
       workflow_url:
         type: string
         description: |-
-          OPTIONAL
-          The workflow CWL or WDL document, must provide either this or workflow_descriptor. When a base64 encoded gzip of
-          workflow descriptor files is offered, the `workflow_url` should be set to the relative path
-          of the main workflow descriptor.
+          REQUIRED
+          The workflow CWL or WDL document.
+          When workflow attachments files are provided, the `workflow_url` may be a relative path
+          corresponding to one of the attachments.
     description: |-
       To execute a workflow, send a run request including all the details needed to begin downloading
       and executing a given workflow.
