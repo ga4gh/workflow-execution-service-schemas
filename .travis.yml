@@ -6,7 +6,7 @@ before_install:
 - pip install . --process-dependency-links
 - pip install -r python/dev-requirements.txt
 script:
-- nosetests python
+- nosetests python/
 - flake8 python
 - ga4gh_wes_client
 deploy:
