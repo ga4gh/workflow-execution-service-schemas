@@ -67,6 +67,11 @@ Take cues for now from the [ga4gh/schemas](https://github.com/ga4gh/schemas/blob
 
 We like [HubFlow](https://datasift.github.io/gitflow/) and using pull requests to suggest changes.
 
+Security Considerations
+-----------------------
+
+If a security issue with any of the above specifications is realised please send an email to security-notification@ga4gh.org detailing your concerns.
+
 License
 -------
 
