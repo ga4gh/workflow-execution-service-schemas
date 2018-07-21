@@ -34,7 +34,6 @@ Key features of the current API proposal:
 * ability to request a workflow run using CWL or WDL (and maybe future formats)
 * ability to parameterize that workflow using a JSON schema (ideally a future version would be in common between CWL and WDL)
 * ability to get information about running workflows, status, errors, output file locations, etc.
-* to search for workflows by arbitrary key/values
 
 Outstanding questions:
 

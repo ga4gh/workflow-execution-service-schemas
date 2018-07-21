@@ -97,14 +97,6 @@ paths:
           in: query
           required: false
           type: string
-        - name: tag_search
-          description: |-
-            OPTIONAL
-            For each key, if the key's value is empty string then match runs that are tagged with
-            this key regardless of value.
-          in: query
-          required: false
-          type: string
       tags:
         - WorkflowExecutionService
     post:
