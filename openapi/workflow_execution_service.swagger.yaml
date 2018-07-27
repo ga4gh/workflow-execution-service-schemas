@@ -447,23 +447,13 @@ definitions:
       of disk space, etc.
        - CANCELED: The task was canceled by the user.
     title: Enumeration of states for a given run request
-  RunDescription:
-    type: object
-    properties:
-      run_id:
-        type: string
-        title: REQUIRED
-      state:
-        $ref: '#/definitions/State'
-        title: REQUIRED
-    title: 'Small description of a workflow run, returned by server during listing'
   RunListResponse:
     type: object
     properties:
       runs:
         type: array
         items:
-          $ref: '#/definitions/RunDescription'
+          $ref: '#/definitions/RunStatus'
         description: A list of workflow runs that the service has executed or is executing.
       next_page_token:
         type: string
@@ -546,13 +536,14 @@ definitions:
         title: workflow run ID
   RunStatus:
     type: object
+    required:
+     - run_id
     properties:
       run_id:
         type: string
-        title: workflow run ID
       state:
         $ref: '#/definitions/State'
-        title: state
+    description: 'Small description of a workflow run, returned by server during listing'
   WorkflowTypeVersion:
     type: object
     properties:
