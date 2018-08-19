@@ -1,0 +1,234 @@
+
+[[_paths]]
+== Paths
+
+[[_runworkflow]]
+=== Run a workflow.  This endpoint creates a new workflow run and returns the workflow ID to monitor its progress.  The request may upload files that are required to execute the workflow identified as `workflow_attachment`.  The parts supplied in `workflow_attachment` may include the primary workflow, tools imported by the workflow, other files referenced by the workflow, or files which are part of the input.  The implementation should stage these files to a temporary directory and execute the workflow from there. These parts must have a Content-Disposition header with a "filename" provided for each part.  Filenames may include subdirectories, but must not include references to parent directories with '..', implementations should guard against maliciously constructed filenames.  The `workflow_url` is either an absolute URL to a workflow file that is accessible by the WES endpoint, or a relative URL corresponding to one of the files attached using `workflow_attachment`.  The `workflow_params` JSON object specifies input parameters, such as input files.  The exact format of the JSON object depends on the conventions of the workflow language being used.  Input files should either be absolute URLs, or relative URLs corresponding to files uploaded using `workflow_attachment`.  The WES endpoint must understand and be able to access URLs supplied in the input.  This is implementation specific.  See documentation for WorkflowRequest for detail about other fields.
+....
+POST /runs
+....
+
+
+==== Parameters
+
+[options="header", cols=".^2,.^3,.^4"]
+|===
+|Type|Name|Schema
+|**FormData**|**tags** +
+__optional__|string (application/json)
+|**FormData**|**workflow_attachment** +
+__optional__|< string (binary) > array
+|**FormData**|**workflow_engine_parameters** +
+__optional__|string (application/json)
+|**FormData**|**workflow_params** +
+__optional__|string (application/json)
+|**FormData**|**workflow_type** +
+__optional__|string
+|**FormData**|**workflow_type_version** +
+__optional__|string
+|**FormData**|**workflow_url** +
+__optional__|string
+|===
+
+
+==== Responses
+
+[options="header", cols=".^2,.^14,.^4"]
+|===
+|HTTP Code|Description|Schema
+|**200**||<<_runid,RunId>>
+|**400**|The request is malformed.|<<_errorresponse,ErrorResponse>>
+|**401**|The request is unauthorized.|<<_errorresponse,ErrorResponse>>
+|**403**|The requester is not authorized to perform this action.|<<_errorresponse,ErrorResponse>>
+|**500**|An unexpected error occurred.|<<_errorresponse,ErrorResponse>>
+|===
+
+
+==== Consumes
+
+* `multipart/form-data`
+
+
+==== Tags
+
+* WorkflowExecutionService
+
+
+[[_listruns]]
+=== List the workflow runs.  This should be provided in a stable ordering, however the ordering of this list is implementation dependent.  When paging through the list, the client should not make assumptions about live updates, but should assume the contents of the list reflect the workflow list at the moment that the first page is requested.  To monitor a specific workflow run, use GetRunStatus or GetRunLog.
+....
+GET /runs
+....
+
+
+==== Parameters
+
+[options="header", cols=".^2,.^3,.^9,.^4"]
+|===
+|Type|Name|Description|Schema
+|**Query**|**page_size** +
+__optional__|OPTIONAL
+The preferred number of workflow runs to return in a page.
+If not provided, the implementation should use a default page size.
+The implementation must not return more items
+than "page_size", but it may return fewer. Clients should
+not assume that if fewer than "page_size" items is
+returned that all items have been returned. The
+availability of additional pages is indicated by the value
+of "next_page_token" in the response.|integer (int64)
+|**Query**|**page_token** +
+__optional__|OPTIONAL
+Token to use to indicate where to start getting results. If unspecified, return the first
+page of results.|string
+|===
+
+
+==== Responses
+
+[options="header", cols=".^2,.^14,.^4"]
+|===
+|HTTP Code|Description|Schema
+|**200**||<<_runlistresponse,RunListResponse>>
+|**400**|The request is malformed.|<<_errorresponse,ErrorResponse>>
+|**401**|The request is unauthorized.|<<_errorresponse,ErrorResponse>>
+|**403**|The requester is not authorized to perform this action.|<<_errorresponse,ErrorResponse>>
+|**500**|An unexpected error occurred.|<<_errorresponse,ErrorResponse>>
+|===
+
+
+==== Tags
+
+* WorkflowExecutionService
+
+
+[[_getrunlog]]
+=== Get detailed info about a workflow run.
+....
+GET /runs/{run_id}
+....
+
+
+==== Parameters
+
+[options="header", cols=".^2,.^3,.^4"]
+|===
+|Type|Name|Schema
+|**Path**|**run_id** +
+__required__|string
+|===
+
+
+==== Responses
+
+[options="header", cols=".^2,.^14,.^4"]
+|===
+|HTTP Code|Description|Schema
+|**200**||<<_runlog,RunLog>>
+|**401**|The request is unauthorized.|<<_errorresponse,ErrorResponse>>
+|**403**|The requester is not authorized to perform this action.|<<_errorresponse,ErrorResponse>>
+|**404**|The requested workflow run not found.|<<_errorresponse,ErrorResponse>>
+|**500**|An unexpected error occurred.|<<_errorresponse,ErrorResponse>>
+|===
+
+
+==== Tags
+
+* WorkflowExecutionService
+
+
+[[_cancelrun]]
+=== Cancel a running workflow.
+....
+DELETE /runs/{run_id}
+....
+
+
+==== Parameters
+
+[options="header", cols=".^2,.^3,.^4"]
+|===
+|Type|Name|Schema
+|**Path**|**run_id** +
+__required__|string
+|===
+
+
+==== Responses
+
+[options="header", cols=".^2,.^14,.^4"]
+|===
+|HTTP Code|Description|Schema
+|**200**||<<_runid,RunId>>
+|**401**|The request is unauthorized.|<<_errorresponse,ErrorResponse>>
+|**403**|The requester is not authorized to perform this action.|<<_errorresponse,ErrorResponse>>
+|**404**|The requested workflow run wasn't found.|<<_errorresponse,ErrorResponse>>
+|**500**|An unexpected error occurred.|<<_errorresponse,ErrorResponse>>
+|===
+
+
+==== Tags
+
+* WorkflowExecutionService
+
+
+[[_getrunstatus]]
+=== Get quick status info about a workflow run.
+....
+GET /runs/{run_id}/status
+....
+
+
+==== Parameters
+
+[options="header", cols=".^2,.^3,.^4"]
+|===
+|Type|Name|Schema
+|**Path**|**run_id** +
+__required__|string
+|===
+
+
+==== Responses
+
+[options="header", cols=".^2,.^14,.^4"]
+|===
+|HTTP Code|Description|Schema
+|**200**||<<_runstatus,RunStatus>>
+|**401**|The request is unauthorized.|<<_errorresponse,ErrorResponse>>
+|**403**|The requester is not authorized to perform this action.|<<_errorresponse,ErrorResponse>>
+|**404**|The requested workflow run wasn't found.|<<_errorresponse,ErrorResponse>>
+|**500**|An unexpected error occurred.|<<_errorresponse,ErrorResponse>>
+|===
+
+
+==== Tags
+
+* WorkflowExecutionService
+
+
+[[_getserviceinfo]]
+=== Get information about Workflow Execution Service. May include information related (but not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general the service availability.
+....
+GET /service-info
+....
+
+
+==== Responses
+
+[options="header", cols=".^2,.^14,.^4"]
+|===
+|HTTP Code|Description|Schema
+|**200**||<<_serviceinfo,ServiceInfo>>
+|**400**|The request is malformed.|<<_errorresponse,ErrorResponse>>
+|**401**|The request is unauthorized.|<<_errorresponse,ErrorResponse>>
+|**403**|The requester is not authorized to perform this action.|<<_errorresponse,ErrorResponse>>
+|**500**|An unexpected error occurred.|<<_errorresponse,ErrorResponse>>
+|===
+
+
+==== Tags
+
+* WorkflowExecutionService
+
+
+

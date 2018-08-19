@@ -29,6 +29,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+.gradle
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -96,3 +97,7 @@ ENV/
 
 # swagger in the python directory
 python/ga4gh/dos/data_objects_service.swagger.json
+
+# OS generated files #
+.DS_Store
+.DS_Store?
