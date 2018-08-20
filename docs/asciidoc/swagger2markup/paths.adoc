@@ -3,10 +3,45 @@
 == Paths
 
 [[_runworkflow]]
-=== Run a workflow.  This endpoint creates a new workflow run and returns the workflow ID to monitor its progress.  The request may upload files that are required to execute the workflow identified as `workflow_attachment`.  The parts supplied in `workflow_attachment` may include the primary workflow, tools imported by the workflow, other files referenced by the workflow, or files which are part of the input.  The implementation should stage these files to a temporary directory and execute the workflow from there. These parts must have a Content-Disposition header with a "filename" provided for each part.  Filenames may include subdirectories, but must not include references to parent directories with '..', implementations should guard against maliciously constructed filenames.  The `workflow_url` is either an absolute URL to a workflow file that is accessible by the WES endpoint, or a relative URL corresponding to one of the files attached using `workflow_attachment`.  The `workflow_params` JSON object specifies input parameters, such as input files.  The exact format of the JSON object depends on the conventions of the workflow language being used.  Input files should either be absolute URLs, or relative URLs corresponding to files uploaded using `workflow_attachment`.  The WES endpoint must understand and be able to access URLs supplied in the input.  This is implementation specific.  See documentation for WorkflowRequest for detail about other fields.
+=== Run a workflow.
 ....
 POST /runs
 ....
+
+
+==== Description
+This endpoint creates a new workflow run and
+returns the workflow ID to monitor its progress.
+
+The request may upload files that are required to execute the
+workflow identified as `workflow_attachment`. The parts
+supplied in `workflow_attachment` may include the primary
+workflow, tools imported by the workflow, other files
+referenced by the workflow, or files which are part of the
+input. The implementation should stage these files to a
+temporary directory and execute the workflow from there.
+These parts must have a Content-Disposition header with a
+"filename" provided for each part. Filenames may include
+subdirectories, but must not include references to parent
+directories with '..', implementations should guard against
+maliciously constructed filenames.
+
+The `workflow_url` is either an absolute URL to a workflow
+file that is accessible by the WES endpoint, or a relative URL
+corresponding to one of the files attached using
+`workflow_attachment`.
+
+The `workflow_params` JSON object specifies input parameters,
+such as input files. The exact format of the JSON object
+depends on the conventions of the workflow language being
+used. Input files should either be absolute URLs, or relative
+URLs corresponding to files uploaded using
+`workflow_attachment`. The WES endpoint must understand and
+be able to access URLs supplied in the input. This is
+implementation specific.
+
+See documentation for WorkflowRequest for detail about other
+fields.
 
 
 ==== Parameters
@@ -55,10 +90,20 @@ __optional__|string
 
 
 [[_listruns]]
-=== List the workflow runs.  This should be provided in a stable ordering, however the ordering of this list is implementation dependent.  When paging through the list, the client should not make assumptions about live updates, but should assume the contents of the list reflect the workflow list at the moment that the first page is requested.  To monitor a specific workflow run, use GetRunStatus or GetRunLog.
+=== List the workflow runs.
 ....
 GET /runs
 ....
+
+
+==== Description
+This should be provided in a stable
+ordering, however the ordering of this list is implementation
+dependent. When paging through the list, the client should
+not make assumptions about live updates, but should assume the
+contents of the list reflect the workflow list at the moment
+that the first page is requested. To monitor a specific
+workflow run, use GetRunStatus or GetRunLog.
 
 
 ==== Parameters
@@ -207,10 +252,15 @@ __required__|string
 
 
 [[_getserviceinfo]]
-=== Get information about Workflow Execution Service. May include information related (but not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general the service availability.
+=== Get information about Workflow Execution Service.
 ....
 GET /service-info
 ....
+
+
+==== Description
+May include information related (but not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general the service availability.
+x-swagger-router-controller: ga4gh.wes.server
 
 
 ==== Responses
