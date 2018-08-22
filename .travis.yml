@@ -16,7 +16,6 @@ matrix:
     before_install:
     - chmod +x gradlew
     script:
-    - rm -rf docs/asciidoc/swagger2markup
     - "./gradlew asciidoctor"
     after_success:
     - cp docs/html5/index.html docs/
