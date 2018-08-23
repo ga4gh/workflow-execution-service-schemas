@@ -13,9 +13,10 @@ produces:
 paths:
   /service-info:
     get:
-      summary: |-
-        Get information about Workflow Execution Service. May include information related (but not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general the service availability.
-      x-swagger-router-controller: ga4gh.wes.server
+      summary: Get information about Workflow Execution Service.
+      description: |-
+        May include information related (but not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general the service availability.
+        x-swagger-router-controller: ga4gh.wes.server
       operationId: GetServiceInfo
       responses:
         '200':
@@ -42,8 +43,9 @@ paths:
         - WorkflowExecutionService
   /runs:
     get:
-      summary: |-
-        List the workflow runs.  This should be provided in a stable
+      summary: List the workflow runs.
+      description: |-
+        This should be provided in a stable
         ordering, however the ordering of this list is implementation
         dependent.  When paging through the list, the client should
         not make assumptions about live updates, but should assume the
@@ -100,8 +102,9 @@ paths:
       tags:
         - WorkflowExecutionService
     post:
-      summary: |-
-        Run a workflow.  This endpoint creates a new workflow run and
+      summary: Run a workflow.
+      description: |-
+        This endpoint creates a new workflow run and
         returns the workflow ID to monitor its progress.
 
         The request may upload files that are required to execute the
