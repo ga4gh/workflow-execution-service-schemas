@@ -12,4 +12,6 @@ Standards incorporated (?)
 
 == Authorization & Authentication
 
-Security issues around authentication and authorization need to be resolved and added into the specification. To be added for https://github.com/ga4gh/workflow-execution-service-schemas/issues/36[issue #36].
+Users must supply credentials that establish their identity and authorization in order to use a WES endpoint. We recommend that WES implementations use an OAuth2 https://oauth.net/2/bearer-tokens/[bearer token], although they can choose other mechanisms if appropriate. WES callers can use the `auth_instructions_url` from the https://ga4gh.github.io/workflow-execution-service-schemas/#/WorkflowExecutionService/GetServiceInfo[service-info endpoint] to learn how to obtain and use a bearer token for a particular implementation.
+
+The WES implementation is responsible for checking that a user is authorized to submit workflow run requests. The particular authorization policy is up to the WES implementer.
