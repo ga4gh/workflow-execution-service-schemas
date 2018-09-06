@@ -1,5 +1,9 @@
 <img src="https://www.ga4gh.org/gfx/GA-logo-horizontal-tag-RGB.svg" alt="GA4GH Logo" style="width: 100px;"/>
 
+NIH Data Commons Feedback
+=======================================
+This branch is specifically for collecting feedback (and suggested changes) to support the NIH Data Commons Pilot Phase.
+
 Schemas for the Workflow Execution Service (WES) API
 ====================================================
 
