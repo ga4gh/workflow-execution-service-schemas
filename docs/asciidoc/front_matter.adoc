@@ -1,6 +1,13 @@
 == Executive Summary
 
-An executive summary summarising the major points of the document. To be added for https://github.com/ga4gh/workflow-execution-service-schemas/issues/37[issue #37].
+The Workflow Execution Service (WES) API provides a standard way for users to submit workflow requests to workflow execution systems, and to monitor their execution. This API lets users run a single https://www.commonwl.org/[CWL] or http://www.openwdl.org/[WDL] workflow on multiple different platforms, clouds, and environments.
+
+Key features of the API:
+
+* can request that a workflow be run
+* can pass parameters to that workflow (e.g. input files, cmdline arguments)
+* can get information about running workflows (e.g. status, errors, output file locations)
+* can cancel a running workflow
 
 == Introduction
 
