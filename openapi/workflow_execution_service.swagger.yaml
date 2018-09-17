@@ -171,10 +171,12 @@ paths:
         - in: formData
           name: workflow_type
           type: string
+          description: The workflow descriptor type, must be "CWL" or "WDL" currently (or another alternative supported by this WES instance)
 
         - in: formData
           name: workflow_type_version
           type: string
+          description: The workflow descriptor type version, must be one supported by this WES instance
 
         - in: formData
           name: tags
