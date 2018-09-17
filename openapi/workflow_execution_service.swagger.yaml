@@ -317,6 +317,9 @@ definitions:
   DefaultWorkflowEngineParameter:
     type: object
     properties:
+      name:
+        type: string
+        description: 'The name of the parameter'
       type:
         type: string
         description: 'Describes the type of the parameter, e.g. float.'
@@ -414,10 +417,10 @@ definitions:
         description: |-
           A web page URL with information about how to get an
           authorization token necessary to use a specific endpoint.
-      contact_info:
+      contact_info_url:
         type: string
         description: |-
-          An email address or web page URL with contact information
+          An email address (mailto) or web page URL with contact information
           for the operator of a specific WES endpoint.  Users of the
           endpoint should use this to report problems or security
           vulnerabilities.
