@@ -394,8 +394,9 @@ definitions:
           type: string
         description: |-
           The filesystem protocols supported by this service, currently these may include common
-          protocols such as 'http', 'https', 'sftp', 's3', 'gs', 'file', 'synapse', or others as
-          supported by this service.
+          protocols using the terms 'http', 'https', 'sftp', 's3', 'gs', 'file', or 'synapse', but others 
+          are possible and the terms beyond these core protocols are currently not fixed.  
+          This section reports those protocols (either common or not) supported by this WES service.
       workflow_engine_versions:
         type: object
         additionalProperties:
