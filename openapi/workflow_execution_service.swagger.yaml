@@ -279,6 +279,10 @@ paths:
   /runs/{run_id}/status:
     get:
       summary: Get quick status info about a workflow run.
+      description: |-
+        This provides an abbreviated (and likely fast depending on implementation)
+        status of the running workflow, returning a simple result with the 
+        overall state of the workflow run (e.g. RUNNING, see the State section).
       x-swagger-router-controller: ga4gh.wes.server
       operationId: GetRunStatus
       responses:
