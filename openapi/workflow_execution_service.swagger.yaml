@@ -133,7 +133,14 @@ paths:
         `workflow_attachment`.  The WES endpoint must understand and
         be able to access URLs supplied in the input.  This is
         implementation specific.
-
+        
+        The `workflow_type` is the type of workflow language and
+        must be "CWL" or "WDL" currently (or another alternative 
+        supported by this WES instance).
+        
+        The `workflow_type_version` is the version of the workflow language
+        submitted and must be one supported by this WES instance.
+`
         See documentation for WorkflowRequest for detail about other
         fields.
 
@@ -171,12 +178,10 @@ paths:
         - in: formData
           name: workflow_type
           type: string
-          description: The workflow descriptor type, must be "CWL" or "WDL" currently (or another alternative supported by this WES instance)
 
         - in: formData
           name: workflow_type_version
           type: string
-          description: The workflow descriptor type version, must be one supported by this WES instance
 
         - in: formData
           name: tags
