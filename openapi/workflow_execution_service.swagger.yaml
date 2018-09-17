@@ -231,7 +231,8 @@ paths:
           type: string
       tags:
         - WorkflowExecutionService
-    delete:
+  /runs/{run_id}/cancel:
+    post:
       summary: Cancel a running workflow.
       x-swagger-router-controller: ga4gh.wes.server
       operationId: CancelRun
