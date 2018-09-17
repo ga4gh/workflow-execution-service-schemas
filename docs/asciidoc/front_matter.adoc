@@ -1,6 +1,6 @@
 == Executive Summary
 
-The Workflow Execution Service (WES) API provides a standard way for users to submit workflow requests to workflow execution systems, and to monitor their execution. This API lets users run a single https://www.commonwl.org/[CWL] or http://www.openwdl.org/[WDL] workflow (other types may be supported in the future) on multiple different platforms, clouds, and environments.
+The Workflow Execution Service (WES) API provides a standard way for users to submit workflow requests to workflow execution systems, and to monitor their execution. This API lets users run a single workflow (currently https://www.commonwl.org/[CWL] or http://www.openwdl.org/[WDL] formated workflows, other types may be supported in the future) on multiple different platforms, clouds, and environments.
 
 Key features of the API:
 
