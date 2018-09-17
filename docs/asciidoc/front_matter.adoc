@@ -11,11 +11,11 @@ Key features of the API:
 
 == Introduction
 
-Introduction setting the document’s scope.
+This document describes the WES API and provides details on the specific endpoints, request formats, and response.  It is intended to provide key information for developers of WES-compatible services as well as clients that will call these WES services.
 
 == Standards
 
-Standards incorporated (?)
+The WES API specification is written in OpenAPI and embodies a RESTful service philosophy.  It uses JSON in requests and responses and standard HTTP/HTTPS for information transport.
 
 == Authorization & Authentication
 
