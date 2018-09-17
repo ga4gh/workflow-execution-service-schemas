@@ -378,11 +378,16 @@ definitions:
           A map with keys as the workflow format type name (currently only CWL and WDL are used
           although a service may support others) and value is a workflow_type_version object which
           simply contains an array of one or more version strings
+        description: |-
+          A map with keys as the workflow format type name (currently only CWL and WDL are used
+          although a service may support others) and value is a workflow_type_version object which
+          simply contains an array of one or more version strings
       supported_wes_versions:
         type: array
         items:
           type: string
         title: The version(s) of the WES schema supported by this service
+        description: The version(s) of the WES schema supported by this service
       supported_filesystem_protocols:
         type: array
         items:
@@ -396,6 +401,7 @@ definitions:
         additionalProperties:
           type: string
         title: 'The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version'
+        description: 'The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version'
       default_workflow_engine_parameters:
         type: array
         items:
@@ -429,6 +435,9 @@ definitions:
         additionalProperties:
           type: string
         title: |-
+          A key-value map of arbitrary, extended metadata outside the scope of the above but useful
+          to report back
+        description: |-
           A key-value map of arbitrary, extended metadata outside the scope of the above but useful
           to report back
     description: |-
