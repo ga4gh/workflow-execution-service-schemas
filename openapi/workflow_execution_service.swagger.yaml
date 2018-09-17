@@ -487,23 +487,28 @@ definitions:
       run_id:
         type: string
         title: workflow run ID
+        description: workflow run ID
       request:
         $ref: '#/definitions/RunRequest'
         description: The original request message used to initiate this execution.
       state:
         $ref: '#/definitions/State'
         title: state
+        description: The state of the run e.g. RUNNING (see State)
       run_log:
         $ref: '#/definitions/Log'
         title: 'the logs, and other key info like timing and exit code, for the overall run of this workflow'
+        description: The logs, and other key info like timing and exit code, for the overall run of this workflow.
       task_logs:
         type: array
         items:
           $ref: '#/definitions/Log'
         title: 'the logs, and other key info like timing and exit code, for each step in the workflow run'
+        description: The logs, and other key info like timing and exit code, for each step in the workflow run.
       outputs:
         $ref: '#/definitions/WesObject'
         title: the outputs
+        description: The outputs from the workflow run.
   RunRequest:
     type: object
     properties:
