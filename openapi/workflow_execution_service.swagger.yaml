@@ -139,7 +139,7 @@ paths:
         
         The `workflow_type_version` is the version of the workflow language
         submitted and must be one supported by this WES instance.
-`
+
         See documentation for WorkflowRequest for detail about other
         fields.
 
