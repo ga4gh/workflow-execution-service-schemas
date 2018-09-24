@@ -4,7 +4,6 @@ info:
   title: Workflow Execution Service
   version: 0.3.0
 schemes:
-  - http
   - https
 consumes:
   - application/json
