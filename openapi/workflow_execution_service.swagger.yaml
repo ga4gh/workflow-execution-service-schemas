@@ -520,18 +520,17 @@ definitions:
         title: 'the logs, and other key info like timing and exit code, for each step in the workflow run'
         description: The logs, and other key info like timing and exit code, for each step in the workflow run.
       outputs:
-        $ref: '#/definitions/WesObject'
-        title: the outputs
+        type: object
+        title: a JSON dictionary of the outputs
         description: The outputs from the workflow run.
   RunRequest:
     type: object
     properties:
       workflow_params:
-        $ref: '#/definitions/WesObject'
+        type: object
         description: |-
           REQUIRED
-          The workflow run parameterization document (typically a JSON file), includes all parameterizations for the run
-          including input and output file locations.
+          The workflow run parameterizations (JSON encoded), includes all parameterizations for the run including input and output file locations.
       workflow_type:
         type: string
         title: |-
@@ -596,11 +595,6 @@ definitions:
           "base64_wdl1.0_gzip". By setting this value, and the path of the main WDL
           to be executed in the workflow_url to "main.wdl" in the RunRequest.
     description: Available workflow types supported by a given instance of the service.
-  WesObject:
-    type: object
-    additionalProperties: true
-    description: |-
-        An arbitrary structured object.
   ErrorResponse:
     description: |-
       An object that can optionally include information about the error.
