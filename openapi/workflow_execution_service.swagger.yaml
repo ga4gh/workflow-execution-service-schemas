@@ -4,7 +4,6 @@ info:
   title: Workflow Execution Service
   version: 0.3.0
 schemes:
-  - http
   - https
 consumes:
   - application/json
@@ -15,7 +14,7 @@ paths:
     get:
       summary: Get information about Workflow Execution Service.
       description: |-
-        May include information related (but not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general the service availability.
+        May include information related (but not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general service availability.
         x-swagger-router-controller: ga4gh.wes.server
       operationId: GetServiceInfo
       responses:
@@ -45,9 +44,9 @@ paths:
     get:
       summary: List the workflow runs.
       description: |-
-        This should be provided in a stable
-        ordering, however the ordering of this list is implementation
-        dependent.  When paging through the list, the client should
+        This list should be provided in a stable ordering.
+        (The actual ordering is implementation dependent.)
+        When paging through the list, the client should
         not make assumptions about live updates, but should assume the
         contents of the list reflect the workflow list at the moment
         that the first page is requested.  To monitor a specific
@@ -82,11 +81,11 @@ paths:
             The preferred number of workflow runs to return in a page.
             If not provided, the implementation should use a default page size.
             The implementation must not return more items
-            than "page_size", but it may return fewer.  Clients should
-            not assume that if fewer than "page_size" items is
+            than `page_size`, but it may return fewer.  Clients should
+            not assume that if fewer than `page_size` items are
             returned that all items have been returned.  The
             availability of additional pages is indicated by the value
-            of "next_page_token" in the response.
+            of `next_page_token` in the response.
           in: query
           required: false
           type: integer
@@ -133,6 +132,13 @@ paths:
         `workflow_attachment`.  The WES endpoint must understand and
         be able to access URLs supplied in the input.  This is
         implementation specific.
+        
+        The `workflow_type` is the type of workflow language and
+        must be "CWL" or "WDL" currently (or another alternative 
+        supported by this WES instance).
+        
+        The `workflow_type_version` is the version of the workflow language
+        submitted and must be one supported by this WES instance.
 
         See documentation for WorkflowRequest for detail about other
         fields.
@@ -201,6 +207,12 @@ paths:
   /runs/{run_id}:
     get:
       summary: Get detailed info about a workflow run.
+      description: |-
+        This endpoint provides detailed information about a given workflow run.
+        The returned result has information about the outputs produced by this workflow
+        (if available), a log object which allows the stderr and stdout to be retrieved,
+        a log array so stderr/stdout for individual tasks can be retrieved,
+        and the overall state of the workflow run (e.g. RUNNING, see the State section).
       x-swagger-router-controller: ga4gh.wes.server
       operationId: GetRunLog
       responses:
@@ -266,6 +278,10 @@ paths:
   /runs/{run_id}/status:
     get:
       summary: Get quick status info about a workflow run.
+      description: |-
+        This provides an abbreviated (and likely fast depending on implementation)
+        status of the running workflow, returning a simple result with the 
+        overall state of the workflow run (e.g. RUNNING, see the State section).
       x-swagger-router-controller: ga4gh.wes.server
       operationId: GetRunStatus
       responses:
@@ -300,6 +316,9 @@ definitions:
   DefaultWorkflowEngineParameter:
     type: object
     properties:
+      name:
+        type: string
+        description: 'The name of the parameter'
       type:
         type: string
         description: 'Describes the type of the parameter, e.g. float.'
@@ -358,24 +377,31 @@ definitions:
           A map with keys as the workflow format type name (currently only CWL and WDL are used
           although a service may support others) and value is a workflow_type_version object which
           simply contains an array of one or more version strings
+        description: |-
+          A map with keys as the workflow format type name (currently only CWL and WDL are used
+          although a service may support others) and value is a workflow_type_version object which
+          simply contains an array of one or more version strings
       supported_wes_versions:
         type: array
         items:
           type: string
         title: The version(s) of the WES schema supported by this service
+        description: The version(s) of the WES schema supported by this service
       supported_filesystem_protocols:
         type: array
         items:
           type: string
         description: |-
           The filesystem protocols supported by this service, currently these may include common
-          protocols such as 'http', 'https', 'sftp', 's3', 'gs', 'file', 'synapse', or others as
-          supported by this service.
+          protocols using the terms 'http', 'https', 'sftp', 's3', 'gs', 'file', or 'synapse', but others 
+          are possible and the terms beyond these core protocols are currently not fixed.  
+          This section reports those protocols (either common or not) supported by this WES service.
       workflow_engine_versions:
         type: object
         additionalProperties:
           type: string
         title: 'The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version'
+        description: The engine(s) used by this WES service, key is engine name (e.g. Cromwell) and value is version
       default_workflow_engine_parameters:
         type: array
         items:
@@ -395,12 +421,12 @@ definitions:
       auth_instructions_url:
         type: string
         description: |-
-          A web page URL with information about how to get an
-          authorization token necessary to use a specific endpoint.
-      contact_info:
+          A web page URL with human-readable instructions on how to get an
+          authorization token for use with a specific WES endpoint.          
+      contact_info_url:
         type: string
         description: |-
-          An email address or web page URL with contact information
+          An email address (mailto) or web page URL with contact information
           for the operator of a specific WES endpoint.  Users of the
           endpoint should use this to report problems or security
           vulnerabilities.
@@ -409,6 +435,9 @@ definitions:
         additionalProperties:
           type: string
         title: |-
+          A key-value map of arbitrary, extended metadata outside the scope of the above but useful
+          to report back
+        description: |-
           A key-value map of arbitrary, extended metadata outside the scope of the above but useful
           to report back
     description: |-
@@ -457,11 +486,13 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/RunStatus'
-        description: A list of workflow runs that the service has executed or is executing.
+        description: |-
+          A list of workflow runs that the service has executed or is executing.
+          The list is filtered to only include runs that the caller has permission to see.
       next_page_token:
         type: string
         description: |-
-          A token which may be supplied as "page_token" in workflow run list request to get the next page
+          A token which may be supplied as `page_token` in workflow run list request to get the next page
           of results.  An empty string indicates there are no more items to return.
     description: The service will return a RunListResponse when receiving a successful RunListRequest.
   RunLog:
@@ -470,23 +501,28 @@ definitions:
       run_id:
         type: string
         title: workflow run ID
+        description: workflow run ID
       request:
         $ref: '#/definitions/RunRequest'
         description: The original request message used to initiate this execution.
       state:
         $ref: '#/definitions/State'
         title: state
+        description: The state of the run e.g. RUNNING (see State)
       run_log:
         $ref: '#/definitions/Log'
         title: 'the logs, and other key info like timing and exit code, for the overall run of this workflow'
+        description: The logs, and other key info like timing and exit code, for the overall run of this workflow.
       task_logs:
         type: array
         items:
           $ref: '#/definitions/Log'
         title: 'the logs, and other key info like timing and exit code, for each step in the workflow run'
+        description: The logs, and other key info like timing and exit code, for each step in the workflow run.
       outputs:
         type: object
-        title: a JSON dict of the outputs
+        title: a JSON dictionary of the outputs
+        description: The outputs from the workflow run.
   RunRequest:
     type: object
     properties:
