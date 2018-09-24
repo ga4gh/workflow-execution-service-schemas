@@ -401,7 +401,7 @@ definitions:
         additionalProperties:
           type: string
         title: 'The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version'
-        description: 'The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version'
+        description: The engine(s) used by this WES service, key is engine name (e.g. Cromwell) and value is version
       default_workflow_engine_parameters:
         type: array
         items:
