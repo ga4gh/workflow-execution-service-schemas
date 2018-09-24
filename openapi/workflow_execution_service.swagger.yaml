@@ -4,7 +4,6 @@ info:
   title: Workflow Execution Service
   version: 0.3.0
 schemes:
-  - http
   - https
 consumes:
   - application/json
@@ -15,7 +14,7 @@ paths:
     get:
       summary: Get information about Workflow Execution Service.
       description: |-
-        May include information related (but not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general the service availability.
+        May include information related (but not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general service availability.
         x-swagger-router-controller: ga4gh.wes.server
       operationId: GetServiceInfo
       responses:
@@ -45,9 +44,9 @@ paths:
     get:
       summary: List the workflow runs.
       description: |-
-        This should be provided in a stable
-        ordering, however the ordering of this list is implementation
-        dependent.  When paging through the list, the client should
+        This list should be provided in a stable ordering.
+        (The actual ordering is implementation dependent.)
+        When paging through the list, the client should
         not make assumptions about live updates, but should assume the
         contents of the list reflect the workflow list at the moment
         that the first page is requested.  To monitor a specific
@@ -82,11 +81,11 @@ paths:
             The preferred number of workflow runs to return in a page.
             If not provided, the implementation should use a default page size.
             The implementation must not return more items
-            than "page_size", but it may return fewer.  Clients should
-            not assume that if fewer than "page_size" items is
+            than `page_size`, but it may return fewer.  Clients should
+            not assume that if fewer than `page_size` items are
             returned that all items have been returned.  The
             availability of additional pages is indicated by the value
-            of "next_page_token" in the response.
+            of `next_page_token` in the response.
           in: query
           required: false
           type: integer
@@ -395,8 +394,8 @@ definitions:
       auth_instructions_url:
         type: string
         description: |-
-          A web page URL with information about how to get an
-          authorization token necessary to use a specific endpoint.
+          A web page URL with human-readable instructions on how to get an
+          authorization token for use with a specific WES endpoint.          
       contact_info:
         type: string
         description: |-
@@ -457,11 +456,13 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/RunStatus'
-        description: A list of workflow runs that the service has executed or is executing.
+        description: |-
+          A list of workflow runs that the service has executed or is executing.
+          The list is filtered to only include runs that the caller has permission to see.
       next_page_token:
         type: string
         description: |-
-          A token which may be supplied as "page_token" in workflow run list request to get the next page
+          A token which may be supplied as `page_token` in workflow run list request to get the next page
           of results.  An empty string indicates there are no more items to return.
     description: The service will return a RunListResponse when receiving a successful RunListRequest.
   RunLog:
