@@ -340,21 +340,21 @@ definitions:
     properties:
       name:
         type: string
-        title: The task or workflow name
+        description: The task or workflow name
       cmd:
         type: array
         items:
           type: string
-        title: The command line that was executed
+        description: The command line that was executed
       start_time:
         type: string
-        title: When the command started executing, in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
+        description: When the command started executing, in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
       end_time:
         type: string
-        title: When the command stopped executing (completed, failed, or cancelled), in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
+        description: When the command stopped executing (completed, failed, or cancelled), in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
       stdout:
         type: string
-        title: |-
+        description: >-
           A URL to retrieve standard output logs of the workflow run or
           task.  This URL may change between status requests, or may
           not be available until the task or workflow has finished
@@ -362,7 +362,7 @@ definitions:
           used to access the WES endpoint.
       stderr:
         type: string
-        title: |-
+        description: >-
           A URL to retrieve standard error logs of the workflow run or
           task.  This URL may change between status requests, or may
           not be available until the task or workflow has finished
@@ -371,8 +371,8 @@ definitions:
       exit_code:
         type: integer
         format: int32
-        title: Exit code of the program
-    title: Log and other info
+        description: Exit code of the program
+    description: Log and other info
   ServiceInfo:
     type: object
     properties:
@@ -380,10 +380,6 @@ definitions:
         type: object
         additionalProperties:
           $ref: '#/definitions/WorkflowTypeVersion'
-        title: >-
-          A map with keys as the workflow format type name (currently only CWL and WDL are used
-          although a service may support others) and value is a workflow_type_version object which
-          simply contains an array of one or more version strings
         description: >-
           A map with keys as the workflow format type name (currently only CWL and WDL are used
           although a service may support others) and value is a workflow_type_version object which
@@ -392,7 +388,6 @@ definitions:
         type: array
         items:
           type: string
-        title: The version(s) of the WES schema supported by this service
         description: The version(s) of the WES schema supported by this service
       supported_filesystem_protocols:
         type: array
@@ -407,7 +402,6 @@ definitions:
         type: object
         additionalProperties:
           type: string
-        title: 'The engine(s) used by this WES service, key is engine name e.g. Cromwell and value is version'
         description: >-
           The engine(s) used by this WES service, key is engine name (e.g. Cromwell) and value is version
       default_workflow_engine_parameters:
@@ -442,9 +436,6 @@ definitions:
         type: object
         additionalProperties:
           type: string
-        title: >-
-          A key-value map of arbitrary, extended metadata outside the scope of the above but useful
-          to report back
         description: >-
           A key-value map of arbitrary, extended metadata outside the scope of the above but useful
           to report back
@@ -486,7 +477,6 @@ definitions:
       for example an upload failed due to network issues, the worker's ran out
       of disk space, etc.
        - CANCELED: The task was canceled by the user.
-    title: Enumeration of states for a given run request
   RunListResponse:
     type: object
     properties:
@@ -508,28 +498,23 @@ definitions:
     properties:
       run_id:
         type: string
-        title: workflow run ID
         description: workflow run ID
       request:
         $ref: '#/definitions/RunRequest'
         description: The original request message used to initiate this execution.
       state:
         $ref: '#/definitions/State'
-        title: state
         description: The state of the run e.g. RUNNING (see State)
       run_log:
         $ref: '#/definitions/Log'
-        title: 'the logs, and other key info like timing and exit code, for the overall run of this workflow'
         description: The logs, and other key info like timing and exit code, for the overall run of this workflow.
       task_logs:
         type: array
         items:
           $ref: '#/definitions/Log'
-        title: 'the logs, and other key info like timing and exit code, for each step in the workflow run'
         description: The logs, and other key info like timing and exit code, for each step in the workflow run.
       outputs:
         type: object
-        title: a JSON dictionary of the outputs
         description: The outputs from the workflow run.
   RunRequest:
     type: object
@@ -541,19 +526,19 @@ definitions:
           The workflow run parameterizations (JSON encoded), includes all parameterizations for the run including input and output file locations.
       workflow_type:
         type: string
-        title: |-
+        description: |-
           REQUIRED
           The workflow descriptor type, must be "CWL" or "WDL" currently (or another alternative supported by this WES instance)
       workflow_type_version:
         type: string
-        title: |-
+        description: |-
           REQUIRED
           The workflow descriptor type version, must be one supported by this WES instance
       tags:
         type: object
         additionalProperties:
           type: string
-        title: |-
+        description: |-
           OPTIONAL
           A key-value map of arbitrary metadata outside the scope of the run_params but useful to track with this run request
       workflow_engine_parameters:
@@ -581,7 +566,7 @@ definitions:
     properties:
       run_id:
         type: string
-        title: workflow run ID
+        description: workflow run ID
   RunStatus:
     type: object
     required:
