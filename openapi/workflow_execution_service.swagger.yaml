@@ -456,6 +456,7 @@ definitions:
       - EXECUTOR_ERROR
       - SYSTEM_ERROR
       - CANCELED
+      - CANCELLING
     default: UNKNOWN
     description: |-
       - UNKNOWN: The state of the task is unknown.
