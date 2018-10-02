@@ -104,11 +104,10 @@ paths:
       summary: Run a workflow.
       description: |-
         This endpoint creates a new workflow run and
-        returns the workflow ID to monitor its progress.
+        returns a `RunId` to monitor its progress.
 
-        The request may upload files that are required to execute the
-        workflow identified as `workflow_attachment`.  The parts
-        supplied in `workflow_attachment` may include the primary
+        The `workflow_attachment` array may be used to upload files
+        that are required to execute the workflow, including the primary
         workflow, tools imported by the workflow, other files
         referenced by the workflow, or files which are part of the
         input.  The implementation should stage these files to a
@@ -116,7 +115,7 @@ paths:
         These parts must have a Content-Disposition header with a
         "filename" provided for each part.  Filenames may include
         subdirectories, but must not include references to parent
-        directories with '..', implementations should guard against
+        directories with '..' -- implementations should guard against
         maliciously constructed filenames.
 
         The `workflow_url` is either an absolute URL to a workflow
@@ -140,8 +139,7 @@ paths:
         The `workflow_type_version` is the version of the workflow language
         submitted and must be one supported by this WES instance.
 
-        See documentation for WorkflowRequest for detail about other
-        fields.
+        See the `RunRequest` documentation for details about other fields.
 
       x-swagger-router-controller: ga4gh.wes.server
       operationId: RunWorkflow
@@ -531,7 +529,7 @@ definitions:
         type: object
         description: |-
           REQUIRED
-          The workflow run parameterizations (JSON encoded), includes all parameterizations for the run including input and output file locations.
+          The workflow run parameterizations (JSON encoded), including input and output file locations
       workflow_type:
         type: string
         title: |-
@@ -546,9 +544,9 @@ definitions:
         type: object
         additionalProperties:
           type: string
-        title: |-
+        description: |-
           OPTIONAL
-          A key-value map of arbitrary metadata outside the scope of the run_params but useful to track with this run request
+          A key-value map of arbitrary metadata outside the scope of `workflow_params` but useful to track with this run request
       workflow_engine_parameters:
         type: object
         additionalProperties:
@@ -556,14 +554,14 @@ definitions:
         description: |-
           OPTIONAL
           Additional parameters can be sent to the workflow engine using this field. Default values
-          for these parameters are provided at the ServiceInfo endpoint.
+          for these parameters can be obtained using the ServiceInfo endpoint.
       workflow_url:
         type: string
         description: |-
           REQUIRED
           The workflow CWL or WDL document.
-          When workflow attachments files are provided, the `workflow_url` may be a relative path
-          corresponding to one of the attachments.
+          When `workflow_attachments` is used to attach files, the `workflow_url` may be a relative path
+          to one of the attachments.
     description: |-
       To execute a workflow, send a run request including all the details needed to begin downloading
       and executing a given workflow.
@@ -591,10 +589,7 @@ definitions:
         items:
           type: string
         description: |-
-          an array of one or more acceptable types for the Workflow Type. For
-          example, to send a base64 encoded WDL gzip, one could would offer
-          "base64_wdl1.0_gzip". By setting this value, and the path of the main WDL
-          to be executed in the workflow_url to "main.wdl" in the RunRequest.
+          an array of one or more acceptable types for the `workflow_type`
     description: Available workflow types supported by a given instance of the service.
   ErrorResponse:
     description: |-
