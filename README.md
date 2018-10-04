@@ -1,86 +1,72 @@
 <img src="https://www.ga4gh.org/gfx/GA-logo-horizontal-tag-RGB.svg" alt="GA4GH Logo" style="width: 400px;"/>
 
-Schemas for the Workflow Execution Service (WES) API
-====================================================
+Workflow Execution Service (WES) API
+====================================
 
-The [Global Alliance for Genomics and Health](http://genomicsandhealth.org/) is an international
-coalition, formed to enable the sharing of genomic and clinical data.
+The [Global Alliance for Genomics and Health](http://genomicsandhealth.org/) is an international coalition, formed to enable the sharing of genomic and clinical data.
 
 Cloud Work Stream
 -----------------
 
-The [Cloud Work Stream](https://ga4gh/cloud) concentrates on data representation, storage,
-and analysis, including working with platform development partners and
-industry leaders to develop standards that will facilitate
-interoperability.  The Cloud Work Stream is an informal, multi-vendor working group focused on standards for exchanging Docker-based tools and CWL/WDL workflows, execution of Docker-based tools and workflows on clouds, and abstract access to cloud object stores.
+The [Cloud Work Stream](https://ga4gh/cloud) helps the genomics and health communities take full advantage of modern cloud environments. Our initial focus is on “bringing the algorithms to the data”, by creating standards for defining, sharing, and executing portable workflows. We work with platform development partners and industry leaders to develop standards that will facilitate interoperability.
 
 What is WES?
 ============
 
-The Workflow Execution Schema is a minimal common API describing how a user can submit
-workflow requests to workflow execution systems in standardized ways.
-Workflow execution engines (SevenBridges, FireCloud, etc) can support this API so users can make workflow requests
-programmatically, adding the ability to scale up.  In addition, these workflow services could have (and probably do have)
-UIs that would (possibly) use this API under the hood to facilitate workflow execution requests.
+The Workflow Execution Service API describes a standard programmatic way to run and manage workflows. Having this standard API supported by multiple execution engines will let people run the same workflow using various execution platforms running on various clouds/environments.
 
-Having this standard API supported by multiple execution engines will give people options of processing
-the same workflow (CWL or WDL) across different workflow execution platforms running across various clouds/environments.
-As an example use case, one can find a workflow in CWL on [Dockstore.org](http://dockstore.org), use Dockstore to
-generate a JSON parameterization file, and submit this to a GA4GH-compliant
-workflow execution service.
+Key features include:
 
-Key features of the current API proposal:
+* ability to request a workflow run using CWL or WDL
+* ability to parameterize that workflow using a JSON document
+* ability to get information about running workflows
 
-* ability to request a workflow run using CWL or WDL (and maybe future formats)
-* ability to parameterize that workflow using a JSON schema (ideally a future version would be in common between CWL and WDL)
-* ability to get information about running workflows, status, errors, output file locations, etc.
+API Definition
+--------------
 
-Outstanding questions:
+See the human-readable [Reference Documentation](https://ga4gh.github.io/workflow-execution-service-schemas/docs/) 
+and the [OpenAPI description](openapi/workflow_execution_service.swagger.yaml). You can also explore the specification in [Swagger UI](http://ga4gh.github.io/workflow-execution-service-schemas/swagger-ui/).
 
-* a common JSON parameterization format
-* standardizing terms, job, workflow, steps, tools, etc
-* reference implementation at https://github.com/common-workflow-language/cwltool-service/tree/ga4gh-wes
+=======
+Use Cases
+---------
+
+Use cases include:
+
+* "Bring your code to the data": a researcher who has built their own custom analysis can submit it to run on a dataset owned by an external organization, instead of having to make a copy of the data
+* Best-practices pipelines: a researcher who maintains their own controlled data environment can find useful workflows in a shared directory (e.g. [Dockstore.org](http://dockstore.org)), and run them over their data
+
+Possible Future Enhancements
+----------------------------
+* common JSON parameterization format that works with CWL and WDL
 * validation service for testing WES implementations' conformance to the spec
-* Including all task_logs in the workflow log request may present a scaling problem when there are 100s-1000s of tasks
-* Providing a state notification callback URL (eg a webhook)
-* Passing through authentication (user role)
+* improved tools for troubleshooting execution failures, especially when there are 100s-1000s of tasks
+* a callback mechanism for monitoring status changes in running workflows (e.g. a webhook)
+* integration with GA4GH data access APIs (e.g. htsget, DOS)
 
-How to view
+How to View
 ------------
-
-- Documentation (ReDoc): https://ga4gh.github.io/workflow-execution-service-schemas/
-- SwaggerUI: https://ga4gh.github.io/workflow-execution-service-schemas/swagger-ui/
-- Vuew full spec:
+- Documentation: https://ga4gh.github.io/workflow-execution-service-schemas/docs/
+- Swagger UI: https://ga4gh.github.io/workflow-execution-service-schemas/swagger-ui/
+- Full API specification:
     + JSON https://ga4gh.github.io/workflow-execution-service-schemas/swagger.json
     + YAML https://ga4gh.github.io/workflow-execution-service-schemas/swagger.yaml
-- Preview spec version for branch `[branch]`: https://ga4gh.github.io/workflow-execution-service-schemas/preview/[branch]
--
+- Preview versions of docs, Swagger UI, or spec for branch `[branch]`:
+    + https://ga4gh.github.io/workflow-execution-service-schemas/preview/[branch]/docs/
+    + https://ga4gh.github.io/workflow-execution-service-schemas/preview/[branch]/swagger-ui/
+    + https://ga4gh.github.io/workflow-execution-service-schemas/preview/[branch]/swagger.json
+    + https://ga4gh.github.io/workflow-execution-service-schemas/preview/[branch]/swagger.yaml
 
-Please visit http://ga4gh.github.io/workflow-execution-service-schemas to view this document in Swagger UI.
-
-
-Building Documents
-------------------
-
-The OpenAPI description is in the `openapi` directory.
-
-
-How to contribute changes
+How to Contribute Changes
 -------------------------
 
-Take cues for now from the [ga4gh/schemas](https://github.com/ga4gh/schemas/blob/master/CONTRIBUTING.rst) document.
-
-We like [HubFlow](https://datasift.github.io/gitflow/) and using pull requests to suggest changes.
-
-Security Considerations
------------------------
-
-If a security issue with any of the above specifications is realised please send an email to security-notification@ga4gh.org detailing your concerns.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+If a security issue is identified with the specification, please send an email to security-notification@ga4gh.org detailing your concerns.
 
 License
 -------
 
-See the [LICENSE]
+See the [LICENSE](LICENSE).
 
 More Information
 ----------------

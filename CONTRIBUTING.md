@@ -3,6 +3,10 @@
 
 This schema is developed by the [Cloud Work Stream](https://ga4gh.cloud) of the [Global Alliance for Genomics and Health](https://ga4gh.org).
 
+## Semantic Versioning
+
+We use [semantic versioning](https://semver.org/) for WES, this will determine if you proposed changes impact a major or minor release.
+
 ## Suggesting Changes
 
 Suggested changes to this schema can be initiated as Issues or Pull Requests to allow for discussion and review. Even those with write access to the main repository should in general create pull request branches within their own forks. This way when the main repository is forked again, the new fork is created with a minimum of extraneous volatile branches.
