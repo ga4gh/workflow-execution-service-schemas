@@ -3,6 +3,9 @@
 Workflow Execution Service (WES) API
 ====================================
 
+[![Build Status](https://travis-ci.org/ga4gh/workflow-execution-service-schemas.svg?branch=master)](https://travis-ci.org/ga4gh/workflow-execution-service-schemas)
+[![Swagger Validator](http://online.swagger.io/validator?url=https://raw.githubusercontent.com/ga4gh/workflow-execution-service-schemas/develop/openapi/workflow_execution_service.swagger.yaml)](https://raw.githubusercontent.com/ga4gh/workflow-execution-service-schemas/master/openapi/workflow_execution_service.swagger.yaml)
+
 The [Global Alliance for Genomics and Health](http://genomicsandhealth.org/) is an international coalition, formed to enable the sharing of genomic and clinical data.
 
 Cloud Work Stream
