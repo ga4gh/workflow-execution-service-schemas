@@ -1,4 +1,4 @@
-<img src="https://www.ga4gh.org/gfx/GA-logo-horizontal-tag-RGB.svg" alt="GA4GH Logo" style="width: 100px;"/>
+<img src="https://www.ga4gh.org/gfx/GA-logo-horizontal-tag-RGB.svg" alt="GA4GH Logo" style="width: 400px;"/>
 
 Schemas for the Workflow Execution Service (WES) API
 ====================================================
@@ -48,7 +48,13 @@ Outstanding questions:
 How to view
 ------------
 
-The file `openapi/workflow_execution_service.swagger.yaml` contains the API description.
+- Documentation (ReDoc): https://ga4gh.github.io/workflow-execution-service-schemas/
+- SwaggerUI: https://ga4gh.github.io/workflow-execution-service-schemas/swagger-ui/
+- Vuew full spec:
+    + JSON https://ga4gh.github.io/workflow-execution-service-schemas/swagger.json
+    + YAML https://ga4gh.github.io/workflow-execution-service-schemas/swagger.yaml
+- Preview spec version for branch `[branch]`: https://ga4gh.github.io/workflow-execution-service-schemas/preview/[branch]
+-
 
 Please visit http://ga4gh.github.io/workflow-execution-service-schemas to view this document in Swagger UI.
 
