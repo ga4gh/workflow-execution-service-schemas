@@ -7,8 +7,7 @@ require('shelljs/global');
 set('-e');
 set('-v');
 
-var branch = 'swaggerui-test';
-// var branch = process.env.TRAVIS_BRANCH && process.env.TRAVIS_BRANCH.toLowerCase();
+var branch = process.env.TRAVIS_BRANCH && process.env.TRAVIS_BRANCH.toLowerCase();
 if (branch && branch == 'master') {
     cp('-R', 'web_deploy/*', './');
     cp('docs/html5/index.html', 'docs/');
