@@ -30,7 +30,7 @@ API Definition
 See the human-readable [Reference Documentation](https://ga4gh.github.io/workflow-execution-service-schemas/docs/) 
 and the [OpenAPI description](openapi/workflow_execution_service.swagger.yaml). You can also explore the specification in [Swagger UI](http://ga4gh.github.io/workflow-execution-service-schemas/swagger-ui/).
 
-=======
+
 Use Cases
 ---------
 
