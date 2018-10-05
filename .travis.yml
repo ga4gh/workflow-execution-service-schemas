@@ -31,6 +31,7 @@ jobs:
       deploy:
         provider: pages
         skip-cleanup: true
+        keep-history: true
         github-token: $GITHUB_TOKEN
         on:
           all_branches: true
@@ -47,7 +48,6 @@ jobs:
       deploy:
         provider: pages
         skip-cleanup: true
-        keep-history: true
         github-token: $GITHUB_TOKEN
         on:
           all_branches: true
