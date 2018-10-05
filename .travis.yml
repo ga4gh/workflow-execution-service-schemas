@@ -1,3 +1,7 @@
+cache:
+  directories:
+    - ~/jobcache
+
 jobs:
   include:
     - stage: test
@@ -28,14 +32,23 @@ jobs:
       - chmod +x gradlew
       script:
       - "./gradlew asciidoctor"
+      - mv ~/jobcache ~/jobcache-discard
+      - mkdir ~/jobcache
+      - echo "$TRAVIS_BUILD_ID" > ~/jobcache/travis_build_id
+      - cp -R docs ~/jobcache/
 
     - stage: build_swagger
       language: node_js
       node_js:
       - "node"
       script: 
+      - if test "$TRAVIS_BUILD_ID" != `cat ~/jobcache/travis_build_id`; then travis_terminate 1; fi
+      - rm -f ~/jobcache/travis_build_id
+      - mv ~/jobcache/docs docs
       - "npm run build"
       - "npm run deploy"
+      - mv ~/jobcache ~/jobcache-discard
+      - mkdir ~/jobcache # clear the cache
       deploy:
         provider: pages
         skip-cleanup: true
