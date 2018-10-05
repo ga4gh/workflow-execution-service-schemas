@@ -31,7 +31,6 @@ jobs:
       deploy:
         provider: pages
         skip-cleanup: true
-        keep-history: true
         github-token: $GITHUB_TOKEN
         on:
           all_branches: true
@@ -42,6 +41,11 @@ jobs:
       before_install:
       - chmod +x gradlew
       - chmod +x scripts/deploydocs.sh
+      - git fetch
+      - git checkout gh-pages
+      - git pull
+      - git checkout $TRAVIS_BRANCH
+      - git merge gh-pages
       script:
       - "./gradlew asciidoctor"
       - "./scripts/deploydocs.sh"
