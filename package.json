@@ -1,0 +1,26 @@
+{
+  "name": "Workflow-Execution-Service-openapi-spec",
+  "version": "0.0.1",
+  "dependencies": {
+    "bower": "^1.7.7",
+    "connect": "^3.4.1",
+    "cors": "^2.7.1",
+    "github-markdown": "^3.2.0",
+    "github-markdown-css": "^2.10.0",
+    "gulp": "^3.9.1",
+    "gulp-connect": "^4.2.0",
+    "gulp-util": "^3.0.7",
+    "portfinder": "^1.0.3",
+    "shelljs": "^0.7.0",
+    "showdown": "^1.8.6",
+    "swagger-repo": "^1.0.0",
+    "swagger-ui": "^2.1.4"
+  },
+  "private": true,
+  "scripts": {
+    "build": "node ./scripts/buildpages.js",
+    "deploy": "node ./scripts/deploypages.js",
+    "swagger": "swagger-repo",
+    "start": "gulp serve"
+  }
+}
