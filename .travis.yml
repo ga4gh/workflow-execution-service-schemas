@@ -41,7 +41,7 @@ jobs:
       before_install:
       - chmod +x gradlew
       - chmod +x scripts/deploydocs.sh
-      - git fetch
+      - git fetch origin/gh-pages
       - git checkout --track gh-pages
       - git pull
       - git checkout $TRAVIS_BRANCH
