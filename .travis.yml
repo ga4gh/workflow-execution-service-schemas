@@ -1,7 +1,3 @@
-cache:
-  directories:
-    - ~/jobcache
-
 jobs:
   include:
     - stage: test
@@ -25,30 +21,13 @@ jobs:
         password:
           secure: LlQn8ZBAb5ekujHnoDrmzrmXaM6TpyzByNHPH4FTbbdnJ8lkDPb/ZhYvdmqrOvXPQg81/IoYKlIvP7fY9kc3oGUJ2IXhcPFqiw8njsRE5Qaebp+YppQO7C3IWGlHoZtXNtC608ZSA4x0oneNeNy+Y8KYnqKbmOlbuvrYRlNYfe9/8z7yLPH8wdmp0GyvbViedr3p7PXhtQVUKAgPpgjffZnSA7P/Y6AdkvjHHv2xMAzWP/QmOFWZNxUXjg0miR0K7eGFeGBNMM/+QsVXrGOu/TCtPtJ4JXyD86nzrZUbsOluyAblxwGlrv05se5ImVhR210OC5zvSW2902y/lxCw5uek+xg4/tcSA1ckshxLeu02GfDygCktMUtqtKVIZ+qvU7H4dEQ6Jnz9yBvZW5M6V94Ew3wBFy0RB5I9k3MMQY21FdynIUEZzBgJbOChCbmlIDT1varBHvWBiwg8EwPOVuJt1CsOoptJxUsoJND4tAOPIvXMNI17qGJ+VWAVMVNn7cVUuhEeGXwQF4urrkFBA7WIYOp6O9R8Ipg6WnQdxVdnqb3NsEc19SRdFXQ82SYibKfIZxjpdmYVgKzTYsJGMhfG6fTw9D4JABhggfgShsnByrFtbbkn/9g64jXDOjwPLeRXwXYZe6ZV6M69PDWdo0o326Qq/OHBG5eU7z2plNI=
 
-    - stage: build_docs
-      language: java
-      jdk: oraclejdk8
-      before_install:
-      - chmod +x gradlew
-      script:
-      - "./gradlew asciidoctor"
-      - mv ~/jobcache ~/jobcache-discard
-      - mkdir ~/jobcache
-      - echo "$TRAVIS_BUILD_ID" > ~/jobcache/travis_build_id
-      - cp -R docs ~/jobcache/
-
     - stage: build_swagger
       language: node_js
       node_js:
       - "node"
       script: 
-      - if test "$TRAVIS_BUILD_ID" != `cat ~/jobcache/travis_build_id`; then travis_terminate 1; fi
-      - rm -f ~/jobcache/travis_build_id
-      - mv ~/jobcache/docs docs
       - "npm run build"
       - "npm run deploy"
-      - mv ~/jobcache ~/jobcache-discard
-      - mkdir ~/jobcache # clear the cache
       deploy:
         provider: pages
         skip-cleanup: true
@@ -56,3 +35,18 @@ jobs:
         on:
           all_branches: true
 
+    - stage: build_docs
+      language: java
+      jdk: oraclejdk8
+      before_install:
+      - chmod +x gradlew
+      - chomd +x scripts/deploydocs.sh
+      script:
+      - "./gradlew asciidoctor"
+      - "./scripts/deploydocs.sh"
+      deploy:
+        provider: pages
+        skip-cleanup: true
+        github-token: $GITHUB_TOKEN
+        on:
+          all_branches: true
