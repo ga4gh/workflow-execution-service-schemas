@@ -40,7 +40,7 @@ jobs:
       jdk: oraclejdk8
       before_install:
       - chmod +x gradlew
-      - chomd +x scripts/deploydocs.sh
+      - chmod +x scripts/deploydocs.sh
       script:
       - "./gradlew asciidoctor"
       - "./scripts/deploydocs.sh"
