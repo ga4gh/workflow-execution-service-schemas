@@ -11,6 +11,7 @@ fi
 
 if [ "$BRANCH" == "master" ]; then
     cp docs/html5/index.html docs/
+    cp openapi/workflow_execution_service.swagger.yaml ./swagger.yaml
 elif [ "$BRANCH" !=  "gh-pages" ]; then
   branch=$(echo "$BRANCH" | awk '{print tolower($0)}')
   branchpath="preview/$branch"
