@@ -4,7 +4,7 @@ Workflow Execution Service (WES) API
 ====================================
 
 [![Build Status](https://travis-ci.org/ga4gh/workflow-execution-service-schemas.svg?branch=master)](https://travis-ci.org/ga4gh/workflow-execution-service-schemas)
-<a href="https://raw.githubusercontent.com/ga4gh/workflow-execution-service-schemas/develop/openapi/workflow_execution_service.swagger.yaml"><img src="http://online.swagger.io/validator?url=https://raw.githubusercontent.com/ga4gh/workflow-execution-service-schemas/develop/openapi/workflow_execution_service.swagger.yaml" alt="Swagger Validator" height="20em" width="72em"></A>
+<a href="https://raw.githubusercontent.com/ga4gh/workflow-execution-service-schemas/develop/openapi/workflow_execution_service.swagger.yaml"><img src="http://online.swagger.io/validator?url=https://raw.githubusercontent.com/ga4gh/workflow-execution-service-schemas/master/openapi/workflow_execution_service.swagger.yaml" alt="Swagger Validator" height="20em" width="72em"></A>
 
 The [Global Alliance for Genomics and Health](http://genomicsandhealth.org/) is an international coalition, formed to enable the sharing of genomic and clinical data.
 
@@ -28,7 +28,7 @@ API Definition
 --------------
 
 See the human-readable [Reference Documentation](https://ga4gh.github.io/workflow-execution-service-schemas/docs/) 
-and the [OpenAPI description](openapi/workflow_execution_service.swagger.yaml). You can also explore the specification in [Swagger UI](http://ga4gh.github.io/workflow-execution-service-schemas/swagger-ui/).
+and the [OpenAPI description](openapi/workflow_execution_service.swagger.yaml). You can also explore the specification in [Swagger Editor](https://editor.swagger.io/#/?import=https://raw.githubusercontent.com/ga4gh/workflow-execution-service-schemas/master/openapi/workflow_execution_service.swagger.yaml).
 
 
 Use Cases
@@ -50,15 +50,11 @@ Possible Future Enhancements
 How to View
 ------------
 - Documentation: https://ga4gh.github.io/workflow-execution-service-schemas/docs/
-- Swagger UI: https://ga4gh.github.io/workflow-execution-service-schemas/swagger-ui/
-- Full API specification:
-    + JSON https://ga4gh.github.io/workflow-execution-service-schemas/swagger.json
-    + YAML https://ga4gh.github.io/workflow-execution-service-schemas/swagger.yaml
-- Preview versions of docs, Swagger UI, or spec for branch `[branch]`:
+- Full API specification (OpenAPI YAML): https://ga4gh.github.io/workflow-execution-service-schemas/openapi/workflow_execution_service.swagger.yaml (or view in [Swagger Editor](https://editor.swagger.io/#/?import=https://raw.githubusercontent.com/ga4gh/workflow-execution-service-schemas/master/openapi/workflow_execution_service.swagger.yaml))
+- Preview versions of docs or the spec for branch `[branch]`:
     + https://ga4gh.github.io/workflow-execution-service-schemas/preview/[branch]/docs/
-    + https://ga4gh.github.io/workflow-execution-service-schemas/preview/[branch]/swagger-ui/
-    + https://ga4gh.github.io/workflow-execution-service-schemas/preview/[branch]/swagger.json
     + https://ga4gh.github.io/workflow-execution-service-schemas/preview/[branch]/swagger.yaml
+- Preview spec for a specific branch in Swagger Editor — replace `master` with `[branch]` name  after opening [this page](https://editor.swagger.io/#/?import=https://raw.githubusercontent.com/ga4gh/workflow-execution-service-schemas/[branch]/openapi/workflow_execution_service.swagger.yaml)
 
 How to Contribute Changes
 -------------------------
