@@ -42,7 +42,7 @@ jobs:
       - chmod +x gradlew
       - chmod +x scripts/deploydocs.sh
       script:
-      - "./gradlew asciidoctor"
+      - "./gradlew installSwagger buildSwagger deploySwagger asciidoctor"
       - "./scripts/deploydocs.sh"
       deploy:
         provider: pages

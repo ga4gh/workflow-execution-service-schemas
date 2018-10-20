@@ -3,6 +3,9 @@ buildscript {
         jcenter()
         mavenCentral()
         maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
         //mavenLocal()
     }
     dependencies {
@@ -12,6 +15,7 @@ buildscript {
         classpath "io.github.swagger2markup:swagger2markup-import-files-ext:1.3.1"
         classpath "com.bluepapa32:gradle-watch-plugin:0.1.5"
         classpath "org.kordamp.gradle:livereload-gradle-plugin:0.2.1"
+        classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
     }
 }
 
@@ -19,6 +23,11 @@ apply plugin: 'org.asciidoctor.convert'
 apply plugin: 'com.bluepapa32.watch'
 apply plugin: 'org.kordamp.gradle.livereload'
 apply plugin: 'io.github.swagger2markup'
+apply plugin: 'com.moowork.node'
+node {
+    version = '8.9.0'
+    download = true
+}
 
 group 'io.github.swagger2markup'
 version '1.3.1'
@@ -86,4 +95,16 @@ liveReload {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '3.5'
+}
+
+task installSwagger(type: NpmTask) {
+    npmCommand = ["install"]
+}
+
+task buildSwagger(type: NpmTask) {
+    npmCommand = ["run", "build"]
+}
+
+task deploySwagger(type: NpmTask) {
+    npmCommand = ["run", "deploy"]
 }
