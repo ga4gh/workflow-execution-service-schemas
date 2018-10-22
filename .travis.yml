@@ -40,8 +40,10 @@ jobs:
       jdk: oraclejdk8
       before_install:
       - chmod +x gradlew
+      - chmod +x scripts/fetchpages.sh
       - chmod +x scripts/deploydocs.sh
       script:
+      - "./scripts/fetchpages.sh"
       - "./gradlew installSwagger buildSwagger deploySwagger asciidoctor"
       - "./scripts/deploydocs.sh"
       deploy:
