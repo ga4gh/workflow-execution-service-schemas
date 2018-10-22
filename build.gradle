@@ -105,6 +105,3 @@ task buildSwagger(type: NpmTask) {
     npmCommand = ["run", "build"]
 }
 
-task deploySwagger(type: NpmTask) {
-    npmCommand = ["run", "deploy"]
-}

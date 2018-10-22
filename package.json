@@ -7,9 +7,6 @@
     "cors": "^2.7.1",
     "github-markdown": "^3.2.0",
     "github-markdown-css": "^2.10.0",
-    "gulp": "^4.0.0",
-    "gulp-connect": "^5.6.1",
-    "gulp-util": "^3.0.7",
     "help": "^3.0.2",
     "portfinder": "^1.0.3",
     "shelljs": "^0.7.0",
@@ -20,8 +17,6 @@
   "private": true,
   "scripts": {
     "build": "node ./scripts/buildui.js",
-    "deploy": "node ./scripts/deployui.js",
-    "swagger": "swagger-repo",
-    "start": "gulp serve"
+    "swagger": "swagger-repo"
   }
 }
