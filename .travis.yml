@@ -38,3 +38,4 @@ jobs:
         github-token: $GITHUB_TOKEN
         on:
           all_branches: true
+

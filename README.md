@@ -1,4 +1,4 @@
-<img src="https://www.ga4gh.org/gfx/GA-logo-horizontal-tag-RGB.svg" alt="GA4GH Logo" style="width: 100px;"/>
+<img src="https://www.ga4gh.org/gfx/GA-logo-horizontal-tag-RGB.svg" alt="GA4GH Logo" style="width: 400px;"/>
 
 Workflow Execution Service (WES) API
 ====================================
@@ -32,7 +32,6 @@ API Definition
 
 See the human-readable [Reference Documentation](https://ga4gh.github.io/workflow-execution-service-schemas/docs/) 
 and the [OpenAPI description](openapi/workflow_execution_service.swagger.yaml). You can also explore the specification in [Swagger Editor](https://editor.swagger.io/#/?import=https://ga4gh.github.io/workflow-execution-service-schemas/swagger.yaml).
-
 
 Use Cases
 ---------
