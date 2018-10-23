@@ -53,9 +53,6 @@ How to View
 ------------
 - Documentation: https://ga4gh.github.io/workflow-execution-service-schemas/docs/
 - Full API specification (OpenAPI YAML): https://ga4gh.github.io/workflow-execution-service-schemas/swagger.yaml (or view in [Swagger Editor](https://editor.swagger.io/#/?import=https://ga4gh.github.io/workflow-execution-service-schemas/swagger.yaml))
-- Preview versions of docs or the spec for branch `[branch]`:
-    + https://ga4gh.github.io/workflow-execution-service-schemas/preview/[branch]/docs/
-    + https://ga4gh.github.io/workflow-execution-service-schemas/preview/[branch]/swagger.yaml (view in this version in Swagger Editor by adding the `[url]` for the link: https://editor.swagger.io/#/?import=[url])
 
 How to Contribute Changes
 -------------------------
