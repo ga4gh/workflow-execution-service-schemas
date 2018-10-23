@@ -9,7 +9,9 @@ We use [semantic versioning](https://semver.org/) for WES, this will determine i
 
 ## Suggesting Changes
 
-Suggested changes to this schema can be initiated as Issues or Pull Requests to allow for discussion and review. Even those with write access to the main repository should in general create pull request branches within their own forks. This way when the main repository is forked again, the new fork is created with a minimum of extraneous volatile branches.
+Suggested changes to this schema can be initiated as [**Issues**](https://github.com/ga4gh/workflow-execution-service-schemas/issues) or [**Pull Requests**](https://github.com/ga4gh/workflow-execution-service-schemas/pulls) to allow for discussion and review. Even those with write access to the main repository should in general create pull request branches within their own forks. This way when the main repository is forked again, the new fork is created with a minimum of extraneous volatile branches.
+
+> To facilitate review of external pull requests, users are encouraged to activate [**Travis CI**](https://travis-ci.org/) to monitor the build status of their fork. By following the documentation for [deployment to GitHub Pages](https://docs.travis-ci.com/user/deployment/pages/) and adding a `$GITHUB_TOKEN` environment variable to their repo configuration, pushes to the forked repo should be viewable at `https://<user-or-org>.github.io/workflow-execution-service-schemas/preview/<branch>`. Providing this link in the pull request comment is appreciated, but not required.
 
 If a security vulnerability is identified with the specification please send an email to security-notification@ga4gh.org detailing your concerns.
 
