@@ -26,16 +26,12 @@ jobs:
       jdk: oraclejdk8
       before_install:
       - chmod +x gradlew
+      - chmod +x scripts/fetchpages.sh
+      - chmod +x scripts/stagepages.sh
       script:
-      - "./gradlew asciidoctor"
-
-    - stage: build_swagger
-      language: node_js
-      node_js:
-      - "node"
-      script: 
-      - "npm run build"
-      - "npm run deploy"
+      - "./scripts/fetchpages.sh"
+      - "./gradlew installSwagger buildSwagger asciidoctor"
+      - "./scripts/stagepages.sh"
       deploy:
         provider: pages
         skip-cleanup: true

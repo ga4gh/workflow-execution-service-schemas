@@ -1,17 +1,32 @@
 == Executive Summary
 
-An executive summary summarising the major points of the document. To be added for https://github.com/ga4gh/workflow-execution-service-schemas/issues/37[issue #37].
+The Workflow Execution Service (WES) API provides a standard way for users to submit workflow requests to workflow execution systems, and to monitor their execution. This API lets users run a single workflow (currently https://www.commonwl.org/[CWL] or http://www.openwdl.org/[WDL] formatted workflows, other types may be supported in the future) on multiple different platforms, clouds, and environments.
+
+Key features of the API:
+
+* can request that a workflow be run
+* can pass parameters to that workflow (e.g. input files, cmdline arguments)
+* can get information about running workflows (e.g. status, errors, output file locations)
+* can cancel a running workflow
 
 == Introduction
 
-Introduction setting the document’s scope.
+This document describes the WES API and provides details on the specific endpoints, request formats, and response.  It is intended to provide key information for developers of WES-compatible services as well as clients that will call these WES services.
+
+Use cases include:
+
+* "Bring your code to the data": a researcher who has built their own custom analysis can submit it to run on a dataset owned by an external organization, instead of having to make a copy of the data
+* Best-practices pipelines: a researcher who maintains their own controlled data environment can find useful workflows in a shared directory (e.g. Dockstore.org), and run them over their data
 
 == Standards
 
-Standards incorporated (?)
+The WES API specification is written in OpenAPI and embodies a RESTful service philosophy.  It uses JSON in requests and responses and standard HTTP/HTTPS for information transport.
 
 == Authorization & Authentication
 
 Users must supply credentials that establish their identity and authorization in order to use a WES endpoint. We recommend that WES implementations use an OAuth2 https://oauth.net/2/bearer-tokens/[bearer token], although they can choose other mechanisms if appropriate. WES callers can use the `auth_instructions_url` from the https://ga4gh.github.io/workflow-execution-service-schemas/#/WorkflowExecutionService/GetServiceInfo[service-info endpoint] to learn how to obtain and use a bearer token for a particular implementation.
 
 The WES implementation is responsible for checking that a user is authorized to submit workflow run requests. The particular authorization policy is up to the WES implementer.
+
+Systems like WES need to also address the ability to pass crentials with jobs for input and output access.  In the current 
+version of WES, the passing of credentials to authenticate and authorize access to inputs and outputs, as well as mandates about necessary file transfer protocols to support, are out of scope.  However, parallel work on the Data Object Service is addressing ways to pass around access credentials with data object references, opening up the possibility that a future version of WES will provide concrete mechanisms for workflow runs to access data using credentials different than those used for WES.  This is a work in progress and support of DOS in WES will be added in a future release of WES.
