@@ -31,7 +31,7 @@ API Definition
 --------------
 
 See the human-readable [Reference Documentation](https://ga4gh.github.io/workflow-execution-service-schemas/docs/) 
-and the [OpenAPI description](openapi/workflow_execution_service.swagger.yaml). You can also explore the specification in [Swagger UI](https://ga4gh.github.io/workflow-execution-service-schemas/swagger-ui/) or [Swagger Editor](https://editor.swagger.io/#/?import=https://ga4gh.github.io/workflow-execution-service-schemas/swagger.yaml).
+and the [OpenAPI YAML description](openapi/workflow_execution_service.swagger.yaml). You can also explore the specification in the [Swagger UI](https://ga4gh.github.io/workflow-execution-service-schemas/swagger-ui/) or [Swagger Editor](https://editor.swagger.io/?url=https://ga4gh.github.io/workflow-execution-service-schemas/swagger.yaml).
 
 Use Cases
 ---------
@@ -49,15 +49,6 @@ Possible Future Enhancements
 * improved tools for troubleshooting execution failures, especially when there are 100s-1000s of tasks
 * a callback mechanism for monitoring status changes in running workflows (e.g., a webhook)
 * integration with GA4GH data access APIs (e.g., htsget, DOS)
-
-How to View
-------------
-
-* Documentation: https://ga4gh.github.io/workflow-execution-service-schemas/docs/
-* Full API specification:
-    * OpenAPI YAML: https://ga4gh.github.io/workflow-execution-service-schemas/swagger.yaml 
-    * OpenAPI JSON: https://ga4gh.github.io/workflow-execution-service-schemas/swagger.json
-    * Swagger [UI](https://ga4gh.github.io/workflow-execution-service-schemas/swagger-ui/) or [Editor](https://editor.swagger.io/?url=https://ga4gh.github.io/workflow-execution-service-schemas/swagger.yaml)
 
 How to Contribute Changes
 -------------------------
