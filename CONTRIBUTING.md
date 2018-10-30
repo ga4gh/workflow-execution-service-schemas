@@ -15,12 +15,12 @@ Even those with write access to the main repository should in general create pul
 
 > To facilitate review of external pull requests, users are encouraged to activate [**Travis CI**](https://travis-ci.org/) to monitor the build status (documentation, Swagger UI) of their fork. By following the documentation for [deployment to GitHub Pages](https://docs.travis-ci.com/user/deployment/pages/) and adding a `$GITHUB_TOKEN` environment variable to their repo configuration, pushes to the forked repo should be viewable relative to `https://[user-or-org].github.io/workflow-execution-service-schemas/preview/<branch>/`:
 
-+ https://[user-or-org].github.io/workflow-execution-service-schemas/preview/[branch]/docs/
-+ https://[user-or-org].github.io/workflow-execution-service-schemas/preview/[branch]/swagger-ui/
-+ https://[user-or-org].github.io/workflow-execution-service-schemas/preview/[branch]/swagger.json
-+ https://[user-or-org].github.io/workflow-execution-service-schemas/preview/[branch]/swagger.yaml
++ https://[user-or-org].github.io/workflow-execution-service-schemas/preview/\<branch\>/docs/
++ https://[user-or-org].github.io/workflow-execution-service-schemas/preview/\<branch\>/swagger-ui/
++ https://[user-or-org].github.io/workflow-execution-service-schemas/preview/\<branch\>/swagger.json
++ https://[user-or-org].github.io/workflow-execution-service-schemas/preview/\<branch\>/swagger.yaml
 
-> Providing this base URL in the pull request comment is appreciated, but not required. When creating a pull request from the forked repository's `develop` branch, the base URL will just be `https://[user-or-org].github.io/workflow-execution-service-schemas/`.
+> Providing this base URL in the pull request comment is appreciated, but not required.
 
 If a security vulnerability is identified with the specification please send an email to security-notification@ga4gh.org detailing your concerns.
 
