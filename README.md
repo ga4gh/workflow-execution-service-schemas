@@ -11,8 +11,9 @@ The [Global Alliance for Genomics and Health](http://genomicsandhealth.org/) is 
 Cloud Work Stream
 -----------------
 
-The [Cloud Work Stream](https://ga4gh/cloud) helps the genomics and health communities take full advantage of modern cloud environments.
+The [Cloud Work Stream](https://ga4gh.cloud) helps the genomics and health communities take full advantage of modern cloud environments.
 Our initial focus is on “bringing the algorithms to the data”, by creating standards for defining, sharing, and executing portable workflows.
+
 We work with platform development partners and industry leaders to develop standards that will facilitate interoperability.
 
 What is WES?
@@ -33,13 +34,15 @@ API Definition
 See the human-readable [Reference Documentation](https://ga4gh.github.io/workflow-execution-service-schemas/docs/) 
 and the [OpenAPI YAML description](openapi/workflow_execution_service.swagger.yaml). You can also explore the specification in the [Swagger UI](https://ga4gh.github.io/workflow-execution-service-schemas/swagger-ui/) or [Swagger Editor](https://editor.swagger.io/?url=https://ga4gh.github.io/workflow-execution-service-schemas/swagger.yaml).
 
+> All documentation and pages hosted at 'ga4gh.github.io/workflow-execution-service' reflect the latest API release from the `master` branch. To monitor the latest development work, add 'preview/\<branch\>' to the URLs above (e.g., 'ga4gh.github.io/ga4gh.github.io/workflow-execution-service/preview/\<branch\>/docs'). To view the latest *stable* development API specification, refer to the `develop` branch.
+
 Use Cases
 ---------
 
 Use cases include:
 
 * "Bring your code to the data": a researcher who has built their own custom analysis can submit it to run on a dataset owned by an external organization, instead of having to make a copy of the data
-* Best-practices pipelines: a researcher who maintains their own controlled data environment can find useful workflows in a shared directory (e.g. [Dockstore.org](http://dockstore.org)), and run them over their data
+* Best-practices pipelines: a researcher who maintains their own controlled data environment can find useful workflows in a shared directory (e.g., [Dockstore.org](http://dockstore.org)), and run them over their data
 
 Possible Future Enhancements
 ----------------------------
