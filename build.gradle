@@ -1,0 +1,107 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        //mavenLocal()
+    }
+    dependencies {
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
+        classpath 'io.github.swagger2markup:swagger2markup-gradle-plugin:1.3.1'
+        classpath "io.github.swagger2markup:swagger2markup:1.3.1"
+        classpath "io.github.swagger2markup:swagger2markup-import-files-ext:1.3.1"
+        classpath "com.bluepapa32:gradle-watch-plugin:0.1.5"
+        classpath "org.kordamp.gradle:livereload-gradle-plugin:0.2.1"
+        classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
+    }
+}
+
+apply plugin: 'org.asciidoctor.convert'
+apply plugin: 'com.bluepapa32.watch'
+apply plugin: 'org.kordamp.gradle.livereload'
+apply plugin: 'io.github.swagger2markup'
+apply plugin: 'com.moowork.node'
+node {
+    version = '8.9.0'
+    download = true
+}
+
+group 'io.github.swagger2markup'
+version '1.3.1'
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+ext {
+    asciiDocDir = file("docs/asciidoc")
+    asciiDocOutputDir = file("docs/asciidoc/swagger2markup")
+}
+
+convertSwagger2markup {
+    swaggerInput file("openapi/workflow_execution_service.swagger.yaml").getAbsolutePath()
+    outputDir asciiDocOutputDir
+    config = ['swagger2markup.markupLanguage' : 'ASCIIDOC',
+              'swagger2markup.extensions.dynamicDefinitions.contentPath' : file('docs/asciidoc/swagger2markup/definitions').absolutePath,
+              'swagger2markup.extensions.dynamicOverview.contentPath' : file('docs/asciidoc/swagger2markup/overview').absolutePath,
+              'swagger2markup.extensions.dynamicPaths.contentPath' : file('docs/asciidoc/swagger2markup/paths').absolutePath,
+              'swagger2markup.extensions.dynamicSecurity.contentPath' : file('docs/asciidoc/swagger2markup/security').absolutePath]
+}
+
+asciidoctorj {
+    version = '1.5.5'
+}
+
+asciidoctor {
+    dependsOn convertSwagger2markup
+    sourceDir asciiDocDir
+    outputDir file("docs")
+    sources {
+        include 'index.adoc'
+    }
+    backends = ['html5', 'pdf']
+    attributes = [
+            doctype: 'book',
+            toc: 'left',
+            toclevels: '3',
+            numbered: '',
+            sectlinks: '',
+            sectanchors: '',
+            hardbreaks: '',
+            generated: asciiDocOutputDir
+    ]
+}
+
+dependencies {
+    // add converters and extensions using `asciidoctor` configuration
+    asciidoctor 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.15'
+}
+
+watch {
+    asciidoc {
+        files fileTree('docs/asciidoc')
+        tasks 'asciidoctor'
+    }
+}
+
+liveReload {
+    docRoot asciidoctor.outputDir.canonicalPath
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.5'
+}
+
+task installSwagger(type: NpmTask) {
+    npmCommand = ["install"]
+}
+
+task buildSwagger(type: NpmTask) {
+    npmCommand = ["run", "build"]
+}
+
