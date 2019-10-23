@@ -12,7 +12,7 @@
     "shelljs": "^0.7.0",
     "showdown": "^1.8.6",
     "swagger-repo": "^1.5.1",
-    "swagger-ui": "^2.1.4"
+    "swagger-ui": "^3.23.11"
   },
   "private": true,
   "scripts": {
