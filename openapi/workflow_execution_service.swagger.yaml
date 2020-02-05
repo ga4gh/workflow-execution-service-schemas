@@ -387,7 +387,7 @@ components:
     ServiceInfo:
       title: ServiceInfo
       allOf:
-        - $ref: 'https://raw.githubusercontent.com/ga4gh-discovery/ga4gh-service-info/develop/service-info.yaml#/components/schemas/Service'
+        - $ref: 'https://raw.githubusercontent.com/ga4gh-discovery/ga4gh-service-info/v1.0.0/service-info.yaml#/components/schemas/Service'
         - type: object
           properties:
             workflow_type_versions:
