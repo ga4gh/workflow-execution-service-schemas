@@ -1,51 +1,60 @@
-language: python
-python:
-- '2.7'
+# language: python
+# python:
+# - '2.7'
 
-# Specifying `branches.only = ['master']` can cause tagged builds to
-# not deploy. See travis-ci/travis-ci#2498 and travis-ci/travis-ci#1675.
-# We can fix this by only build master and branches/tags that follow the
-# format x.y.z. and also feature/issue-<num>, the latter is the style
-# used by HubFlow
-branches:
-  only:
-    - master
-    - develop
-    - /^\d+\.\d+(\.\d+)?(-\S*)?$/
-    - /^feature\/issue-\d+(-\S*)?$/
-    - "/^release\\/\\d+\\.\\d+(\\.\\d+)?$/"
+# # Specifying `branches.only = ['master']` can cause tagged builds to
+# # not deploy. See travis-ci/travis-ci#2498 and travis-ci/travis-ci#1675.
+# # We can fix this by only build master and branches/tags that follow the
+# # format x.y.z. and also feature/issue-<num>, the latter is the style
+# # used by HubFlow
+# branches:
+#   only:
+#     - master
+#     - develop
+#     - /^\d+\.\d+(\.\d+)?(-\S*)?$/
+#     - /^feature\/issue-\d+(-\S*)?$/
+#     - "/^release\\/\\d+\\.\\d+(\\.\\d+)?$/"
 
-stages:
-  - linting
-  # The deploy stage only has `deploy` actions which will only run on commits to master
-  # (and not pull requests). That said, we still explicitly skip this stage because
-  # if we don't, Travis will only stop execution once the build stage has already been
-  # set up. If we skip the deploy stage for pull requests at the stage level, we can
-  # shave off a couple minutes of runtime.
-  - name: deploy
-    if: type != pull_request && branch = "master"
+# stages:
+#   - linting
+#   # The deploy stage only has `deploy` actions which will only run on commits to master
+#   # (and not pull requests). That said, we still explicitly skip this stage because
+#   # if we don't, Travis will only stop execution once the build stage has already been
+#   # set up. If we skip the deploy stage for pull requests at the stage level, we can
+#   # shave off a couple minutes of runtime.
+#   - name: deploy
+#     if: type != pull_request && branch = "master"
 
 jobs:
   include:
-    # If the linting stage fails, then none of the other stages will run.
-    - stage: linting
-      python: '2.7'
-      script:
-        # Travis will install requirements.txt by default
-        - flake8 --select=E121,E123,E126,E226,E24,E704,W503,W504 --ignore=E501 app.py tests
+    # - stage: test
+    #   language: python
+    #   python:
+    #   - '2.7'
+    #   before_install:
+    #   - sudo apt-get update -qq
+    #   - pip install . --process-dependency-links
+    #   - pip install -r python/dev-requirements.txt
+    #   script:
+    #   - nosetests python/
+    #   - flake8 python
+    #   - ga4gh_wes_client
+    #   deploy:
+    #     provider: pypi
+    #     skip-cleanup: true
+    #     on:
+    #       tags: true
+    #     user: david4096
+    #     password:
+    #       secure: LlQn8ZBAb5ekujHnoDrmzrmXaM6TpyzByNHPH4FTbbdnJ8lkDPb/ZhYvdmqrOvXPQg81/IoYKlIvP7fY9kc3oGUJ2IXhcPFqiw8njsRE5Qaebp+YppQO7C3IWGlHoZtXNtC608ZSA4x0oneNeNy+Y8KYnqKbmOlbuvrYRlNYfe9/8z7yLPH8wdmp0GyvbViedr3p7PXhtQVUKAgPpgjffZnSA7P/Y6AdkvjHHv2xMAzWP/QmOFWZNxUXjg0miR0K7eGFeGBNMM/+QsVXrGOu/TCtPtJ4JXyD86nzrZUbsOluyAblxwGlrv05se5ImVhR210OC5zvSW2902y/lxCw5uek+xg4/tcSA1ckshxLeu02GfDygCktMUtqtKVIZ+qvU7H4dEQ6Jnz9yBvZW5M6V94Ew3wBFy0RB5I9k3MMQY21FdynIUEZzBgJbOChCbmlIDT1varBHvWBiwg8EwPOVuJt1CsOoptJxUsoJND4tAOPIvXMNI17qGJ+VWAVMVNn7cVUuhEeGXwQF4urrkFBA7WIYOp6O9R8Ipg6WnQdxVdnqb3NsEc19SRdFXQ82SYibKfIZxjpdmYVgKzTYsJGMhfG6fTw9D4JABhggfgShsnByrFtbbkn/9g64jXDOjwPLeRXwXYZe6ZV6M69PDWdo0o326Qq/OHBG5eU7z2plNI=
 
-    # Build process for reference docs and other GH-pages content
-    - stage: build_pages
-      language: java
-      jdk: oraclejdk8
-      before_install:
-      - chmod +x gradlew
-      - chmod +x scripts/fetchpages.sh
-      - chmod +x scripts/stagepages.sh
+    - stage: build_docs
+      language: node_js
+      before_script:
+      - npm install -g @redocly/openapi-cli && npm install -g redoc-cli
+      - npm install -g gh-openapi-docs
       script:
-      - "./scripts/fetchpages.sh"
-      - "./gradlew installSwagger buildSwagger asciidoctor"
-      - "./scripts/stagepages.sh"
+      - gh-openapi-docs
       deploy:
         provider: pages
         skip-cleanup: true
@@ -53,29 +62,3 @@ jobs:
         github-token: $GITHUB_TOKEN
         on:
           all_branches: true
-
-    # Deploy to PyPI on every tagged commit
-    - stage: deploy
-      language: python
-      python: '2.7'
-      script: ignore
-      before_install: ignore
-      deploy:
-        provider: pypi
-        skip-cleanup: true
-        on:
-          tags: true
-          branch: master
-          python: '2.7'
-          repo: ga4gh/workflow-execution-service-schemas
-        user: david4096
-        password:
-          secure: LlQn8ZBAb5ekujHnoDrmzrmXaM6TpyzByNHPH4FTbbdnJ8lkDPb/ZhYvdmqrOvXPQg81/IoYKlIvP7fY9kc3oGUJ2IXhcPFqiw8njsRE5Qaebp+YppQO7C3IWGlHoZtXNtC608ZSA4x0oneNeNy+Y8KYnqKbmOlbuvrYRlNYfe9/8z7yLPH8wdmp0GyvbViedr3p7PXhtQVUKAgPpgjffZnSA7P/Y6AdkvjHHv2xMAzWP/QmOFWZNxUXjg0miR0K7eGFeGBNMM/+QsVXrGOu/TCtPtJ4JXyD86nzrZUbsOluyAblxwGlrv05se5ImVhR210OC5zvSW2902y/lxCw5uek+xg4/tcSA1ckshxLeu02GfDygCktMUtqtKVIZ+qvU7H4dEQ6Jnz9yBvZW5M6V94Ew3wBFy0RB5I9k3MMQY21FdynIUEZzBgJbOChCbmlIDT1varBHvWBiwg8EwPOVuJt1CsOoptJxUsoJND4tAOPIvXMNI17qGJ+VWAVMVNn7cVUuhEeGXwQF4urrkFBA7WIYOp6O9R8Ipg6WnQdxVdnqb3NsEc19SRdFXQ82SYibKfIZxjpdmYVgKzTYsJGMhfG6fTw9D4JABhggfgShsnByrFtbbkn/9g64jXDOjwPLeRXwXYZe6ZV6M69PDWdo0o326Qq/OHBG5eU7z2plNI=
-
-before_install:
-- pip install . --process-dependency-links
-- pip install -r python/dev-requirements.txt
-- npm install -g swagger2openapi
-script:
-- nosetests python/
-- ga4gh_wes_client
