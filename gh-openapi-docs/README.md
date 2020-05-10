@@ -1,4 +1,4 @@
-# gh-schema-docs
+# gh-openapi-docs
 
 ## Installation
 
