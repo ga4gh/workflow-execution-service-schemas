@@ -56,7 +56,7 @@ jobs:
       - npm install -g @redocly/openapi-cli && npm install -g redoc-cli
       - git clone -b fix-branch-envvar https://github.com/ga4gh/gh-openapi-docs
       - cd gh-openapi-docs
-      - npm run cleanBuild
+      - npm install && npm run cleanBuild
       - npm install -g .
       - cd ..
       script:
