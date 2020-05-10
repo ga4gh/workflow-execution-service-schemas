@@ -54,7 +54,11 @@ jobs:
         - "12"
       before_script:
       - npm install -g @redocly/openapi-cli && npm install -g redoc-cli
+      - git clone clone https://github.com/ga4gh/gh-openapi-docs
+      - git checkout fix-branch-envvar
+      - cd gh-openapi-docs
       - npm install -g gh-openapi-docs
+      - cd ..
       script:
       - gh-openapi-docs
       deploy:
