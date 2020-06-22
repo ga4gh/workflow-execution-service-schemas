@@ -1,4 +1,0 @@
-include::{generated}/overview.adoc[]
-include::front_matter.adoc[]
-include::{generated}/paths.adoc[]
-include::{generated}/definitions.adoc[]
