@@ -6,7 +6,7 @@ info:
   x-logo:
     url: 'https://www.ga4gh.org/wp-content/themes/ga4gh-theme/gfx/GA-logo-horizontal-tag-RGB.svg'
   description: >
-    # Executive Summary
+    ## Executive Summary
 
     The Workflow Execution Service (WES) API provides a standard way for users to submit workflow requests to workflow execution systems, and to monitor their execution. This API lets users run a single workflow (currently [**CWL**](https://www.commonwl.org/) or [**WDL**](http://www.openwdl.org/) formatted workflows, other types may be supported in the future) on multiple different platforms, clouds, and environments.
 
@@ -20,7 +20,7 @@ info:
 
     - can cancel a running workflow
 
-    # Introduction
+    ## Introduction
 
     This document describes the WES API and provides details on the specific endpoints, request formats, and response.  It is intended to provide key information for developers of WES-compatible services as well as clients that will call these WES services.
 
@@ -30,11 +30,11 @@ info:
 
     - Best-practices pipelines: a researcher who maintains their own controlled data environment can find useful workflows in a shared directory (e.g. Dockstore.org), and run them over their data
 
-    # Standards
+    ## Standards
 
     The WES API specification is written in OpenAPI and embodies a RESTful service philosophy.  It uses JSON in requests and responses and standard HTTP/HTTPS for information transport.
 
-    # Authorization and Authentication
+    ## Authorization and Authentication
 
     Users must supply credentials that establish their identity and authorization in order to use a WES endpoint. We recommend that WES implementations use an OAuth2 [**bearer token**](https://oauth.net/2/bearer-tokens/), although they can choose other mechanisms if appropriate. WES callers can use the `auth_instructions_url` from the [**`service-info` endpoint**](https://ga4gh.github.io/workflow-execution-service-schemas/#/WorkflowExecutionService/GetServiceInfo) to learn how to obtain and use a bearer token for a particular implementation.
     <br><br>
