@@ -1,4 +1,4 @@
 {
-    "apiSpecPath": "openapi/workflow_execution_service.openapi.yaml",
+    "apiSpecPath": "openapi/workflow_execution_service.swagger.yaml",
     "redocTheme": "ga4gh"
 }

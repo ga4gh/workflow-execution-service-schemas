@@ -32,7 +32,7 @@ API Definition
 --------------
 
 See the human-readable [Reference Documentation](https://ga4gh.github.io/workflow-execution-service-schemas/docs/) 
-and the [OpenAPI YAML description](openapi/workflow_execution_service.swagger.yaml). You can also explore the specification in the [Swagger Editor](https://editor.swagger.io/?url=https://ga4gh.github.io/workflow-execution-service-schemas/openapi.yaml).
+and the [OpenAPI YAML description](openapi/workflow_execution_service.swagger.yaml). You can also explore the specification in the [Swagger UI](https://ga4gh.github.io/workflow-execution-service-schemas/swagger-ui/) or [Swagger Editor](https://editor.swagger.io/?url=https://ga4gh.github.io/workflow-execution-service-schemas/swagger.yaml).
 
 > All documentation and pages hosted at 'ga4gh.github.io/workflow-execution-service' reflect the latest API release from the `master` branch. To monitor the latest development work, add 'preview/\<branch\>' to the URLs above (e.g., 'ga4gh.github.io/ga4gh.github.io/workflow-execution-service/preview/\<branch\>/docs'). To view the latest *stable* development API specification, refer to the `develop` branch.
 
