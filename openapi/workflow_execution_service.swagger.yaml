@@ -36,15 +36,13 @@ info:
 
     ## Authorization and Authentication
 
-
-
-    Users must supply credentials that establish their identity and authorization in order to use a WES endpoint. GA4GH recommends the use of the OAuth 2.0 framework ([RFC 6749](https://tools.ietf.org/html/rfc6749)) for authentication and authorization. It is also recommended that implementations of this standard implement and follow the [GA4GH Authentication and Authorization Infrastructure (AAI) standard](https://w3id.org/ga4gh/product-approval-support/aai). WES callers can use the `auth_instructions_url` from the [**`service-info` endpoint**](https://ga4gh.github.io/workflow-execution-service-schemas/#/WorkflowExecutionService/GetServiceInfo) to learn how to obtain and use a bearer token for a particular implementation.
+    Users must supply credentials that establish their identity and authorization in order to use a WES endpoint. We recommend that WES implementations use an OAuth2 [**bearer token**](https://oauth.net/2/bearer-tokens/), although they can choose other mechanisms if appropriate. WES callers can use the `auth_instructions_url` from the [**`service-info` endpoint**](https://ga4gh.github.io/workflow-execution-service-schemas/#/WorkflowExecutionService/GetServiceInfo) to learn how to obtain and use a bearer token for a particular implementation.
     <br><br>
 
-    The WES implementation is responsible for checking that a user is authorized to submit workflow run requests. The particular authorization policy is up to the WES implementer.  The GA4GH recommends the use of the OAuth 2.0 framework ([RFC 6749](https://tools.ietf.org/html/rfc6749)) for authentication and authorization.  This means using a [bearer access token](https://oauth.net/2/bearer-tokens/) (e.g. an HTTP header of `Authorization: Bearer <token>`).  The nature of that access token can be either an opaque access token or a JWT GA4GH Passport access token, either way these are obtained through a standard OAuth 2.0 flow with a broker.  If a GA4GH Passport access token is used then a clearinghouse can obtain a GA4GH Passport with embedded visas that can express access controls and these can be used to make decisions about access to a WES server.  How authentication and authorization specifically work for a given WES server is outside of the scope of this specification but we strongly recommend adhering to the [GA4GH Passport standard](https://w3id.org/ga4gh/product-approval-support/aai).
+    The WES implementation is responsible for checking that a user is authorized to submit workflow run requests. The particular authorization policy is up to the WES implementer.
     <br><br>
 
-    Systems like WES need to also address the ability to pass credentials with jobs for input and output access.  In the current version of WES mandates about necessary file transfer protocols to support are out of scope.  However, the passing of credentials to authenticate and authorize access to inputs and outputs is in scope.  We define a parameter (`workflow_input_output_credentials`) that takes a hash of key as DRS URIs and values as the bearer token needed to access that DRS resource.  Currently only DRS URIs are supported and the specific type of access bearer token is intentionally left up to the implementer (see previous paragraph on recommeded token types in general).
+    Systems like WES need to also address the ability to pass credentials with jobs for input and output access.  In the current version of WES, the passing of credentials to authenticate and authorize access to inputs and outputs, as well as mandates about necessary file transfer protocols to support, are out of scope.  However, parallel work on the Data Object Service is addressing ways to pass around access credentials with data object references, opening up the possibility that a future version of WES will provide concrete mechanisms for workflow runs to access data using credentials different than those used for WES.  This is a work in progress and support of DOS in WES will be added in a future release of WES.
 
 schemes:
   - https
@@ -177,15 +175,13 @@ paths:
         `workflow_attachment`.  The WES endpoint must understand and
         be able to access URLs supplied in the input.  This is
         implementation specific.
-
-        The `workflow_input_output_credentials` takes a hash of key as DRS URIs and values as the bearer token needed to access that DRS resource.
-
-
+ 
+ 
         The `workflow_type` is the type of workflow language and
-        must be "CWL" or "WDL" currently (or another alternative
+        must be "CWL" or "WDL" currently (or another alternative 
         supported by this WES instance).
-
-
+ 
+ 
         The `workflow_type_version` is the version of the workflow language
         submitted and must be one supported by this WES instance.
 
@@ -221,12 +217,6 @@ paths:
           name: workflow_params
           type: string
           format: application/json
-
-        - in: formData
-          name: workflow_input_output_credentials
-          type: object
-          additionalProperties:
-            type: string
 
         - in: formData
           name: workflow_type
@@ -335,7 +325,7 @@ paths:
       summary: Get quick status info about a workflow run.
       description: >-
         This provides an abbreviated (and likely fast depending on implementation)
-        status of the running workflow, returning a simple result with the
+        status of the running workflow, returning a simple result with the 
         overall state of the workflow run (e.g. RUNNING, see the State section).
       x-swagger-router-controller: ga4gh.wes.server
       operationId: GetRunStatus
@@ -443,8 +433,8 @@ definitions:
           type: string
         description: >-
           The filesystem protocols supported by this service, currently these may include common
-          protocols using the terms 'http', 'https', 'sftp', 's3', 'gs', 'file', or 'synapse', but others
-          are possible and the terms beyond these core protocols are currently not fixed.
+          protocols using the terms 'http', 'https', 'sftp', 's3', 'gs', 'file', or 'synapse', but others 
+          are possible and the terms beyond these core protocols are currently not fixed.  
           This section reports those protocols (either common or not) supported by this WES service.
       workflow_engine_versions:
         type: object
@@ -472,7 +462,7 @@ definitions:
         type: string
         description: >-
           A web page URL with human-readable instructions on how to get an
-          authorization token for use with a specific WES endpoint.
+          authorization token for use with a specific WES endpoint.          
       contact_info_url:
         type: string
         description: >-
@@ -542,7 +532,7 @@ definitions:
        - CANCELED: The task was canceled by the user.
 
 
-        - CANCELING: The task was canceled by the user, and is in the process of stopping.
+        - CANCELING: The task was canceled by the user, and is in the process of stopping.       
   RunListResponse:
     type: object
     properties:
@@ -590,11 +580,6 @@ definitions:
         description: |-
           REQUIRED
           The workflow run parameterizations (JSON encoded), including input and output file locations
-      workflow_input_output_credentials:
-        type: object
-        description: |-
-          OPTIONAL
-          Takes a hash of key as DRS URIs and values as the bearer token needed to access that DRS resource.
       workflow_type:
         type: string
         description: |-
@@ -618,14 +603,14 @@ definitions:
           type: string
         description: >-
           OPTIONAL
-
+          
           Additional parameters can be sent to the workflow engine using this field. Default values
           for these parameters can be obtained using the ServiceInfo endpoint.
       workflow_url:
         type: string
         description: >-
           REQUIRED
-
+          
           The workflow CWL or WDL document.
           When `workflow_attachments` is used to attach files, the `workflow_url` may be a relative path
           to one of the attachments.
