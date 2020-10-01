@@ -117,6 +117,12 @@ paths:
         explode: true
         schema:
           type: string
+      - name: execution_location
+        in: query
+        description: OPTIONAL Platform specific path to a project/workfspace/folder where execution meta-formation is persisted.
+        schema:
+          type: string
+      
       responses:
         200:
           description: ''
@@ -183,6 +189,9 @@ paths:
             schema:
               type: object
               properties:
+                execution_location:
+                  description: OPTIONAL Platform specific path to a project/workfspace/folder where execution meta-formation is persisted.
+                  type: string
                 workflow_params:
                   type: string
                 workflow_type:
