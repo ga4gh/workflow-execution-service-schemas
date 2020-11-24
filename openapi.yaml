@@ -577,15 +577,15 @@ components:
                 description: >-
                   A message containing useful information about the running
                   service, including supported versions and default settings.
-            required:
-              - workflow_type_versions
-              - supported_wes_versions
-              - supported_filesystem_protocols
-              - workflow_engine_versions
-              - default_workflow_engine_parameters
-              - system_state_counts
-              - auth_instructions_url
-              - tags
+          required:
+            - workflow_type_versions
+            - supported_wes_versions
+            - supported_filesystem_protocols
+            - workflow_engine_versions
+            - default_workflow_engine_parameters
+            - system_state_counts
+            - auth_instructions_url
+            - tags
     State:
       title: State
       enum:
