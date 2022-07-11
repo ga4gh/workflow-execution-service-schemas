@@ -27,6 +27,14 @@ properties:
     type: object
     additionalProperties:
       type: string
+  workflow_engine:
+    type: string
+    description: >-
+      The workflow engine, must be one supported by this WES instance
+  workflow_engine_version:
+    type: string
+    description: >-
+      The workflow engine version, must be one supported by this WES instance
   workflow_url:
     type: string
     description: >-
