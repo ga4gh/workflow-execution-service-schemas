@@ -20,7 +20,7 @@ allOf:
       workflow_engine_versions:
         type: object
         additionalProperties:
-          type: string
+          $ref: './WorkflowEngineVersion.yaml'
       default_workflow_engine_parameters:
         type: array
         items:

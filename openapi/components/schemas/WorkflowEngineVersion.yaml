@@ -1,0 +1,9 @@
+title: WorkflowEngineVersion
+type: object
+properties:
+  workflow_engine_version:
+    type: array
+    items:
+      type: string
+    description: an array of one or more acceptable engines for the `workflow_engine`
+description: Available workflow engines supported by a given instance of the service.
