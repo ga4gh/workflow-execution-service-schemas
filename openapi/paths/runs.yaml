@@ -72,7 +72,7 @@
       
       The `workflow_engine` is the engine that supports the workflow_type and must be supported by this WES instance.
       
-      The `workflow_engine_version` is the version of workflow engine and must besupported by this WES instance.
+      The `workflow_engine_version` is the version of workflow engine and must be supported by this WES instance.
 
       See the `RunRequest` documentation for details about other fields.
     operationId: RunWorkflow
