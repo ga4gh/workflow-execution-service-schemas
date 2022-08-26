@@ -5,5 +5,5 @@ properties:
     type: array
     items:
       type: string
-    description: An array of one or more acceptable engines for the `workflow_engine`
-description: Available workflow engines supported by a given instance of the service.
+    description: An array of one or more acceptable engines versions for the `workflow_engine`
+description: Available workflow engine versions supported by a given instance of the service.
