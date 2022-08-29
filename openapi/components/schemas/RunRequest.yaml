@@ -35,7 +35,7 @@ properties:
     type: string
     description: >-
       The workflow engine version, must be one supported by this WES instance.
-      If workflow_engine is provided, but workflow_engine_version is not, clients can make no assumptions with regard to the engine version the WES instance uses to process the request if 
+      If workflow_engine is provided, but workflow_engine_version is not, servers can make no assumptions with regard to the engine version the WES instance uses to process the request if 
       that WES instance supports multiple versions of the requested engine.
   workflow_url:
     type: string
@@ -48,5 +48,5 @@ description: >-
 
   and executing a given workflow.
   
-  If workflow_engine and workflow_engine_version is not provided, clients can use the most recent workflow_engine_version of workflow_enginer that WES instance uses to process the request if 
+  If workflow_engine and workflow_engine_version are not provided, servers can use the most recent workflow_engine_version of workflow_engine that WES instance uses to process the request if 
   supports for the requested workflow_type.
