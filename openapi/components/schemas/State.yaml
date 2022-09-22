@@ -10,6 +10,7 @@ enum:
 - SYSTEM_ERROR
 - CANCELED
 - CANCELING
+- PREEMPTED
 type: string
 description: >
   State can take any of the following values:
@@ -36,3 +37,7 @@ description: >
     + CANCELED: The task was canceled by the user.
 
     + CANCELING: The task was canceled by the user, and is in the process of stopping.
+
+    + PREEMPTED: The task is stopped (preempted) by the system. The reasons for this would be tied to
+        the specific system running the job. Generally, this means that the system reclaimed the compute
+        capacity for reallocation.
