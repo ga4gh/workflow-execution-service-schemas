@@ -45,37 +45,3 @@ jobs:
         uses: char0n/swagger-editor-validate@v1
         with:
           definition-file: openapi/workflow_execution_service.openapi.yaml
-
-
-name: docs-build-publish
-on:
-  push:
-    branches:
-      - master
-      - develop
-      - "feature/issue-*"
-      - "fix/issue-*"
-      - "support/issue-*"
-  pull_request:
-    branches:
-      - master
-      - develop
-      - "feature/issue-*"
-      - "fix/issue-*"
-      - "support/issue-*"
-jobs:
-  docs-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Docker Pull 🐳
-        run: |
-          docker pull ga4gh/gh-openapi-docs:0.2.3-rc1
-      - name: Build Docs 🔧
-        run: |
-          docker run --name docs-builder --rm -v `pwd`:/docs ga4gh/gh-openapi-docs:0.2.3-rc1
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.2.2
-        with:
-          branch: gh-pages
-          folder: publish
