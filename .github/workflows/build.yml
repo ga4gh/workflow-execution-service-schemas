@@ -14,6 +14,8 @@ on:
       - "feature/issue-*"
       - "fix/issue-*"
       - "support/issue-*"
+permissions:
+  contents: write
 jobs:
   docs-build:
     runs-on: ubuntu-latest
