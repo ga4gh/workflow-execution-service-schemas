@@ -7,7 +7,7 @@
     "x-logo": {
       "url": "https://www.ga4gh.org/wp-content/themes/ga4gh-theme/gfx/GA-logo-horizontal-tag-RGB.svg"
     },
-    "description": "*Run standard workflows on workflow execution platforms in a platform-agnostic way.*\n\n## Executive Summary\n\nThe Workflow Execution Service (WES) API provides a standard way for users to submit workflow requests to workflow execution systems, and to monitor their execution. This API lets users run a single workflow (currently [**CWL**](https://www.commonwl.org/) or [**WDL**](http://www.openwdl.org/) formatted workflows, other types may be supported in the future) on multiple different platforms, clouds, and environments.\n\nKey features of the API:\n\n+ can request that a workflow be run\n+ can pass parameters to that workflow (e.g. input files, cmdline arguments)\n+ can get information about running workflows (e.g. status, errors, output file locations)\n+ can cancel a running workflow"
+    "description": "*Run standard workflows on workflow execution platforms in a platform-agnostic way.*\n## Executive Summary\nThe Workflow Execution Service (WES) API provides a standard way for users to submit workflow requests to workflow execution systems, and to monitor their execution. This API lets users run a single workflow (currently [**CWL**](https://www.commonwl.org/) or [**WDL**](http://www.openwdl.org/) formatted workflows, other types may be supported in the future) on multiple different platforms, clouds, and environments.\nKey features of the API:\n+ can request that a workflow be run + can pass parameters to that workflow (e.g. input files, cmdline arguments) + can get information about running workflows (e.g. status, errors, output file locations) + can cancel a running workflow\n"
   },
   "servers": [
     {
@@ -36,11 +36,11 @@
     },
     {
       "name": "Introduction",
-      "description": "This document describes the WES API and provides details on the specific endpoints, request formats, and response.  It is intended to provide key information for developers of WES-compatible services as well as clients that will call these WES services.\n\nUse cases include:\n\n+ \"Bring your code to the data\": a researcher who has built their own custom analysis can submit it to run on a dataset owned by an external organization, instead of having to make a copy of the data\n+ Best-practices pipelines: a researcher who maintains their own controlled data environment can find useful workflows in a shared directory (e.g. Dockstore.org), and run them over their data\n\n## Standards\n\nThe WES API specification is written in OpenAPI and embodies a RESTful service philosophy. It uses JSON in requests and responses and standard HTTP/HTTPS for information transport."
+      "description": "This document describes the WES API and provides details on the specific endpoints, request formats, and response.  It is intended to provide key information for developers of WES-compatible services as well as clients that will call these WES services.\n\nUse cases include:\n\n+ \"Bring your code to the data\": a researcher who has built their own custom analysis can submit it to run on a dataset owned by an external organization, instead of having to make a copy of the data\n+ Best-practices pipelines: a researcher who maintains their own controlled data environment can find useful workflows in a shared directory (e.g. Dockstore.org), and run them over their data\n\n## Standards\n  \nThe WES API specification is written in OpenAPI and embodies a RESTful service philosophy. It uses JSON in requests and responses and standard HTTP/HTTPS for information transport.\n"
     },
     {
       "name": "Authorization & Authentication",
-      "description": "Users must supply credentials that establish their identity and authorization in order to use a WES endpoint. We recommend that WES implementations use an OAuth2 [**bearer token**](https://oauth.net/2/bearer-tokens/), although they can choose other mechanisms if appropriate. WES callers can use the `auth_instructions_url` from the [**`service-info` endpoint**](https://ga4gh.github.io/workflow-execution-service-schemas/#/WorkflowExecutionService/GetServiceInfo) to learn how to obtain and use a bearer token for a particular implementation.\n\nThe WES implementation is responsible for checking that a user is authorized to submit workflow run requests. The particular authorization policy is up to the WES implementer.\n\nSystems like WES need to also address the ability to pass credentials with jobs for input and output access.  In the current version of WES, the passing of credentials to authenticate and authorize access to inputs and outputs, as well as mandates about necessary file transfer protocols to support, are out of scope.  However, parallel work on the Data Object Service is addressing ways to pass around access credentials with data object references, opening up the possibility that a future version of WES will provide concrete mechanisms for workflow runs to access data using credentials different than those used for WES.  This is a work in progress and support of DOS in WES will be added in a future release of WES."
+      "description": "Users must supply credentials that establish their identity and authorization in order to use a WES endpoint. We recommend that WES implementations use an OAuth2 [**bearer token**](https://oauth.net/2/bearer-tokens/), although they can choose other mechanisms if appropriate. WES callers can use the `auth_instructions_url` from the [**`service-info` endpoint**](https://ga4gh.github.io/workflow-execution-service-schemas/#/WorkflowExecutionService/GetServiceInfo) to learn how to obtain and use a bearer token for a particular implementation.\nThe WES implementation is responsible for checking that a user is authorized to submit workflow run requests. The particular authorization policy is up to the WES implementer.\nSystems like WES need to also address the ability to pass credentials with jobs for input and output access.  In the current version of WES, the passing of credentials to authenticate and authorize access to inputs and outputs, as well as mandates about necessary file transfer protocols to support, are out of scope.  However, parallel work on the Data Object Service is addressing ways to pass around access credentials with data object references, opening up the possibility that a future version of WES will provide concrete mechanisms for workflow runs to access data using credentials different than those used for WES.  This is a work in progress and support of DOS in WES will be added in a future release of WES.\n"
     },
     {
       "name": "serviceinfo_model",
@@ -622,7 +622,7 @@
               "workflow_type_versions": {
                 "type": "object",
                 "additionalProperties": {
-                  "$ref": "#/components/schemas/WorkflowTypeVersion-2"
+                  "$ref": "#/components/schemas/WorkflowTypeVersion"
                 }
               },
               "supported_wes_versions": {
@@ -648,7 +648,7 @@
               "default_workflow_engine_parameters": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/DefaultWorkflowEngineParameter-2"
+                  "$ref": "#/components/schemas/DefaultWorkflowEngineParameter"
                 },
                 "description": "Each workflow engine can present additional parameters that can be sent to the workflow engine. This message will list the default values, and their types for each workflow engine."
               },
@@ -669,18 +669,18 @@
                   "type": "string",
                   "description": "A message containing useful information about the running service, including supported versions and default settings."
                 }
-              },
-              "required": [
-                "workflow_type_versions",
-                "supported_wes_versions",
-                "supported_filesystem_protocols",
-                "workflow_engine_versions",
-                "default_workflow_engine_parameters",
-                "system_state_counts",
-                "auth_instructions_url",
-                "tags"
-              ]
-            }
+              }
+            },
+            "required": [
+              "workflow_type_versions",
+              "supported_wes_versions",
+              "supported_filesystem_protocols",
+              "workflow_engine_versions",
+              "default_workflow_engine_parameters",
+              "system_state_counts",
+              "auth_instructions_url",
+              "tags"
+            ]
           }
         ]
       },
@@ -777,12 +777,12 @@
             "$ref": "#/components/schemas/State"
           },
           "run_log": {
-            "$ref": "#/components/schemas/Log-2"
+            "$ref": "#/components/schemas/Log"
           },
           "task_logs": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Log-2"
+              "$ref": "#/components/schemas/Log"
             },
             "description": "The logs, and other key info like timing and exit code, for each step in the workflow run."
           },
@@ -871,7 +871,7 @@
           "runs": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/RunStatus"
+              "$ref": "#/components/schemas/State"
             },
             "description": "A list of workflow runs that the service has executed or is executing. The list is filtered to only include runs that the caller has permission to see."
           },
@@ -1009,78 +1009,6 @@
             "example": "1.0.0"
           }
         }
-      },
-      "WorkflowTypeVersion-2": {
-        "title": "WorkflowTypeVersion",
-        "type": "object",
-        "properties": {
-          "workflow_type_version": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "an array of one or more acceptable types for the `workflow_type`"
-          }
-        },
-        "description": "Available workflow types supported by a given instance of the service."
-      },
-      "DefaultWorkflowEngineParameter-2": {
-        "title": "DefaultWorkflowEngineParameter",
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "The name of the parameter"
-          },
-          "type": {
-            "type": "string",
-            "description": "Describes the type of the parameter, e.g. float."
-          },
-          "default_value": {
-            "type": "string",
-            "description": "The stringified version of the default parameter. e.g. \"2.45\"."
-          }
-        },
-        "description": "A message that allows one to describe default parameters for a workflow engine."
-      },
-      "Log-2": {
-        "title": "Log",
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "The task or workflow name"
-          },
-          "cmd": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "The command line that was executed"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "When the command started executing, in ISO 8601 format \"%Y-%m-%dT%H:%M:%SZ\""
-          },
-          "end_time": {
-            "type": "string",
-            "description": "When the command stopped executing (completed, failed, or cancelled), in ISO 8601 format \"%Y-%m-%dT%H:%M:%SZ\""
-          },
-          "stdout": {
-            "type": "string",
-            "description": "A URL to retrieve standard output logs of the workflow run or task.  This URL may change between status requests, or may not be available until the task or workflow has finished execution.  Should be available using the same credentials used to access the WES endpoint."
-          },
-          "stderr": {
-            "type": "string",
-            "description": "A URL to retrieve standard error logs of the workflow run or task.  This URL may change between status requests, or may not be available until the task or workflow has finished execution.  Should be available using the same credentials used to access the WES endpoint."
-          },
-          "exit_code": {
-            "type": "integer",
-            "description": "Exit code of the program",
-            "format": "int32"
-          }
-        },
-        "description": "Log and other info"
       }
     }
   }
