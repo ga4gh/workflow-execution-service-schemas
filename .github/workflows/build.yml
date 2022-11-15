@@ -1,0 +1,34 @@
+name: docs-build-publish
+on:
+  push:
+    branches:
+      - master
+      - develop
+      - "feature/issue-*"
+      - "fix/issue-*"
+      - "support/issue-*"
+  pull_request:
+    branches:
+      - master
+      - develop
+      - "feature/issue-*"
+      - "fix/issue-*"
+      - "support/issue-*"
+permissions:
+  contents: write
+jobs:
+  docs-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Docker Pull 🐳
+        run: |
+          docker pull ga4gh/gh-openapi-docs:0.2.3-rc1
+      - name: Build Docs 🔧
+        run: |
+          docker run --name docs-builder --rm -v `pwd`:/docs ga4gh/gh-openapi-docs:0.2.3-rc1
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.2.2
+        with:
+          branch: gh-pages
+          folder: publish
