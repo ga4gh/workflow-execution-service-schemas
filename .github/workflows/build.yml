@@ -32,3 +32,4 @@ jobs:
         with:
           branch: gh-pages
           folder: publish
+          token: ${{ secrets.GITHUB_TOKEN }}
