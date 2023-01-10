@@ -559,6 +559,10 @@ components:
     RunRequest:
       title: RunRequest
       type: object
+      required:
+      - workflow_type
+      - workflow_type_version
+      - workflow_url
       properties:
         workflow_params:
           type: object
