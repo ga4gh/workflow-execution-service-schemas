@@ -44,6 +44,12 @@ Use cases include:
 * "Bring your code to the data": a researcher who has built their own custom analysis can submit it to run on a dataset owned by an external organization, instead of having to make a copy of the data
 * Best-practices pipelines: a researcher who maintains their own controlled data environment can find useful workflows in a shared directory (e.g., [Dockstore.org](http://dockstore.org)), and run them over their data
 
+
+Starter Kit
+-----------
+If you are a future implementor or would like to start using a WES API locally you can try the [GA4GH WES Starter Kit](https://starterkit.ga4gh.org/docs/starter-kit-apis/wes/wes_overview/). This project provides a fully functioning WES API written in java and allows you to run workflows using the Nextflow workflow language.
+
+
 Possible Future Enhancements
 ----------------------------
 
