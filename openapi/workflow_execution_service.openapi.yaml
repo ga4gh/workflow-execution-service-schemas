@@ -91,6 +91,10 @@ tags:
     x-displayName: WorkflowTypeVersion
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/WorkflowTypeVersion" />
+  - name: workflowengineversion_model
+    x-displayName: WorkflowEngineVersion
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/WorkflowEngineVersion" />
 x-tagGroups:
   - name: Overview
     tags:
@@ -112,6 +116,7 @@ x-tagGroups:
       - log_model
       - defaultworkflowengineparameter_model
       - workflowtypeversion_model
+      - workflowengineversion_model
 paths:
   /service-info:
     get:
@@ -227,6 +232,10 @@ paths:
 
         The `workflow_type_version` is the version of the workflow language submitted and must be one supported by this WES instance.
 
+        The `workflow_engine` is the engine that supports the workflow_type and must be supported by this WES instance.
+      
+        The `workflow_engine_version` is the version of workflow engine and must be supported by this WES instance.
+
         See the `RunRequest` documentation for details about other fields.
       operationId: RunWorkflow
       parameters: [ ]
@@ -244,6 +253,10 @@ paths:
                 workflow_type_version:
                   type: string
                 tags:
+                  type: string
+                workflow_engine:
+                  type: string
+                workflow_engine_version:
                   type: string
                 workflow_engine_parameters:
                   type: string
@@ -537,7 +550,7 @@ components:
             workflow_engine_versions:
               type: object
               additionalProperties:
-                type: string
+                $ref: '#/components/schemas/WorkflowEngineVersion'
             default_workflow_engine_parameters:
               type: array
               items:
@@ -585,6 +598,7 @@ components:
         - SYSTEM_ERROR
         - CANCELED
         - CANCELING
+        - PREEMPTED
       type: string
       description: >
         State can take any of the following values:
@@ -611,6 +625,10 @@ components:
           + CANCELED: The task was canceled by the user.
 
           + CANCELING: The task was canceled by the user, and is in the process of stopping.
+
+          + PREEMPTED: The task is stopped (preempted) by the system. The reasons for this would be tied to
+        the specific system running the job. Generally, this means that the system reclaimed the compute
+        capacity for reallocation.
     RunStatus:
       title: RunStatus
       required:
@@ -625,6 +643,10 @@ components:
     RunRequest:
       title: RunRequest
       type: object
+      required:
+      - workflow_type
+      - workflow_type_version
+      - workflow_url
       properties:
         workflow_params:
           type: object
@@ -652,6 +674,16 @@ components:
           type: object
           additionalProperties:
             type: string
+        workflow_engine:
+          type: string
+          description: >-
+            The workflow engine, must be one supported by this WES instance. Required if workflow_engine_version is provided.
+        workflow_engine_version:
+          type: string
+          description: >-
+            The workflow engine version, must be one supported by this WES instance.
+            If workflow_engine is provided, but workflow_engine_version is not, servers can make no assumptions with regard to the engine version the WES instance uses to process the request if 
+            that WES instance supports multiple versions of the requested engine.
         workflow_url:
           type: string
           description: >-
@@ -662,6 +694,10 @@ components:
         To execute a workflow, send a run request including all the details needed to begin downloading
 
         and executing a given workflow.
+
+        If workflow_engine and workflow_engine_version are not provided, servers can use the most recent workflow_engine_version of workflow_engine that WES instance uses to process the request if 
+        
+        supports for the requested workflow_type.
     RunLog:
       title: RunLog
       type: object
@@ -759,6 +795,16 @@ components:
             A token which may be supplied as `page_token` in workflow run task list request to get the next page
             of results.  An empty string indicates there are no more items to return.
       description: The service will return a TaskListResponse when receiving a successful TaskListRequest.
+    WorkflowEngineVersion:
+      title: WorkflowEngineVersion
+      type: object
+      properties:
+        workflow_engine_version:
+          type: array
+          items:
+            type: string
+          description: An array of one or more acceptable engines versions for the `workflow_engine`
+      description: Available workflow engine versions supported by a given instance of the service.
     RunListResponse:
       title: RunListResponse
       type: object
