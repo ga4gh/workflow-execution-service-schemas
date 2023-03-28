@@ -717,13 +717,13 @@ components:
         task_logs:
           type: array
           deprecated: true
-          required: false
+          nullable: true
           items:
             $ref: '#/components/schemas/Log'
           description:  >-
               The logs, and other key info like timing and exit code, for each step in the workflow run.
               This field is deprecated and the `task_logs_url` should be used to retrieve a paginated list
-              of steps from the workflow run
+              of steps from the workflow run.
         outputs:
           type: object
           description: The outputs from the workflow run.
