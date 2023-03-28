@@ -131,6 +131,11 @@ tags:
     x-displayName: WorkflowTypeVersion
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/WorkflowTypeVersion" />
+  - name: workflowengineversion_model
+    x-displayName: WorkflowEngineVersion
+    description: >
+      <SchemaDefinition schemaRef="#/components/schemas/WorkflowEngineVersion"
+      />
 x-tagGroups:
   - name: Overview
     tags:
@@ -152,6 +157,7 @@ x-tagGroups:
       - log_model
       - defaultworkflowengineparameter_model
       - workflowtypeversion_model
+      - workflowengineversion_model
 paths:
   /service-info:
     get:
@@ -306,6 +312,12 @@ paths:
         The `workflow_type_version` is the version of the workflow language
         submitted and must be one supported by this WES instance.
 
+        The `workflow_engine` is the engine that supports the workflow_type and
+        must be supported by this WES instance.
+
+        The `workflow_engine_version` is the version of workflow engine and must
+        be supported by this WES instance.
+
         See the `RunRequest` documentation for details about other fields.
       operationId: RunWorkflow
       parameters: []
@@ -323,6 +335,10 @@ paths:
                 workflow_type_version:
                   type: string
                 tags:
+                  type: string
+                workflow_engine:
+                  type: string
+                workflow_engine_version:
                   type: string
                 workflow_engine_parameters:
                   type: string
@@ -553,7 +569,7 @@ components:
             workflow_engine_versions:
               type: object
               additionalProperties:
-                type: string
+                $ref: '#/components/schemas/WorkflowEngineVersion'
             default_workflow_engine_parameters:
               type: array
               items:
@@ -654,6 +670,10 @@ components:
     RunRequest:
       title: RunRequest
       type: object
+      required:
+        - workflow_type
+        - workflow_type_version
+        - workflow_url
       properties:
         workflow_params:
           type: object
@@ -684,6 +704,20 @@ components:
           type: object
           additionalProperties:
             type: string
+        workflow_engine:
+          type: string
+          description: >-
+            The workflow engine, must be one supported by this WES instance.
+            Required if workflow_engine_version is provided.
+        workflow_engine_version:
+          type: string
+          description: >-
+            The workflow engine version, must be one supported by this WES
+            instance. If workflow_engine is provided, but
+            workflow_engine_version is not, servers can make no assumptions with
+            regard to the engine version the WES instance uses to process the
+            request if  that WES instance supports multiple versions of the
+            requested engine.
         workflow_url:
           type: string
           description: >-
@@ -697,6 +731,12 @@ components:
         needed to begin downloading
 
         and executing a given workflow.
+
+        If workflow_engine and workflow_engine_version are not provided, servers
+        can use the most recent workflow_engine_version of workflow_engine that
+        WES instance uses to process the request if 
+
+        supports for the requested workflow_type.
     RunLog:
       title: RunLog
       type: object
@@ -789,6 +829,20 @@ components:
             type: string
           description: an array of one or more acceptable types for the `workflow_type`
       description: Available workflow types supported by a given instance of the service.
+    WorkflowEngineVersion:
+      title: WorkflowEngineVersion
+      type: object
+      properties:
+        workflow_engine_version:
+          type: array
+          items:
+            type: string
+          description: >-
+            An array of one or more acceptable engines versions for the
+            `workflow_engine`
+      description: >-
+        Available workflow engine versions supported by a given instance of the
+        service.
     RunListResponse:
       title: RunListResponse
       type: object
