@@ -490,6 +490,81 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       deprecated: false
+  /runs/{run_id}/tasks:
+    get:
+      tags:
+        - Workflow Runs
+      summary: ListTasks
+      description: >-
+        This endpoint provides a paginated list of tasks that were executed as
+        part of a given workflow run. Task ordering should be the same as what
+        would be returned in a `RunLog` response body.
+      operationId: ListTasks
+      parameters:
+        - name: run_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: page_size
+          in: query
+          description: >-
+            OPTIONAL The preferred number of task logs to return in a page. If
+            not provided, the implementation should use a default page size. The
+            implementation must not return more items than `page_size`, but it
+            may return fewer.  Clients should not assume that if fewer than
+            `page_size` items are returned that all items have been returned. 
+            The availability of additional pages is indicated by the value of
+            `next_page_token` in the response.
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int64
+        - name: page_token
+          in: query
+          description: >-
+            OPTIONAL Token to use to indicate where to start getting results. If
+            unspecified, return the first page of results.
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponse'
+        '401':
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The requested workflow run wasn't found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
   /runs/{run_id}/cancel:
     post:
       tags:
@@ -750,13 +825,23 @@ components:
           $ref: '#/components/schemas/State'
         run_log:
           $ref: '#/components/schemas/Log'
+        task_logs_url:
+          type: string
+          description: >-
+            A reference to the complete url which may be used to obtain a
+            paginated list of task logs for this workflow
         task_logs:
           type: array
+          deprecated: true
+          nullable: true
           items:
             $ref: '#/components/schemas/Log'
           description: >-
             The logs, and other key info like timing and exit code, for each
-            step in the workflow run.
+            step in the workflow run. This field is deprecated and the
+            `task_logs_url` should be used to retrieve a paginated list of steps
+            from the workflow run. This field will be removed in the next major
+            version of the  specification (2.0.0)
         outputs:
           type: object
           description: The outputs from the workflow run.
@@ -829,6 +914,26 @@ components:
             type: string
           description: an array of one or more acceptable types for the `workflow_type`
       description: Available workflow types supported by a given instance of the service.
+    TaskListResponse:
+      title: TaskListResponse
+      type: object
+      properties:
+        task_logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Log'
+          description: >-
+            The logs, and other key info like timing and exit code, for each
+            step in the workflow run.
+        next_page_token:
+          type: string
+          description: >-
+            A token which may be supplied as `page_token` in workflow run task
+            list request to get the next page of results.  An empty string
+            indicates there are no more items to return.
+      description: >-
+        The service will return a TaskListResponse when receiving a successful
+        TaskListRequest.
     WorkflowEngineVersion:
       title: WorkflowEngineVersion
       type: object
