@@ -87,6 +87,14 @@ tags:
     x-displayName: Log
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/Log" />
+  - name: taskLog_model
+    x-displayName: TaskLog
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/TaskLog" />
+  - name: taskListResponse_model
+    x-displayName: TaskListResponse
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/TaskListResponse" />
   - name: defaultworkflowengineparameter_model
     x-displayName: DefaultWorkflowEngineParameter
     description: |
@@ -119,6 +127,8 @@ x-tagGroups:
       - runrequest_model
       - runlog_model
       - log_model
+      - task_model
+      - taskListResponse_model
       - defaultworkflowengineparameter_model
       - workflowtypeversion_model
       - workflowengineversion_model
