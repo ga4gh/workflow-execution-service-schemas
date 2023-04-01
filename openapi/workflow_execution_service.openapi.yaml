@@ -448,7 +448,6 @@ paths:
           explode: true
           schema:
             type: string
-
       responses:
         200:
           description: ''
@@ -457,6 +456,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskListResponse'
+        401:
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        403:
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: The requested workflow run wasn't found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
+  '/runs/{run_id}/tasks/{task_id}':
+    get:
+      tags:
+        - Workflow Runs
+      summary: GetTask
+      description: >-
+        This endpoint provides a mechanism to retrieve information on a specific task, if it exists
+      operationId: GetTask
+      parameters:
+        - name: run_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: task_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          headers: { }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskLog'
         401:
           description: The request is unauthorized.
           content:
@@ -813,7 +868,7 @@ components:
         task_logs:
           type: array
           items:
-            $ref: '#/components/schemas/Log'
+            $ref: '#/components/schemas/TaskLog'
           description: The logs, and other key info like timing and exit code, for each step in the workflow run.
         next_page_token:
           type: string
@@ -821,6 +876,44 @@ components:
             A token which may be supplied as `page_token` in workflow run task list request to get the next page
             of results.  An empty string indicates there are no more items to return.
       description: The service will return a TaskListResponse when receiving a successful TaskListRequest.
+    TaskLog:
+      title: TaskLog
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique identifier which may be used to reference the current task
+        name:
+          type: string
+          description: The task or workflow name
+        cmd:
+          type: array
+          items:
+            type: string
+          description: The command line that was executed
+        start_time:
+          type: string
+          description: When the command started executing, in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
+        end_time:
+          type: string
+          description: When the command stopped executing (completed, failed, or cancelled), in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
+        stdout:
+          type: string
+          description: A URL to retrieve standard output logs of the workflow run or task.  This URL may change between status requests, or may not be available until the task or workflow has finished execution.  Should be available using the same credentials used to access the WES endpoint.
+        stderr:
+          type: string
+          description: A URL to retrieve standard error logs of the workflow run or task.  This URL may change between status requests, or may not be available until the task or workflow has finished execution.  Should be available using the same credentials used to access the WES endpoint.
+        exit_code:
+          type: integer
+          description: Exit code of the program
+          format: int32
+        tes_uri:
+          type: string
+          description: An optional URL pointing to an extended task definition defined by a [TES api](https://github.com/ga4gh/task-execution-schemas)
+      required:
+        - id
+        - name
+      description: Runtime information for a given task
     WorkflowEngineVersion:
       title: WorkflowEngineVersion
       type: object
