@@ -836,6 +836,20 @@ components:
           type: integer
           description: Exit code of the program
           format: int32
+        system_logs:
+          type: array
+          items:
+            type: string
+
+          description: |-
+            System logs are any logs the system decides are relevant,
+            which are not tied directly to a workflow.
+            Content is implementation specific: format, size, etc.
+
+            System logs may be collected here to provide convenient access.
+
+            For example, the system may include an error message that caused
+            a SYSTEM_ERROR state (e.g. disk is full), etc.
       description: Log and other info
     DefaultWorkflowEngineParameter:
       title: DefaultWorkflowEngineParameter
@@ -882,10 +896,10 @@ components:
       properties:
         id:
           type: string
-          description: A unique identifier which may be used to reference the current task
+          description: A unique identifier which may be used to reference the task
         name:
           type: string
-          description: The task or workflow name
+          description: The task name
         cmd:
           type: array
           items:
@@ -899,14 +913,29 @@ components:
           description: When the command stopped executing (completed, failed, or cancelled), in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
         stdout:
           type: string
-          description: A URL to retrieve standard output logs of the workflow run or task.  This URL may change between status requests, or may not be available until the task or workflow has finished execution.  Should be available using the same credentials used to access the WES endpoint.
+          description: A URL to retrieve standard output logs of the task.  This URL may change between status requests, or may not be available until the task has finished execution.  Should be available using the same credentials used to access the WES endpoint.
         stderr:
           type: string
-          description: A URL to retrieve standard error logs of the workflow run or task.  This URL may change between status requests, or may not be available until the task or workflow has finished execution.  Should be available using the same credentials used to access the WES endpoint.
+          description: A URL to retrieve standard error logs of the task.  This URL may change between status requests, or may not be available until the task has finished execution.  Should be available using the same credentials used to access the WES endpoint.
         exit_code:
           type: integer
           description: Exit code of the program
           format: int32
+        system_logs:
+          type: array
+          items:
+            type: string
+
+          description: |-
+            System logs are any logs the system decides are relevant,
+            which are not tied directly to a task.
+            Content is implementation specific: format, size, etc.
+            
+            System logs may be collected here to provide convenient access.
+            
+            For example, the system may include the name of the host
+            where the task is executing, an error message that caused
+            a SYSTEM_ERROR state (e.g. disk is full), etc.
         tes_uri:
           type: string
           description: An optional URL pointing to an extended task definition defined by a [TES api](https://github.com/ga4gh/task-execution-schemas)
