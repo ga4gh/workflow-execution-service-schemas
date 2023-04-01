@@ -71,10 +71,6 @@ tags:
     x-displayName: RunStatus
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/RunStatus" />
-  - name: runliststatus_model
-    x-displayName: RunListStatus
-    description: |
-      <SchemaDefinition schemaRef="#/components/schemas/RunListStatus" />
   - name: runrequest_model
     x-displayName: RunRequest
     description: |
@@ -643,23 +639,12 @@ components:
           type: string
         state:
           $ref: '#/components/schemas/State'
-    RunListStatus:
-      title: RunListStatus
-      required:
-        - run_id
-      type: object
-      properties:
-        run_id:
-          type: string
-        state:
-          $ref: '#/components/schemas/State'
         start_time:
           type: string
           description: When the run started executing, in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
         end_time:
           type: string
           description: When the run stopped executing (completed, failed, or cancelled), in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
-      description: Small description of a workflow run, returned by server during listing
     RunRequest:
       title: RunRequest
       type: object
@@ -833,7 +818,7 @@ components:
         runs:
           type: array
           items:
-            $ref: '#/components/schemas/RunListStatus'
+            $ref: '#/components/schemas/RunStatus'
           description: A list of workflow runs that the service has executed or is executing. The list is filtered to only include runs that the caller has permission to see.
         next_page_token:
           type: string
