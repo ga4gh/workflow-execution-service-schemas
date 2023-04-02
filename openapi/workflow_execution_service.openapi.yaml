@@ -813,7 +813,7 @@ components:
         runs:
           type: array
           items:
-            $ref: '#/components/schemas/State'
+            $ref: '#/components/schemas/RunStatus'
           description: A list of workflow runs that the service has executed or is executing. The list is filtered to only include runs that the caller has permission to see.
         next_page_token:
           type: string
