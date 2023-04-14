@@ -87,11 +87,11 @@ tags:
     x-displayName: Log
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/Log" />
-  - name: taskLog_model
+  - name: tasklog_model
     x-displayName: TaskLog
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/TaskLog" />
-  - name: taskListResponse_model
+  - name: tasklistresponse_model
     x-displayName: TaskListResponse
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/TaskListResponse" />
@@ -128,7 +128,8 @@ x-tagGroups:
       - runlog_model
       - log_model
       - task_model
-      - taskListResponse_model
+      - tasklog_model
+      - tasklistresponse_model
       - defaultworkflowengineparameter_model
       - workflowtypeversion_model
       - workflowengineversion_model
@@ -535,7 +536,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         404:
-          description: The requested workflow run wasn't found.
+          description: The requested task wasn't found.
           content:
             application/json:
               schema:
