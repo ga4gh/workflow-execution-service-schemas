@@ -651,9 +651,6 @@ components:
         - $ref: '#/components/schemas/RunStatus'
         - type: object
           properties:
-            name:
-              type: string
-              description: The workflow name
             start_time:
               type: string
               description: When the run started executing, in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
@@ -666,9 +663,6 @@ components:
               additionalProperties:
                 type: string
           required:
-            - name
-            - start_time
-            - end_time
             - tags
       description: Small description of a workflow run
     RunRequest:
