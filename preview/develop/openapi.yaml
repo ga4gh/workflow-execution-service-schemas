@@ -126,6 +126,14 @@ tags:
     x-displayName: Log
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/Log" />
+  - name: tasklog_model
+    x-displayName: TaskLog
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/TaskLog" />
+  - name: tasklistresponse_model
+    x-displayName: TaskListResponse
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/TaskListResponse" />
   - name: defaultworkflowengineparameter_model
     x-displayName: DefaultWorkflowEngineParameter
     description: >
@@ -160,6 +168,9 @@ x-tagGroups:
       - runrequest_model
       - runlog_model
       - log_model
+      - task_model
+      - tasklog_model
+      - tasklistresponse_model
       - defaultworkflowengineparameter_model
       - workflowtypeversion_model
       - workflowengineversion_model
@@ -570,6 +581,63 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       deprecated: false
+  /runs/{run_id}/tasks/{task_id}:
+    get:
+      tags:
+        - Workflow Runs
+      summary: GetTask
+      description: >-
+        This endpoint provides a mechanism to retrieve information on a specific
+        task, if it exists
+      operationId: GetTask
+      parameters:
+        - name: run_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: task_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskLog'
+        '401':
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The requested task wasn't found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
   /runs/{run_id}/cancel:
     post:
       tags:
@@ -864,7 +932,9 @@ components:
           deprecated: true
           nullable: true
           items:
-            $ref: '#/components/schemas/Log'
+            anyOf:
+              - $ref: '#/components/schemas/Log'
+              - $ref: '#/components/schemas/TaskLog'
           description: >-
             The logs, and other key info like timing and exit code, for each
             step in the workflow run. This field is deprecated and the
@@ -916,6 +986,19 @@ components:
           type: integer
           description: Exit code of the program
           format: int32
+        system_logs:
+          type: array
+          items:
+            type: string
+          description: |-
+            System logs are any logs the system decides are relevant,
+            which are not tied directly to a workflow.
+            Content is implementation specific: format, size, etc.
+
+            System logs may be collected here to provide convenient access.
+
+            For example, the system may include an error message that caused
+            a SYSTEM_ERROR state (e.g. disk is full), etc.
       description: Log and other info
     DefaultWorkflowEngineParameter:
       title: DefaultWorkflowEngineParameter
@@ -950,7 +1033,7 @@ components:
         task_logs:
           type: array
           items:
-            $ref: '#/components/schemas/Log'
+            $ref: '#/components/schemas/TaskLog'
           description: >-
             The logs, and other key info like timing and exit code, for each
             step in the workflow run.
@@ -963,6 +1046,38 @@ components:
       description: >-
         The service will return a TaskListResponse when receiving a successful
         TaskListRequest.
+    TaskLog:
+      title: TaskLog
+      allOf:
+        - $ref: '#/components/schemas/Log'
+        - type: object
+          properties:
+            id:
+              type: string
+              description: A unique identifier which may be used to reference the task
+            system_logs:
+              type: array
+              items:
+                type: string
+              description: |-
+                System logs are any logs the system decides are relevant,
+                which are not tied directly to a task.
+                Content is implementation specific: format, size, etc.
+
+                System logs may be collected here to provide convenient access.
+
+                For example, the system may include the name of the host
+                where the task is executing, an error message that caused
+                a SYSTEM_ERROR state (e.g. disk is full), etc.
+            tes_uri:
+              type: string
+              description: >-
+                An optional URL pointing to an extended task definition defined
+                by a [TES api](https://github.com/ga4gh/task-execution-schemas)
+      required:
+        - id
+        - name
+      description: Runtime information for a given task
     WorkflowEngineVersion:
       title: WorkflowEngineVersion
       type: object
