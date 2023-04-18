@@ -110,6 +110,10 @@ tags:
     x-displayName: RunStatus
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/RunStatus" />
+  - name: runsummary_model
+    x-displayName: RunSummary
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/RunSummary" />
   - name: runrequest_model
     x-displayName: RunRequest
     description: |
@@ -152,6 +156,7 @@ x-tagGroups:
       - runid_model
       - state_model
       - runstatus_model
+      - runsummary_model
       - runrequest_model
       - runlog_model
       - log_model
@@ -741,7 +746,31 @@ components:
           type: string
         state:
           $ref: '#/components/schemas/State'
-      description: Small description of a workflow run, returned by server during listing
+      description: State information of a workflow run
+    RunSummary:
+      title: RunSummary
+      allOf:
+        - $ref: '#/components/schemas/RunStatus'
+        - type: object
+          properties:
+            start_time:
+              type: string
+              description: >-
+                When the run started executing, in ISO 8601 format
+                "%Y-%m-%dT%H:%M:%SZ"
+            end_time:
+              type: string
+              description: >-
+                When the run stopped executing (completed, failed, or
+                cancelled), in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
+            tags:
+              type: object
+              description: Arbitrary key/value tags added by the client during run creation
+              additionalProperties:
+                type: string
+          required:
+            - tags
+      description: Small description of a workflow run
     RunRequest:
       title: RunRequest
       type: object
@@ -955,7 +984,9 @@ components:
         runs:
           type: array
           items:
-            $ref: '#/components/schemas/RunStatus'
+            anyOf:
+              - $ref: '#/components/schemas/RunStatus'
+              - $ref: '#/components/schemas/RunSummary'
           description: >-
             A list of workflow runs that the service has executed or is
             executing. The list is filtered to only include runs that the caller
@@ -966,9 +997,12 @@ components:
             A token which may be supplied as `page_token` in workflow run list
             request to get the next page of results.  An empty string indicates
             there are no more items to return.
-      description: >-
+      description: >
         The service will return a RunListResponse when receiving a successful
-        RunListRequest.
+        RunListRequest. DEPRECIATION WARNING: The use of `RunStatus` as the
+        schema for `runs` array items will not be permitted from the next major
+        version of the specification (2.0.0) onwards. We encourage implementers
+        to use `RunSummary` instead.
     ErrorResponse:
       title: ErrorResponse
       type: object
