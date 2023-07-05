@@ -71,6 +71,10 @@ tags:
     x-displayName: RunStatus
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/RunStatus" />
+  - name: runsummary_model
+    x-displayName: RunSummary
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/RunSummary" />
   - name: runrequest_model
     x-displayName: RunRequest
     description: |
@@ -83,6 +87,14 @@ tags:
     x-displayName: Log
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/Log" />
+  - name: tasklog_model
+    x-displayName: TaskLog
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/TaskLog" />
+  - name: tasklistresponse_model
+    x-displayName: TaskListResponse
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/TaskListResponse" />
   - name: defaultworkflowengineparameter_model
     x-displayName: DefaultWorkflowEngineParameter
     description: |
@@ -91,6 +103,10 @@ tags:
     x-displayName: WorkflowTypeVersion
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/WorkflowTypeVersion" />
+  - name: workflowengineversion_model
+    x-displayName: WorkflowEngineVersion
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/WorkflowEngineVersion" />
 x-tagGroups:
   - name: Overview
     tags:
@@ -107,11 +123,16 @@ x-tagGroups:
       - runid_model
       - state_model
       - runstatus_model
+      - runsummary_model
       - runrequest_model
       - runlog_model
       - log_model
+      - task_model
+      - tasklog_model
+      - tasklistresponse_model
       - defaultworkflowengineparameter_model
       - workflowtypeversion_model
+      - workflowengineversion_model
 paths:
   /service-info:
     get:
@@ -227,6 +248,10 @@ paths:
 
         The `workflow_type_version` is the version of the workflow language submitted and must be one supported by this WES instance.
 
+        The `workflow_engine` is the engine that supports the workflow_type and must be supported by this WES instance.
+      
+        The `workflow_engine_version` is the version of workflow engine and must be supported by this WES instance.
+
         See the `RunRequest` documentation for details about other fields.
       operationId: RunWorkflow
       parameters: [ ]
@@ -244,6 +269,10 @@ paths:
                 workflow_type_version:
                   type: string
                 tags:
+                  type: string
+                workflow_engine:
+                  type: string
+                workflow_engine_version:
                   type: string
                 workflow_engine_parameters:
                   type: string
@@ -385,6 +414,140 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       deprecated: false
+  '/runs/{run_id}/tasks':
+    get:
+      tags:
+        - Workflow Runs
+      summary: ListTasks
+      description: >-
+        This endpoint provides a paginated list of tasks that were executed as part of a given
+        workflow run. Task ordering should be the same as what would be returned in a
+        `RunLog` response body.
+      operationId: ListTasks
+      parameters:
+        - name: run_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: page_size
+          in: query
+          description: >-
+            OPTIONAL
+            The preferred number of task logs to return in a page.
+            If not provided, the implementation should use a default page size.
+            The implementation must not return more items
+            than `page_size`, but it may return fewer.  Clients should
+            not assume that if fewer than `page_size` items are
+            returned that all items have been returned.  The
+            availability of additional pages is indicated by the value
+            of `next_page_token` in the response.
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int64
+        - name: page_token
+          in: query
+          description: >-
+            OPTIONAL
+            Token to use to indicate where to start getting results. If unspecified, return the first
+            page of results.
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponse'
+        401:
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        403:
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: The requested workflow run wasn't found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
+  '/runs/{run_id}/tasks/{task_id}':
+    get:
+      tags:
+        - Workflow Runs
+      summary: GetTask
+      description: >-
+        This endpoint provides a mechanism to retrieve information on a specific task, if it exists
+      operationId: GetTask
+      parameters:
+        - name: run_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: task_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          headers: { }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskLog'
+        401:
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        403:
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: The requested task wasn't found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
   '/runs/{run_id}/cancel':
     post:
       tags:
@@ -458,7 +621,7 @@ components:
             workflow_engine_versions:
               type: object
               additionalProperties:
-                type: string
+                $ref: '#/components/schemas/WorkflowEngineVersion'
             default_workflow_engine_parameters:
               type: array
               items:
@@ -506,6 +669,7 @@ components:
         - SYSTEM_ERROR
         - CANCELED
         - CANCELING
+        - PREEMPTED
       type: string
       description: >
         State can take any of the following values:
@@ -532,6 +696,10 @@ components:
           + CANCELED: The task was canceled by the user.
 
           + CANCELING: The task was canceled by the user, and is in the process of stopping.
+
+          + PREEMPTED: The task is stopped (preempted) by the system. The reasons for this would be tied to
+        the specific system running the job. Generally, this means that the system reclaimed the compute
+        capacity for reallocation.
     RunStatus:
       title: RunStatus
       required:
@@ -542,10 +710,34 @@ components:
           type: string
         state:
           $ref: '#/components/schemas/State'
-      description: Small description of a workflow run, returned by server during listing
+      description: State information of a workflow run
+    RunSummary:
+      title: RunSummary
+      allOf:
+        - $ref: '#/components/schemas/RunStatus'
+        - type: object
+          properties:
+            start_time:
+              type: string
+              description: When the run started executing, in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
+            end_time:
+              type: string
+              description: When the run stopped executing (completed, failed, or cancelled), in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
+            tags:
+              type: object
+              description: Arbitrary key/value tags added by the client during run creation 
+              additionalProperties:
+                type: string
+          required:
+            - tags
+      description: Small description of a workflow run
     RunRequest:
       title: RunRequest
       type: object
+      required:
+      - workflow_type
+      - workflow_type_version
+      - workflow_url
       properties:
         workflow_params:
           type: object
@@ -573,6 +765,16 @@ components:
           type: object
           additionalProperties:
             type: string
+        workflow_engine:
+          type: string
+          description: >-
+            The workflow engine, must be one supported by this WES instance. Required if workflow_engine_version is provided.
+        workflow_engine_version:
+          type: string
+          description: >-
+            The workflow engine version, must be one supported by this WES instance.
+            If workflow_engine is provided, but workflow_engine_version is not, servers can make no assumptions with regard to the engine version the WES instance uses to process the request if 
+            that WES instance supports multiple versions of the requested engine.
         workflow_url:
           type: string
           description: >-
@@ -583,6 +785,10 @@ components:
         To execute a workflow, send a run request including all the details needed to begin downloading
 
         and executing a given workflow.
+
+        If workflow_engine and workflow_engine_version are not provided, servers can use the most recent workflow_engine_version of workflow_engine that WES instance uses to process the request if 
+        
+        supports for the requested workflow_type.
     RunLog:
       title: RunLog
       type: object
@@ -596,11 +802,22 @@ components:
           $ref: '#/components/schemas/State'
         run_log:
           $ref: '#/components/schemas/Log'
+        task_logs_url:
+          type: string
+          description: A reference to the complete url which may be used to obtain a paginated list of task logs for this workflow
         task_logs:
           type: array
+          deprecated: true
+          nullable: true
           items:
-            $ref: '#/components/schemas/Log'
-          description: The logs, and other key info like timing and exit code, for each step in the workflow run.
+            anyOf:
+              - $ref: '#/components/schemas/Log'
+              - $ref: '#/components/schemas/TaskLog'
+          description:  >-
+              The logs, and other key info like timing and exit code, for each step in the workflow run.
+              This field is deprecated and the `task_logs_url` should be used to retrieve a paginated list
+              of steps from the workflow run. This field will be removed in the next major version of the 
+              specification (2.0.0)
         outputs:
           type: object
           description: The outputs from the workflow run.
@@ -632,6 +849,20 @@ components:
           type: integer
           description: Exit code of the program
           format: int32
+        system_logs:
+          type: array
+          items:
+            type: string
+
+          description: |-
+            System logs are any logs the system decides are relevant,
+            which are not tied directly to a workflow.
+            Content is implementation specific: format, size, etc.
+
+            System logs may be collected here to provide convenient access.
+
+            For example, the system may include an error message that caused
+            a SYSTEM_ERROR state (e.g. disk is full), etc.
       description: Log and other info
     DefaultWorkflowEngineParameter:
       title: DefaultWorkflowEngineParameter
@@ -657,6 +888,62 @@ components:
             type: string
           description: an array of one or more acceptable types for the `workflow_type`
       description: Available workflow types supported by a given instance of the service.
+    TaskListResponse:
+      title: TaskListResponse
+      type: object
+      properties:
+        task_logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskLog'
+          description: The logs, and other key info like timing and exit code, for each step in the workflow run.
+        next_page_token:
+          type: string
+          description: >-
+            A token which may be supplied as `page_token` in workflow run task list request to get the next page
+            of results.  An empty string indicates there are no more items to return.
+      description: The service will return a TaskListResponse when receiving a successful TaskListRequest.
+    TaskLog:
+      title: TaskLog
+      allOf:
+        - $ref: '#/components/schemas/Log'
+        - type: object
+          properties:
+            id:
+              type: string
+              description: A unique identifier which may be used to reference the task
+            system_logs:
+              type: array
+              items:
+                type: string
+
+              description: |-
+                System logs are any logs the system decides are relevant,
+                which are not tied directly to a task.
+                Content is implementation specific: format, size, etc.
+                
+                System logs may be collected here to provide convenient access.
+                
+                For example, the system may include the name of the host
+                where the task is executing, an error message that caused
+                a SYSTEM_ERROR state (e.g. disk is full), etc.
+            tes_uri:
+              type: string
+              description: An optional URL pointing to an extended task definition defined by a [TES api](https://github.com/ga4gh/task-execution-schemas)
+      required:
+        - id
+        - name
+      description: Runtime information for a given task
+    WorkflowEngineVersion:
+      title: WorkflowEngineVersion
+      type: object
+      properties:
+        workflow_engine_version:
+          type: array
+          items:
+            type: string
+          description: An array of one or more acceptable engines versions for the `workflow_engine`
+      description: Available workflow engine versions supported by a given instance of the service.
     RunListResponse:
       title: RunListResponse
       type: object
@@ -664,7 +951,9 @@ components:
         runs:
           type: array
           items:
-            $ref: '#/components/schemas/State'
+            anyOf:
+              - $ref: '#/components/schemas/RunStatus'
+              - $ref: '#/components/schemas/RunSummary'
           description: A list of workflow runs that the service has executed or is executing. The list is filtered to only include runs that the caller has permission to see.
         next_page_token:
           type: string
@@ -673,7 +962,11 @@ components:
           type: integer
           description: >-
             Total count of workflow runs that the service has executed or is executing and the caller has permission to see.
-      description: The service will return a RunListResponse when receiving a successful RunListRequest.
+      description: >
+              The service will return a RunListResponse when receiving a successful RunListRequest.
+              DEPRECIATION WARNING: The use of `RunStatus` as the schema for `runs` array items will
+              not be permitted from the next major version of the specification (2.0.0) onwards. We
+              encourage implementers to use `RunSummary` instead.
     ErrorResponse:
       title: ErrorResponse
       type: object
