@@ -1,7 +1,0 @@
-# git+git://github.com/Yelp/bravado.git@master#egg=bravado
-# This case handles --process-dependency links when installing via pip
-# git+git://github.com/david4096/bravado-core.git@master#egg=bravado_core-99.9.9
-# This line is repeated in a shotgun attempt to cover both the -c constraints.txt
-# and --process-dependency-links methods of getting a specific version of this
-# requirement
-# git+git://github.com/david4096/bravado-core.git@master#egg=bravado_core
