@@ -1,14 +1,4 @@
 {
-    "docsRoot": "docs",
-    "defaultBranch": "master",
-    "branchPathBase": "preview",
-    "redocTheme": "ga4gh",
-    "buildPages": [
-        {
-            "apiSpecPath": "openapi/workflow_execution_service.openapi.yaml",
-            "htmlOutfile": "index.html",
-            "yamlOutfile": "openapi.yaml",
-            "jsonOutfile": "openapi.json"
-        }
-    ]
+    "apiSpecPath": "openapi/workflow_execution_service.openapi.yaml",
+    "redocTheme": "ga4gh"
 }
