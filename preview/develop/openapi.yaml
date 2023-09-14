@@ -1227,14 +1227,14 @@ components:
           description: >-
             Timestamp describing when the service was first deployed and
             available (RFC 3339 format)
-          example: 2019-06-04T12:58:19Z
+          example: '2019-06-04T12:58:19Z'
         updatedAt:
           type: string
           format: date-time
           description: >-
             Timestamp describing when the service was last updated (RFC 3339
             format)
-          example: 2019-06-04T12:58:19Z
+          example: '2019-06-04T12:58:19Z'
         environment:
           type: string
           description: >-
