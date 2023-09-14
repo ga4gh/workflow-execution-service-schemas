@@ -1,0 +1,1253 @@
+openapi: 3.0.0
+info:
+  title: Workflow Execution Service
+  contact: {}
+  version: 1.1.0
+  x-logo:
+    url: >-
+      https://www.ga4gh.org/wp-content/themes/ga4gh-theme/gfx/GA-logo-horizontal-tag-RGB.svg
+  description: >
+    *Run standard workflows on workflow execution platforms in a
+    platform-agnostic way.*
+
+    ## Executive Summary
+
+    The Workflow Execution Service (WES) API provides a standard way for users
+    to submit workflow requests to workflow execution systems, and to monitor
+    their execution. This API lets users run a single workflow (currently
+    [**CWL**](https://www.commonwl.org/) or [**WDL**](http://www.openwdl.org/)
+    formatted workflows, other types may be supported in the future) on multiple
+    different platforms, clouds, and environments.
+
+    Key features of the API:
+
+    + can request that a workflow be run + can pass parameters to that workflow
+    (e.g. input files, cmdline arguments) + can get information about running
+    workflows (e.g. status, errors, output file locations) + can cancel a
+    running workflow
+servers:
+  - url: https://{defaultHost}/{basePath}/{apiVersion}
+    variables:
+      defaultHost:
+        default: www.example.com
+      basePath:
+        default: ga4gh/wes
+      apiVersion:
+        default: v1
+tags:
+  - name: Service Info
+    description: Get information about the workflow execution service
+  - name: Workflow Runs
+    description: Submit and monitor workflows in a WES environment
+  - name: Introduction
+    description: >
+      This document describes the WES API and provides details on the specific
+      endpoints, request formats, and response.  It is intended to provide key
+      information for developers of WES-compatible services as well as clients
+      that will call these WES services.
+
+
+      Use cases include:
+
+
+      + "Bring your code to the data": a researcher who has built their own
+      custom analysis can submit it to run on a dataset owned by an external
+      organization, instead of having to make a copy of the data
+
+      + Best-practices pipelines: a researcher who maintains their own
+      controlled data environment can find useful workflows in a shared
+      directory (e.g. Dockstore.org), and run them over their data
+
+
+      ## Standards
+        
+      The WES API specification is written in OpenAPI and embodies a RESTful
+      service philosophy. It uses JSON in requests and responses and standard
+      HTTP/HTTPS for information transport.
+  - name: Authorization & Authentication
+    description: >
+      Users must supply credentials that establish their identity and
+      authorization in order to use a WES endpoint. We recommend that WES
+      implementations use an OAuth2 [**bearer
+      token**](https://oauth.net/2/bearer-tokens/), although they can choose
+      other mechanisms if appropriate. WES callers can use the
+      `auth_instructions_url` from the [**`service-info`
+      endpoint**](https://ga4gh.github.io/workflow-execution-service-schemas/#/WorkflowExecutionService/GetServiceInfo)
+      to learn how to obtain and use a bearer token for a particular
+      implementation.
+
+      The WES implementation is responsible for checking that a user is
+      authorized to submit workflow run requests. The particular authorization
+      policy is up to the WES implementer.
+
+      Systems like WES need to also address the ability to pass credentials with
+      jobs for input and output access.  In the current version of WES, the
+      passing of credentials to authenticate and authorize access to inputs and
+      outputs, as well as mandates about necessary file transfer protocols to
+      support, are out of scope.  However, parallel work on the Data Object
+      Service is addressing ways to pass around access credentials with data
+      object references, opening up the possibility that a future version of WES
+      will provide concrete mechanisms for workflow runs to access data using
+      credentials different than those used for WES.  This is a work in progress
+      and support of DOS in WES will be added in a future release of WES.
+  - name: serviceinfo_model
+    x-displayName: ServiceInfo
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/ServiceInfo" />
+  - name: runlistresponse_model
+    x-displayName: RunListResponse
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/RunListResponse" />
+  - name: runid_model
+    x-displayName: RunId
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/RunId" />
+  - name: state_model
+    x-displayName: State
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/State" />
+  - name: runstatus_model
+    x-displayName: RunStatus
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/RunStatus" />
+  - name: runsummary_model
+    x-displayName: RunSummary
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/RunSummary" />
+  - name: runrequest_model
+    x-displayName: RunRequest
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/RunRequest" />
+  - name: runlog_model
+    x-displayName: RunLog
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/RunLog" />
+  - name: log_model
+    x-displayName: Log
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/Log" />
+  - name: tasklog_model
+    x-displayName: TaskLog
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/TaskLog" />
+  - name: tasklistresponse_model
+    x-displayName: TaskListResponse
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/TaskListResponse" />
+  - name: defaultworkflowengineparameter_model
+    x-displayName: DefaultWorkflowEngineParameter
+    description: >
+      <SchemaDefinition
+      schemaRef="#/components/schemas/DefaultWorkflowEngineParameter" />
+  - name: workflowtypeversion_model
+    x-displayName: WorkflowTypeVersion
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/WorkflowTypeVersion" />
+  - name: workflowengineversion_model
+    x-displayName: WorkflowEngineVersion
+    description: >
+      <SchemaDefinition schemaRef="#/components/schemas/WorkflowEngineVersion"
+      />
+x-tagGroups:
+  - name: Overview
+    tags:
+      - Introduction
+      - Authorization & Authentication
+  - name: Operations
+    tags:
+      - Service Info
+      - Workflow Runs
+  - name: Models
+    tags:
+      - serviceinfo_model
+      - runlistresponse_model
+      - runid_model
+      - state_model
+      - runstatus_model
+      - runsummary_model
+      - runrequest_model
+      - runlog_model
+      - log_model
+      - task_model
+      - tasklog_model
+      - tasklistresponse_model
+      - defaultworkflowengineparameter_model
+      - workflowtypeversion_model
+      - workflowengineversion_model
+paths:
+  /service-info:
+    get:
+      tags:
+        - Service Info
+      summary: GetServiceInfo
+      description: >-
+        May include information related (but not limited to) the workflow
+        descriptor formats, versions supported, the WES API versions supported,
+        and information about general service availability.
+      operationId: GetServiceInfo
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceInfo'
+        '400':
+          description: The request is malformed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
+  /runs:
+    get:
+      tags:
+        - Workflow Runs
+      summary: ListRuns
+      description: >-
+        This list should be provided in a stable ordering. (The actual ordering
+        is implementation dependent.) When paging through the list, the client
+        should not make assumptions about live updates, but should assume the
+        contents of the list reflect the workflow list at the moment that the
+        first page is requested.  To monitor a specific workflow run, use
+        GetRunStatus or GetRunLog.
+      operationId: ListRuns
+      parameters:
+        - name: page_size
+          in: query
+          description: >-
+            OPTIONAL The preferred number of workflow runs to return in a page.
+            If not provided, the implementation should use a default page size.
+            The implementation must not return more items than `page_size`, but
+            it may return fewer.  Clients should not assume that if fewer than
+            `page_size` items are returned that all items have been returned. 
+            The availability of additional pages is indicated by the value of
+            `next_page_token` in the response.
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int64
+        - name: page_token
+          in: query
+          description: >-
+            OPTIONAL Token to use to indicate where to start getting results. If
+            unspecified, return the first page of results.
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunListResponse'
+        '400':
+          description: The request is malformed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
+    post:
+      tags:
+        - Workflow Runs
+      summary: RunWorkflow
+      description: >-
+        This endpoint creates a new workflow run and returns a `RunId` to
+        monitor its progress.
+
+        The `workflow_attachment` array may be used to upload files that are
+        required to execute the workflow, including the primary workflow, tools
+        imported by the workflow, other files referenced by the workflow, or
+        files which are part of the input.  The implementation should stage
+        these files to a temporary directory and execute the workflow from
+        there. These parts must have a Content-Disposition header with a
+        "filename" provided for each part.  Filenames may include
+        subdirectories, but must not include references to parent directories
+        with '..' -- implementations should guard against maliciously
+        constructed filenames.
+
+        The `workflow_url` is either an absolute URL to a workflow file that is
+        accessible by the WES endpoint, or a relative URL corresponding to one
+        of the files attached using `workflow_attachment`.
+
+        The `workflow_params` JSON object specifies input parameters, such as
+        input files.  The exact format of the JSON object depends on the
+        conventions of the workflow language being used.  Input files should
+        either be absolute URLs, or relative URLs corresponding to files
+        uploaded using `workflow_attachment`.  The WES endpoint must understand
+        and be able to access URLs supplied in the input.  This is
+        implementation specific.
+
+        The `workflow_type` is the type of workflow language and must be "CWL"
+        or "WDL" currently (or another alternative  supported by this WES
+        instance).
+
+        The `workflow_type_version` is the version of the workflow language
+        submitted and must be one supported by this WES instance.
+
+        The `workflow_engine` is the engine that supports the workflow_type and
+        must be supported by this WES instance.
+
+        The `workflow_engine_version` is the version of workflow engine and must
+        be supported by this WES instance.
+
+        See the `RunRequest` documentation for details about other fields.
+      operationId: RunWorkflow
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            encoding: {}
+            schema:
+              type: object
+              properties:
+                workflow_params:
+                  type: string
+                workflow_type:
+                  type: string
+                workflow_type_version:
+                  type: string
+                tags:
+                  type: string
+                workflow_engine:
+                  type: string
+                workflow_engine_version:
+                  type: string
+                workflow_engine_parameters:
+                  type: string
+                workflow_url:
+                  type: string
+                workflow_attachment:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: ''
+        required: false
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunId'
+        '400':
+          description: The request is malformed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
+  /runs/{run_id}:
+    get:
+      tags:
+        - Workflow Runs
+      summary: GetRunLog
+      description: >-
+        This endpoint provides detailed information about a given workflow run.
+        The returned result has information about the outputs produced by this
+        workflow (if available), a log object which allows the stderr and stdout
+        to be retrieved, a log array so stderr/stdout for individual tasks can
+        be retrieved, and the overall state of the workflow run (e.g. RUNNING,
+        see the State section).
+      operationId: GetRunLog
+      parameters:
+        - name: run_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunLog'
+        '401':
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The requested workflow run not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
+  /runs/{run_id}/status:
+    get:
+      tags:
+        - Workflow Runs
+      summary: GetRunStatus
+      description: >-
+        This provides an abbreviated (and likely fast depending on
+        implementation) status of the running workflow, returning a simple
+        result with the  overall state of the workflow run (e.g. RUNNING, see
+        the State section).
+      operationId: GetRunStatus
+      parameters:
+        - name: run_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunStatus'
+        '401':
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The requested workflow run wasn't found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
+  /runs/{run_id}/tasks:
+    get:
+      tags:
+        - Workflow Runs
+      summary: ListTasks
+      description: >-
+        This endpoint provides a paginated list of tasks that were executed as
+        part of a given workflow run. Task ordering should be the same as what
+        would be returned in a `RunLog` response body.
+      operationId: ListTasks
+      parameters:
+        - name: run_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: page_size
+          in: query
+          description: >-
+            OPTIONAL The preferred number of task logs to return in a page. If
+            not provided, the implementation should use a default page size. The
+            implementation must not return more items than `page_size`, but it
+            may return fewer.  Clients should not assume that if fewer than
+            `page_size` items are returned that all items have been returned. 
+            The availability of additional pages is indicated by the value of
+            `next_page_token` in the response.
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int64
+        - name: page_token
+          in: query
+          description: >-
+            OPTIONAL Token to use to indicate where to start getting results. If
+            unspecified, return the first page of results.
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponse'
+        '401':
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The requested workflow run wasn't found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
+  /runs/{run_id}/tasks/{task_id}:
+    get:
+      tags:
+        - Workflow Runs
+      summary: GetTask
+      description: >-
+        This endpoint provides a mechanism to retrieve information on a specific
+        task, if it exists
+      operationId: GetTask
+      parameters:
+        - name: run_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: task_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskLog'
+        '401':
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The requested task wasn't found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
+  /runs/{run_id}/cancel:
+    post:
+      tags:
+        - Workflow Runs
+      summary: CancelRun
+      description: Cancel a running workflow.
+      operationId: CancelRun
+      parameters:
+        - name: run_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunId'
+        '401':
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The requested workflow run wasn't found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
+components:
+  schemas:
+    ServiceInfo:
+      title: ServiceInfo
+      allOf:
+        - $ref: '#/components/schemas/Service'
+        - type: object
+          properties:
+            workflow_type_versions:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/WorkflowTypeVersion'
+            supported_wes_versions:
+              type: array
+              items:
+                type: string
+              description: The version(s) of the WES schema supported by this service
+            supported_filesystem_protocols:
+              type: array
+              items:
+                type: string
+              description: >-
+                The filesystem protocols supported by this service, currently
+                these may include common protocols using the terms 'http',
+                'https', 'sftp', 's3', 'gs', 'file', or 'synapse', but others 
+                are possible and the terms beyond these core protocols are
+                currently not fixed.   This section reports those protocols
+                (either common or not) supported by this WES service.
+            workflow_engine_versions:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/WorkflowEngineVersion'
+            default_workflow_engine_parameters:
+              type: array
+              items:
+                $ref: '#/components/schemas/DefaultWorkflowEngineParameter'
+              description: >-
+                Each workflow engine can present additional parameters that can
+                be sent to the workflow engine. This message will list the
+                default values, and their types for each workflow engine.
+            system_state_counts:
+              type: object
+              additionalProperties:
+                type: integer
+                format: int64
+            auth_instructions_url:
+              type: string
+              description: >-
+                A web page URL with human-readable instructions on how to get an
+                authorization token for use with a specific WES endpoint.
+            tags:
+              type: object
+              additionalProperties:
+                type: string
+                description: >-
+                  A message containing useful information about the running
+                  service, including supported versions and default settings.
+          required:
+            - workflow_type_versions
+            - supported_wes_versions
+            - supported_filesystem_protocols
+            - workflow_engine_versions
+            - default_workflow_engine_parameters
+            - system_state_counts
+            - auth_instructions_url
+            - tags
+    RunId:
+      title: RunId
+      type: object
+      properties:
+        run_id:
+          type: string
+          description: workflow run ID
+    State:
+      title: State
+      enum:
+        - UNKNOWN
+        - QUEUED
+        - INITIALIZING
+        - RUNNING
+        - PAUSED
+        - COMPLETE
+        - EXECUTOR_ERROR
+        - SYSTEM_ERROR
+        - CANCELED
+        - CANCELING
+        - PREEMPTED
+      type: string
+      description: >
+        State can take any of the following values:
+
+          + UNKNOWN: The state of the task is unknown. This provides a safe default for messages where this field is missing, for example, so that a missing field does not accidentally imply that the state is QUEUED.
+
+          + QUEUED: The task is queued.
+
+          + INITIALIZING: The task has been assigned to a worker and is currently preparing to run. For example, the worker may be turning on, downloading input files, etc.
+
+          + RUNNING: The task is running. Input files are downloaded and the first Executor has been started.
+
+          + PAUSED: The task is paused. An implementation may have the ability to pause a task, but this is not required.
+
+          + COMPLETE: The task has completed running. Executors have exited without error
+          and output files have been successfully uploaded.
+
+          + EXECUTOR_ERROR: The task encountered an error in one of the Executor processes. Generally,
+        this means that an Executor exited with a non-zero exit code.
+
+          + SYSTEM_ERROR: The task was stopped due to a system error, but not from an Executor,
+        for example an upload failed due to network issues, the worker's ran out
+        of disk space, etc.
+
+          + CANCELED: The task was canceled by the user.
+
+          + CANCELING: The task was canceled by the user, and is in the process of stopping.
+
+          + PREEMPTED: The task is stopped (preempted) by the system. The reasons for this would be tied to
+        the specific system running the job. Generally, this means that the
+        system reclaimed the compute capacity for reallocation.
+    RunStatus:
+      title: RunStatus
+      required:
+        - run_id
+      type: object
+      properties:
+        run_id:
+          type: string
+        state:
+          $ref: '#/components/schemas/State'
+      description: State information of a workflow run
+    RunSummary:
+      title: RunSummary
+      allOf:
+        - $ref: '#/components/schemas/RunStatus'
+        - type: object
+          properties:
+            start_time:
+              type: string
+              description: >-
+                When the run started executing, in ISO 8601 format
+                "%Y-%m-%dT%H:%M:%SZ"
+            end_time:
+              type: string
+              description: >-
+                When the run stopped executing (completed, failed, or
+                cancelled), in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
+            tags:
+              type: object
+              description: Arbitrary key/value tags added by the client during run creation
+              additionalProperties:
+                type: string
+          required:
+            - tags
+      description: Small description of a workflow run
+    RunRequest:
+      title: RunRequest
+      type: object
+      required:
+        - workflow_type
+        - workflow_type_version
+        - workflow_url
+      properties:
+        workflow_params:
+          type: object
+          description: >-
+            REQUIRED
+
+            The workflow run parameterizations (JSON encoded), including input
+            and output file locations
+        workflow_type:
+          type: string
+          description: >-
+            REQUIRED
+
+            The workflow descriptor type, must be "CWL" or "WDL" currently (or
+            another alternative supported by this WES instance)
+        workflow_type_version:
+          type: string
+          description: >-
+            REQUIRED
+
+            The workflow descriptor type version, must be one supported by this
+            WES instance
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+        workflow_engine_parameters:
+          type: object
+          additionalProperties:
+            type: string
+        workflow_engine:
+          type: string
+          description: >-
+            The workflow engine, must be one supported by this WES instance.
+            Required if workflow_engine_version is provided.
+        workflow_engine_version:
+          type: string
+          description: >-
+            The workflow engine version, must be one supported by this WES
+            instance. If workflow_engine is provided, but
+            workflow_engine_version is not, servers can make no assumptions with
+            regard to the engine version the WES instance uses to process the
+            request if  that WES instance supports multiple versions of the
+            requested engine.
+        workflow_url:
+          type: string
+          description: >-
+            REQUIRED
+
+            The workflow CWL or WDL document. When `workflow_attachments` is
+            used to attach files, the `workflow_url` may be a relative path to
+            one of the attachments.
+      description: >-
+        To execute a workflow, send a run request including all the details
+        needed to begin downloading
+
+        and executing a given workflow.
+
+        If workflow_engine and workflow_engine_version are not provided, servers
+        can use the most recent workflow_engine_version of workflow_engine that
+        WES instance uses to process the request if 
+
+        supports for the requested workflow_type.
+    RunLog:
+      title: RunLog
+      type: object
+      properties:
+        run_id:
+          type: string
+          description: workflow run ID
+        request:
+          $ref: '#/components/schemas/RunRequest'
+        state:
+          $ref: '#/components/schemas/State'
+        run_log:
+          $ref: '#/components/schemas/Log'
+        task_logs_url:
+          type: string
+          description: >-
+            A reference to the complete url which may be used to obtain a
+            paginated list of task logs for this workflow
+        task_logs:
+          type: array
+          deprecated: true
+          nullable: true
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/Log'
+              - $ref: '#/components/schemas/TaskLog'
+          description: >-
+            The logs, and other key info like timing and exit code, for each
+            step in the workflow run. This field is deprecated and the
+            `task_logs_url` should be used to retrieve a paginated list of steps
+            from the workflow run. This field will be removed in the next major
+            version of the  specification (2.0.0)
+        outputs:
+          type: object
+          description: The outputs from the workflow run.
+    Log:
+      title: Log
+      type: object
+      properties:
+        name:
+          type: string
+          description: The task or workflow name
+        cmd:
+          type: array
+          items:
+            type: string
+          description: The command line that was executed
+        start_time:
+          type: string
+          description: >-
+            When the command started executing, in ISO 8601 format
+            "%Y-%m-%dT%H:%M:%SZ"
+        end_time:
+          type: string
+          description: >-
+            When the command stopped executing (completed, failed, or
+            cancelled), in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
+        stdout:
+          type: string
+          description: >-
+            A URL to retrieve standard output logs of the workflow run or task. 
+            This URL may change between status requests, or may not be available
+            until the task or workflow has finished execution.  Should be
+            available using the same credentials used to access the WES
+            endpoint.
+        stderr:
+          type: string
+          description: >-
+            A URL to retrieve standard error logs of the workflow run or task. 
+            This URL may change between status requests, or may not be available
+            until the task or workflow has finished execution.  Should be
+            available using the same credentials used to access the WES
+            endpoint.
+        exit_code:
+          type: integer
+          description: Exit code of the program
+          format: int32
+        system_logs:
+          type: array
+          items:
+            type: string
+          description: |-
+            System logs are any logs the system decides are relevant,
+            which are not tied directly to a workflow.
+            Content is implementation specific: format, size, etc.
+
+            System logs may be collected here to provide convenient access.
+
+            For example, the system may include an error message that caused
+            a SYSTEM_ERROR state (e.g. disk is full), etc.
+      description: Log and other info
+    DefaultWorkflowEngineParameter:
+      title: DefaultWorkflowEngineParameter
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the parameter
+        type:
+          type: string
+          description: Describes the type of the parameter, e.g. float.
+        default_value:
+          type: string
+          description: The stringified version of the default parameter. e.g. "2.45".
+      description: >-
+        A message that allows one to describe default parameters for a workflow
+        engine.
+    WorkflowTypeVersion:
+      title: WorkflowTypeVersion
+      type: object
+      properties:
+        workflow_type_version:
+          type: array
+          items:
+            type: string
+          description: an array of one or more acceptable types for the `workflow_type`
+      description: Available workflow types supported by a given instance of the service.
+    TaskListResponse:
+      title: TaskListResponse
+      type: object
+      properties:
+        task_logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskLog'
+          description: >-
+            The logs, and other key info like timing and exit code, for each
+            step in the workflow run.
+        next_page_token:
+          type: string
+          description: >-
+            A token which may be supplied as `page_token` in workflow run task
+            list request to get the next page of results.  An empty string
+            indicates there are no more items to return.
+      description: >-
+        The service will return a TaskListResponse when receiving a successful
+        TaskListRequest.
+    TaskLog:
+      title: TaskLog
+      allOf:
+        - $ref: '#/components/schemas/Log'
+        - type: object
+          properties:
+            id:
+              type: string
+              description: A unique identifier which may be used to reference the task
+            system_logs:
+              type: array
+              items:
+                type: string
+              description: |-
+                System logs are any logs the system decides are relevant,
+                which are not tied directly to a task.
+                Content is implementation specific: format, size, etc.
+
+                System logs may be collected here to provide convenient access.
+
+                For example, the system may include the name of the host
+                where the task is executing, an error message that caused
+                a SYSTEM_ERROR state (e.g. disk is full), etc.
+            tes_uri:
+              type: string
+              description: >-
+                An optional URL pointing to an extended task definition defined
+                by a [TES api](https://github.com/ga4gh/task-execution-schemas)
+      required:
+        - id
+        - name
+      description: Runtime information for a given task
+    WorkflowEngineVersion:
+      title: WorkflowEngineVersion
+      type: object
+      properties:
+        workflow_engine_version:
+          type: array
+          items:
+            type: string
+          description: >-
+            An array of one or more acceptable engines versions for the
+            `workflow_engine`
+      description: >-
+        Available workflow engine versions supported by a given instance of the
+        service.
+    RunListResponse:
+      title: RunListResponse
+      type: object
+      properties:
+        runs:
+          type: array
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/RunStatus'
+              - $ref: '#/components/schemas/RunSummary'
+          description: >-
+            A list of workflow runs that the service has executed or is
+            executing. The list is filtered to only include runs that the caller
+            has permission to see.
+        next_page_token:
+          type: string
+          description: >-
+            A token which may be supplied as `page_token` in workflow run list
+            request to get the next page of results.  An empty string indicates
+            there are no more items to return.
+      description: >
+        The service will return a RunListResponse when receiving a successful
+        RunListRequest. DEPRECIATION WARNING: The use of `RunStatus` as the
+        schema for `runs` array items will not be permitted from the next major
+        version of the specification (2.0.0) onwards. We encourage implementers
+        to use `RunSummary` instead.
+    ErrorResponse:
+      title: ErrorResponse
+      type: object
+      properties:
+        msg:
+          type: string
+          description: A detailed error message.
+        status_code:
+          type: integer
+          description: The integer representing the HTTP status code (e.g. 200, 404).
+          format: int32
+      description: An object that can optionally include information about the error.
+    ServiceType:
+      description: Type of a GA4GH service
+      type: object
+      required:
+        - group
+        - artifact
+        - version
+      properties:
+        group:
+          type: string
+          description: >-
+            Namespace in reverse domain name format. Use `org.ga4gh` for
+            implementations compliant with official GA4GH specifications. For
+            services with custom APIs not standardized by GA4GH, or
+            implementations diverging from official GA4GH specifications, use a
+            different namespace (e.g. your organization's reverse domain name).
+          example: org.ga4gh
+        artifact:
+          type: string
+          description: >-
+            Name of the API or GA4GH specification implemented. Official GA4GH
+            types should be assigned as part of standards approval process.
+            Custom artifacts are supported.
+          example: beacon
+        version:
+          type: string
+          description: >-
+            Version of the API or specification. GA4GH specifications use
+            semantic versioning.
+          example: 1.0.0
+    Service:
+      description: GA4GH service
+      type: object
+      required:
+        - id
+        - name
+        - type
+        - organization
+        - version
+      properties:
+        id:
+          type: string
+          description: >-
+            Unique ID of this service. Reverse domain name notation is
+            recommended, though not required. The identifier should attempt to
+            be globally unique so it can be used in downstream aggregator
+            services e.g. Service Registry.
+          example: org.ga4gh.myservice
+        name:
+          type: string
+          description: Name of this service. Should be human readable.
+          example: My project
+        type:
+          $ref: '#/components/schemas/ServiceType'
+        description:
+          type: string
+          description: >-
+            Description of the service. Should be human readable and provide
+            information about the service.
+          example: This service provides...
+        organization:
+          type: object
+          description: Organization providing the service
+          required:
+            - name
+            - url
+          properties:
+            name:
+              type: string
+              description: Name of the organization responsible for the service
+              example: My organization
+            url:
+              type: string
+              format: uri
+              description: URL of the website of the organization (RFC 3986 format)
+              example: https://example.com
+        contactUrl:
+          type: string
+          format: uri
+          description: >-
+            URL of the contact for the provider of this service, e.g. a link to
+            a contact form (RFC 3986 format), or an email (RFC 2368 format).
+          example: mailto:support@example.com
+        documentationUrl:
+          type: string
+          format: uri
+          description: >-
+            URL of the documentation of this service (RFC 3986 format). This
+            should help someone learn how to use your service, including any
+            specifics required to access data, e.g. authentication.
+          example: https://docs.myservice.example.com
+        createdAt:
+          type: string
+          format: date-time
+          description: >-
+            Timestamp describing when the service was first deployed and
+            available (RFC 3339 format)
+          example: 2019-06-04T12:58:19Z
+        updatedAt:
+          type: string
+          format: date-time
+          description: >-
+            Timestamp describing when the service was last updated (RFC 3339
+            format)
+          example: 2019-06-04T12:58:19Z
+        environment:
+          type: string
+          description: >-
+            Environment the service is running in. Use this to distinguish
+            between production, development and testing/staging deployments.
+            Suggested values are prod, test, dev, staging. However this is
+            advised and not enforced.
+          example: test
+        version:
+          type: string
+          description: >-
+            Version of the service being described. Semantic versioning is
+            recommended, but other identifiers, such as dates or commit hashes,
+            are also allowed. The version should be changed whenever the service
+            is updated.
+          example: 1.0.0
