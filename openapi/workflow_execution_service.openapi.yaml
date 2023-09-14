@@ -958,6 +958,10 @@ components:
         next_page_token:
           type: string
           description: A token which may be supplied as `page_token` in workflow run list request to get the next page of results.  An empty string indicates there are no more items to return.
+        total_runs:
+          type: integer
+          description: >-
+            Total count of workflow runs that the service has executed or is executing and the caller has permission to see.
       description: >
               The service will return a RunListResponse when receiving a successful RunListRequest.
               DEPRECIATION WARNING: The use of `RunStatus` as the schema for `runs` array items will
