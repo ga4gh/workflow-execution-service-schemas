@@ -183,6 +183,57 @@ paths:
       description: This list should be provided in a stable ordering. (The actual ordering is implementation dependent.) When paging through the list, the client should not make assumptions about live updates, but should assume the contents of the list reflect the workflow list at the moment that the first page is requested.  To monitor a specific workflow run, use GetRunStatus or GetRunLog.
       operationId: ListRuns
       parameters:
+        - name: state
+          description: |-
+            OPTIONAL. Filter rubs by state. If unspecified,
+            no run state filtering is done.
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/RunStatus'
+        - name: tag_key
+          description: |-
+            OPTIONAL. Provide key tag to filter. The field tag_key is an array
+            of key values, and will be zipped with an optional tag_value array.
+            So the query:
+            ```
+              ?tag_key=foo1&tag_value=bar1&tag_key=foo2&tag_value=bar2
+            ```
+            Should be constructed into the structure { "foo1" : "bar1", "foo2" : "bar2"}
+            
+            ```
+              ?tag_key=foo1
+            ```
+            Should be constructed into the structure {"foo1" : ""}
+            
+            If the tag_value is empty, it will be treated as matching any possible value.
+            If a tag value is provided, both the tag's key and value must be exact
+            matches for a task to be returned.
+            Filter                            Tags                          Match?
+            ----------------------------------------------------------------------
+            {"foo": "bar"}                    {"foo": "bar"}                Yes
+            {"foo": "bar"}                    {"foo": "bat"}                No
+            {"foo": ""}                       {"foo": ""}                   Yes
+            {"foo": "bar", "baz": "bat"}      {"foo": "bar", "baz": "bat"}  Yes
+            {"foo": "bar"}                    {"foo": "bar", "baz": "bat"}  Yes
+            {"foo": "bar", "baz": "bat"}      {"foo": "bar"}                No
+            {"foo": ""}                       {"foo": "bar"}                Yes
+            {"foo": ""}                       {}                            No
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - name: tag_value
+          description: |-
+            OPTIONAL. The companion value field for tag_key
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
         - name: page_size
           in: query
           description: OPTIONAL The preferred number of workflow runs to return in a page. If not provided, the implementation should use a default page size. The implementation must not return more items than `page_size`, but it may return fewer.  Clients should not assume that if fewer than `page_size` items are returned that all items have been returned.  The availability of additional pages is indicated by the value of `next_page_token` in the response.
