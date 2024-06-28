@@ -79,8 +79,12 @@ Possible Future Enhancements
 * a callback mechanism for monitoring status changes in running workflows (e.g., a webhook)
 * integration with GA4GH data access APIs (e.g., htsget, DOS)
 
+Known Implementations
+=====================
+* https://github.com/common-workflow-language/workflow-service/
+
 How to Contribute Changes
--------------------------
+=========================
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -88,12 +92,12 @@ If a security issue is identified with the specification, please send an email t
 detailing your concerns.
 
 License
--------
+=======
 
 See the [LICENSE](LICENSE).
 
 More Information
-----------------
+================
 
 * [Global Alliance for Genomics and Health](http://genomicsandhealth.org)
 * [GA4GH Cloud Work Stream](https://ga4gh.cloud)
