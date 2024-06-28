@@ -81,7 +81,15 @@ Possible Future Enhancements
 
 Known Implementations
 =====================
+
+Implementations listed here are community-provided. No guarantees are made on (level of) compliance, functionality,
+maturity, project status, etc. Nor should inclusion in this list be considered an endorsement by GA4GH.
+
 * https://github.com/common-workflow-language/workflow-service/
+* https://github.com/elixir-cloud-aai/cwl-WES
+* https://github.com/elixir-cloud-aai/proWES
+* https://github.com/sapporo-wes/sapporo
+* https://gitlab.com/one-touch-pipeline/weskit
 
 How to Contribute Changes
 =========================
