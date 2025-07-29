@@ -3,11 +3,11 @@
   "info": {
     "title": "Workflow Execution Service",
     "contact": {},
-    "version": "1.1.0",
+    "version": "1.2.0",
     "x-logo": {
       "url": "https://www.ga4gh.org/wp-content/themes/ga4gh-theme/gfx/GA-logo-horizontal-tag-RGB.svg"
     },
-    "description": "*Run standard workflows on workflow execution platforms in a platform-agnostic way.*\n\n## Executive Summary\n\nThe Workflow Execution Service (WES) API provides a standard way for users to submit workflow requests to workflow execution systems, and to monitor their execution. This API lets users run a single workflow (currently [**CWL**](https://www.commonwl.org/) or [**WDL**](http://www.openwdl.org/) formatted workflows, other types may be supported in the future) on multiple different platforms, clouds, and environments.\n\nKey features of the API:\n\n- can request that a workflow be run\n- can pass parameters to that workflow (e.g. input files, cmdline arguments) both workflow-type specific as well as a generalized parameter format\n- can get information about running workflows (e.g. status, errors, output file locations)\n- can cancel a running workflow\n"
+    "description": "*Run standard workflows on workflow execution platforms in a platform-agnostic way.*\n\n## Executive Summary\n\nThe Workflow Execution Service (WES) API provides a standard way for users to submit workflow requests to workflow execution systems, and to monitor their execution. This API lets users run a single workflow (currently [CWL](https://www.commonwl.org/), [WDL](http://www.openwdl.org/), [Nextflow](https://www.nextflow.io/), and [SnakeMake](https://snakemake.readthedocs.io/en/stable/) formatted workflows, other types may be supported in the future) on multiple different platforms, clouds, and environments.\n\nKey features of the API:\n\n- can request that a workflow be run\n- can pass parameters to that workflow (e.g. input files, cmdline arguments) both workflow-type specific as well as a generalized parameter format\n- can get information about running workflows (e.g. status, errors, output file locations)\n- can cancel a running workflow\n"
   },
   "servers": [
     {
