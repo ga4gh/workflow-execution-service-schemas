@@ -14,10 +14,10 @@ info:
 
     Key features of the API:
 
-    + can request that a workflow be run
-    + can pass parameters to that workflow (e.g. input files, cmdline arguments)
-    + can get information about running workflows (e.g. status, errors, output file locations)
-    + can cancel a running workflow
+    - can request that a workflow be run
+    - can pass parameters to that workflow (e.g. input files, cmdline arguments)
+    - can get information about running workflows (e.g. status, errors, output file locations)
+    - can cancel a running workflow
 servers:
 - url: https://{defaultHost}/{basePath}/{apiVersion}
   variables:
@@ -38,8 +38,8 @@ tags:
 
       Use cases include:
       
-      + "Bring your code to the data": a researcher who has built their own custom analysis can submit it to run on a dataset owned by an external organization, instead of having to make a copy of the data
-      + Best-practices pipelines: a researcher who maintains their own controlled data environment can find useful workflows in a shared directory (e.g. Dockstore.org), and run them over their data
+      - "Bring your code to the data": a researcher who has built their own custom analysis can submit it to run on a dataset owned by an external organization, instead of having to make a copy of the data
+      - Best-practices pipelines: a researcher who maintains their own controlled data environment can find useful workflows in a shared directory (e.g. Dockstore.org), and run them over their data
       
       ## Standards
         
@@ -235,7 +235,7 @@ paths:
       tags:
         - Workflow Runs
       summary: RunWorkflow
-      description: >-
+      description: |
         This endpoint creates a new workflow run and returns a `RunId` to monitor its progress.
 
         **Content Types Supported:**
