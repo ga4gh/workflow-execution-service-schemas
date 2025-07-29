@@ -742,9 +742,98 @@ components:
         workflow_params:
           type: object
           description: >-
-            REQUIRED
+            REQUIRED (unless workflow_unified_params provided)
 
             The workflow run parameterizations (JSON encoded), including input and output file locations
+        workflow_unified_params:
+          type: object
+          description: >-
+            OPTIONAL
+
+            Unified parameter format that can be converted to workflow-language-specific format.
+            If provided, takes precedence over workflow_params. WES implementations should
+            convert these to the appropriate native format for the specified workflow_type.
+          properties:
+            version:
+              type: string
+              description: Version of the unified parameter format
+              default: "1.0"
+            parameters:
+              type: object
+              additionalProperties:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: ["String", "Integer", "Float", "Boolean", "File", "Directory", "Array", "Object"]
+                    description: Parameter type
+                  value:
+                    description: Parameter value (type depends on 'type' field)
+                  element_type:
+                    type: string
+                    description: For Array types, specifies the type of array elements
+                  file_metadata:
+                    type: object
+                    description: Optional metadata for File and Directory types
+                    properties:
+                      size:
+                        type: integer
+                        description: File size in bytes
+                        format: int64
+                      checksum:
+                        type: string
+                        description: File checksum in format 'algorithm:hash' (e.g., 'sha256:abc123...')
+                      secondary_files:
+                        type: array
+                        items:
+                          type: string
+                        description: Related files such as indexes or companion files
+                      format:
+                        type: string
+                        description: File format or MIME type
+                      last_modified:
+                        type: string
+                        description: Last modification time in ISO 8601 format
+                  description:
+                    type: string
+                    description: Human-readable parameter description
+                  optional:
+                    type: boolean
+                    default: false
+                    description: Whether this parameter is optional
+                  default:
+                    description: Default value if parameter not provided (type depends on 'type' field)
+                  constraints:
+                    type: object
+                    description: Validation constraints for the parameter value
+                    properties:
+                      min:
+                        description: Minimum value (for numeric types)
+                      max:
+                        description: Maximum value (for numeric types)
+                      min_length:
+                        type: integer
+                        description: Minimum length (for String types)
+                      max_length:
+                        type: integer
+                        description: Maximum length (for String types)
+                      pattern:
+                        type: string
+                        description: Regular expression pattern (for String types)
+                      enum:
+                        type: array
+                        items:
+                          description: Allowed value (type matches parameter type)
+                        description: List of allowed values
+                      min_items:
+                        type: integer
+                        description: Minimum number of items (for Array types)
+                      max_items:
+                        type: integer
+                        description: Maximum number of items (for Array types)
+                required:
+                  - type
+                  - value
         workflow_type:
           type: string
           description: >-
