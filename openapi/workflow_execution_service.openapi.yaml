@@ -254,7 +254,7 @@ paths:
 
         - **`workflow_params`**: Language-specific parameters (CWL, WDL, Nextflow, SnakeMake format).  This field is used to send the native parameterization file used by the workflow engine.
 
-        - **`workflow_unified_params`**: Universal parameter format that WES converts to the target workflow language.  This allows for a more generic way to pass parameters that can be converted to the appropriate native format for the specified workflow_type.  This is an optional field, but if provided, it takes precedence over `workflow_params`.
+        - **`workflow_unified_params`**: Universal parameter format that WES server implementation converts to the target workflow language.  This allows for a more generic way to pass parameters that can be converted to the appropriate native format for the specified workflow_type.  This is an optional field, but if provided, it takes precedence over `workflow_params`.
 
         **Required Fields:**
 
