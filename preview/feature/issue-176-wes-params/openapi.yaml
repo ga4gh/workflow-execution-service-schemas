@@ -347,7 +347,7 @@ paths:
         uploads (rather than just a URL). Fields are JSON-encoded strings that
         mirror the `RunRequest` structure.  Advantage is you can upload one or
         more workflow files directly while the disadvantage is you need to be
-        careful in formating the JSON-encoded string arguments correctly
+        careful in formatting the JSON-encoded string arguments correctly
         (multipart form submissions only support strings hence the limitation). 
 
 

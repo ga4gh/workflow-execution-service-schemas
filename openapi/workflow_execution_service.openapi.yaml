@@ -253,7 +253,7 @@ paths:
 
         1. **`application/json`** (Recommended for workflows submitted by URLs): Submit a complete `RunRequest` object with structured data and type validation.  The advantage of this approach is the schema is explicitly defined by OpenAPI syntax (vs. just strings in multipart-form) along with workflow_unified_params object support (see below for more info).  Disadvantage is that it does not support workflow file uploads directly, which may be required for multi-file workflows not available as URLs.
 
-        2. **`multipart/form-data`**: Submit for cases requiring workflow file uploads (rather than just a URL). Fields are JSON-encoded strings that mirror the `RunRequest` structure.  Advantage is you can upload one or more workflow files directly while the disadvantage is you need to be careful in formating the JSON-encoded string arguments correctly (multipart form submissions only support strings hence the limitation). 
+        2. **`multipart/form-data`**: Submit for cases requiring workflow file uploads (rather than just a URL). Fields are JSON-encoded strings that mirror the `RunRequest` structure.  Advantage is you can upload one or more workflow files directly while the disadvantage is you need to be careful in formatting the JSON-encoded string arguments correctly (multipart form submissions only support strings hence the limitation). 
 
         **File Handling:**
 
