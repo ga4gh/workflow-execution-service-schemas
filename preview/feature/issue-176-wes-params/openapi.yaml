@@ -356,15 +356,21 @@ paths:
 
 
         - **`application/json` requests**: Workflow file is referenced by URL or
-        path. Use `workflow_unified_params` with File objects for rich metadata
-        and generic parameterization.
+        path via `workflow_url` with additional workflow files specified by
+        `additional_workflow_urls`. Use `workflow_unified_params` for generic
+        workflow parameterization (recommended when possible) or
+        `workflow_params` for JSON-string encoded native workflow params
+        passing.
 
 
         - **`multipart/form-data` requests**: The `workflow_attachment` array
         uploads files required for workflow execution. Files are staged to a
         temporary directory with Content-Disposition headers containing
         filenames. Subdirectories are allowed but parent directory references
-        ('..') are prohibited for security purposes.
+        ('..') are prohibited for security purposes.  Use
+        `workflow_unified_params` for generic workflow parameterization
+        (recommended when possible) or `workflow_params` for JSON-string encoded
+        native workflow params passing.
 
 
         **Parameter Formats:**
@@ -372,15 +378,16 @@ paths:
 
         - **`workflow_params`**: Language-specific parameters (CWL, WDL,
         Nextflow, Snakemake format).  This field is used to send the native
-        parameterization file (encoded as a string) used by the workflow engine.
+        parameterization file (encoded as a JSON string) used by the workflow
+        engine.
 
 
         - **`workflow_unified_params`**: Universal parameter format that WES
         server implementation converts to the target workflow language.  This
         allows for a more generic way to pass parameters that can be converted
         to the appropriate native format for the specified workflow_type.  This
-        is an optional field, but if provided, it takes precedence over
-        `workflow_params`.
+        is an optional field (and the recommended way to pass params). If
+        provided, it takes precedence over `workflow_params`.
 
 
         **Required Fields:**
@@ -815,6 +822,10 @@ components:
         - $ref: '#/components/schemas/Service'
         - type: object
           properties:
+            workflow_type:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/WorkflowType'
             workflow_type_versions:
               type: object
               additionalProperties:
@@ -1273,11 +1284,11 @@ components:
       description: >-
         A message that allows one to describe default parameters for a workflow
         engine.
-    WorkflowTypeVersion:
-      title: WorkflowTypeVersion
+    WorkflowType:
+      title: WorkflowType
       type: object
       properties:
-        workflow_type_version:
+        workflow_type:
           type: array
           items:
             type: string
@@ -1287,6 +1298,22 @@ components:
             another alternative supported by this WES instance, see
             service-info)
       description: Available workflow types supported by a given instance of the service.
+    WorkflowTypeVersion:
+      title: WorkflowTypeVersion
+      type: object
+      properties:
+        workflow_type_version:
+          type: array
+          items:
+            type: string
+          description: >-
+            an array of one or more acceptable type and versions for the
+            `workflow_type`. Use the convension `<workflow_type>_<version>` to
+            encode this array for clarity. For example, a WES service supporting
+            CWL 1.0 and WDL 1.1 would encode this as `["CWL_1.0", "WDL_1.1"]`.
+      description: >-
+        Available workflow type versions supported by a given instance of the
+        service.
     TaskListResponse:
       title: TaskListResponse
       type: object
@@ -1351,7 +1378,7 @@ components:
             An array of one or more acceptable engines versions for the
             `workflow_engine`. Since a server may support multiple engines and
             version, the recommendation is to encode this array as
-            '<workflow_engine>_<version>' for clarity.
+            `<workflow_engine>_<version>` for clarity.
       description: >-
         Available workflow engine versions supported by a given instance of the
         service.
@@ -1367,7 +1394,7 @@ components:
             An array of one or more acceptable workflow engines. Since a server
             may support multiple engines and version, the recommendation is to
             encode the workflow_engine_version array as
-            '<workflow_engine>_<version>' where workflow_engine values match
+            `<workflow_engine>_<version>` where `workflow_engine` values match
             this array for clarity.
       description: Available workflow engines supported by a given instance of the service.
     RunListResponse:

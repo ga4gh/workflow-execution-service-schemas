@@ -318,7 +318,7 @@
           "Workflow Runs"
         ],
         "summary": "RunWorkflow",
-        "description": "This endpoint creates a new workflow run and returns a `RunId` to monitor its progress.\n\n**Content Types Supported:**\n\n1. **`application/json`** (Recommended for single workflows submitted by URL): Submit a complete `RunRequest` object with structured data and type validation.  The advantage of this approach is the schema is explicitly defined by OpenAPI syntax (vs. just strings in multipart-form) along with workflow_unified_params object support (see below for more info).  Disadvantage is that it does not support workflow file uploads directly, which may be required for multi-file workflows not available as URLs.\n\n2. **`multipart/form-data`**: Submit for cases requiring workflow file uploads (rather than just a URL). Fields are JSON-encoded strings that mirror the `RunRequest` structure.  Advantage is you can upload one or more workflow files directly while the disadvantage is you need to be careful in formating the JSON-ended string arguments correctly (multipart form submissions only support strings hence the limitation). \n\n**File Handling:**\n\n- **`application/json` requests**: Workflow file is referenced by URL or path. Use `workflow_unified_params` with File objects for rich metadata and generic parameterization.\n\n- **`multipart/form-data` requests**: The `workflow_attachment` array uploads files required for workflow execution. Files are staged to a temporary directory with Content-Disposition headers containing filenames. Subdirectories are allowed but parent directory references ('..') are prohibited for security purposes.\n\n**Parameter Formats:**\n\n- **`workflow_params`**: Language-specific parameters (CWL, WDL, Nextflow, Snakemake format).  This field is used to send the native parameterization file (encoded as a string) used by the workflow engine.\n\n- **`workflow_unified_params`**: Universal parameter format that WES server implementation converts to the target workflow language.  This allows for a more generic way to pass parameters that can be converted to the appropriate native format for the specified workflow_type.  This is an optional field, but if provided, it takes precedence over `workflow_params`.\n\n**Required Fields:**\n\n- `workflow_type`: Workflow language (\"CWL\", \"WDL\", \"Nextflow\", \"Snakemake\", or another alternative supported by this WES instance, see service-info)\n\n- `workflow_type_version`: The workflow descriptor type version, must be one supported by this WES instance\n\n- `workflow_url`: Absolute URL to workflow file, or relative path to uploaded attachment\n\nSee the `RunRequest` schema documentation for complete field descriptions and validation rules when encoding as strings in the multipart/form-data request.\n",
+        "description": "This endpoint creates a new workflow run and returns a `RunId` to monitor its progress.\n\n**Content Types Supported:**\n\n1. **`application/json`** (Recommended for single workflows submitted by URL): Submit a complete `RunRequest` object with structured data and type validation.  The advantage of this approach is the schema is explicitly defined by OpenAPI syntax (vs. just strings in multipart-form) along with workflow_unified_params object support (see below for more info).  Disadvantage is that it does not support workflow file uploads directly, which may be required for multi-file workflows not available as URLs.\n\n2. **`multipart/form-data`**: Submit for cases requiring workflow file uploads (rather than just a URL). Fields are JSON-encoded strings that mirror the `RunRequest` structure.  Advantage is you can upload one or more workflow files directly while the disadvantage is you need to be careful in formating the JSON-ended string arguments correctly (multipart form submissions only support strings hence the limitation). \n\n**File Handling:**\n\n- **`application/json` requests**: Workflow file is referenced by URL or path via `workflow_url` with additional workflow files specified by `additional_workflow_urls`. Use `workflow_unified_params` for generic workflow parameterization (recommended when possible) or `workflow_params` for JSON-string encoded native workflow params passing.\n\n- **`multipart/form-data` requests**: The `workflow_attachment` array uploads files required for workflow execution. Files are staged to a temporary directory with Content-Disposition headers containing filenames. Subdirectories are allowed but parent directory references ('..') are prohibited for security purposes.  Use `workflow_unified_params` for generic workflow parameterization (recommended when possible) or `workflow_params` for JSON-string encoded native workflow params passing.\n\n**Parameter Formats:**\n\n- **`workflow_params`**: Language-specific parameters (CWL, WDL, Nextflow, Snakemake format).  This field is used to send the native parameterization file (encoded as a JSON string) used by the workflow engine.\n\n- **`workflow_unified_params`**: Universal parameter format that WES server implementation converts to the target workflow language.  This allows for a more generic way to pass parameters that can be converted to the appropriate native format for the specified workflow_type.  This is an optional field (and the recommended way to pass params). If provided, it takes precedence over `workflow_params`.\n\n**Required Fields:**\n\n- `workflow_type`: Workflow language (\"CWL\", \"WDL\", \"Nextflow\", \"Snakemake\", or another alternative supported by this WES instance, see service-info)\n\n- `workflow_type_version`: The workflow descriptor type version, must be one supported by this WES instance\n\n- `workflow_url`: Absolute URL to workflow file, or relative path to uploaded attachment\n\nSee the `RunRequest` schema documentation for complete field descriptions and validation rules when encoding as strings in the multipart/form-data request.\n",
         "operationId": "RunWorkflow",
         "parameters": [],
         "requestBody": {
@@ -871,6 +871,12 @@
           {
             "type": "object",
             "properties": {
+              "workflow_type": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/WorkflowType"
+                }
+              },
               "workflow_type_versions": {
                 "type": "object",
                 "additionalProperties": {
@@ -1324,6 +1330,20 @@
         },
         "description": "A message that allows one to describe default parameters for a workflow engine."
       },
+      "WorkflowType": {
+        "title": "WorkflowType",
+        "type": "object",
+        "properties": {
+          "workflow_type": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "an array of one or more acceptable types for the `workflow_type`, must be \"CWL\", \"WDL\", \"Nextflow\", or \"Snakemake\" currently (or another alternative supported by this WES instance, see service-info)"
+          }
+        },
+        "description": "Available workflow types supported by a given instance of the service."
+      },
       "WorkflowTypeVersion": {
         "title": "WorkflowTypeVersion",
         "type": "object",
@@ -1333,10 +1353,10 @@
             "items": {
               "type": "string"
             },
-            "description": "an array of one or more acceptable types for the `workflow_type`, must be \"CWL\", \"WDL\", \"Nextflow\", or \"Snakemake\" currently (or another alternative supported by this WES instance, see service-info)"
+            "description": "an array of one or more acceptable type and versions for the `workflow_type`. Use the convension `<workflow_type>_<version>` to encode this array for clarity. For example, a WES service supporting CWL 1.0 and WDL 1.1 would encode this as `[\"CWL_1.0\", \"WDL_1.1\"]`."
           }
         },
-        "description": "Available workflow types supported by a given instance of the service."
+        "description": "Available workflow type versions supported by a given instance of the service."
       },
       "TaskListResponse": {
         "title": "TaskListResponse",
@@ -1398,7 +1418,7 @@
             "items": {
               "type": "string"
             },
-            "description": "An array of one or more acceptable engines versions for the `workflow_engine`. Since a server may support multiple engines and version, the recommendation is to encode this array as '<workflow_engine>_<version>' for clarity."
+            "description": "An array of one or more acceptable engines versions for the `workflow_engine`. Since a server may support multiple engines and version, the recommendation is to encode this array as `<workflow_engine>_<version>` for clarity."
           }
         },
         "description": "Available workflow engine versions supported by a given instance of the service."
@@ -1412,7 +1432,7 @@
             "items": {
               "type": "string"
             },
-            "description": "An array of one or more acceptable workflow engines. Since a server may support multiple engines and version, the recommendation is to encode the workflow_engine_version array as '<workflow_engine>_<version>' where workflow_engine values match this array for clarity."
+            "description": "An array of one or more acceptable workflow engines. Since a server may support multiple engines and version, the recommendation is to encode the workflow_engine_version array as `<workflow_engine>_<version>` where `workflow_engine` values match this array for clarity."
           }
         },
         "description": "Available workflow engines supported by a given instance of the service."
