@@ -1065,7 +1065,7 @@ components:
           type: array
           items:
             type: string
-          description: an array of one or more acceptable type and versions for the `workflow_type`. Use the convension `<workflow_type>_<version>` to encode this array for clarity. For example, a WES service supporting CWL 1.0 and WDL 1.1 would encode this as `["CWL_1.0", "WDL_1.1"]`.
+          description: an array of one or more acceptable type and versions for the `workflow_type`. Use the convention `<workflow_type>_<version>` to encode this array for clarity. For example, a WES service supporting CWL 1.0 and WDL 1.1 would encode this as `["CWL_1.0", "WDL_1.1"]`.
       description: Available workflow type versions supported by a given instance of the service.
     TaskListResponse:
       title: TaskListResponse
