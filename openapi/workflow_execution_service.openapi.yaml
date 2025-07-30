@@ -250,15 +250,15 @@ paths:
 
         **Content Types Supported:**
 
-        1. **`application/json`** (Recommended): Submit a complete `RunRequest` object with structured data and type validation.  The advantage of this approach is full schema validation and OpenAPI tooling support along with workflow_unified_params object support (see below for more info).  Disadvantage is that it does not support multiple workflow file uploads directly, which may be required for multi-file workflows.
+        1. **`application/json`** (Recommended for single workflows submitted by URL): Submit a complete `RunRequest` object with structured data and type validation.  The advantage of this approach is the schema is explicitly defined by OpenAPI syntax (vs. just strings in multipart-form) along with workflow_unified_params object support (see below for more info).  Disadvantage is that it does not support workflow file uploads directly, which may be required for multi-file workflows.
 
-        2. **`multipart/form-data`**: Submit for cases requiring workflow file uploads. Fields are JSON-encoded strings that mirror the `RunRequest` structure.  Advantage is you can upload one or more workflow files directly while the disadvantage is you need to be careful in formating the string encoded arguments correctly (multipart form submissions only support strings hence the limitation). 
+        2. **`multipart/form-data`**: Submit for cases requiring workflow file uploads (rather than just a URL). Fields are JSON-encoded strings that mirror the `RunRequest` structure.  Advantage is you can upload one or more workflow files directly while the disadvantage is you need to be careful in formating the JSON-ended string arguments correctly (multipart form submissions only support strings hence the limitation). 
 
         **File Handling:**
 
         - **JSON requests**: Workflow file is referenced by URL or path. Use `workflow_unified_params` with File objects for rich metadata and generic parameterization.
 
-        - **Multipart requests**: The `workflow_attachment` array uploads files required for workflow execution. Files are staged to a temporary directory with Content-Disposition headers containing filenames. Subdirectories are allowed but parent directory references ('..') are prohibited for security.
+        - **Multipart requests**: The `workflow_attachment` array uploads files required for workflow execution. Files are staged to a temporary directory with Content-Disposition headers containing filenames. Subdirectories are allowed but parent directory references ('..') are prohibited for security purposes.
 
         **Parameter Formats:**
 
@@ -314,12 +314,15 @@ paths:
                 workflow_url:
                   type: string
                   description: The workflow document. When workflow_attachment is used to attach files, the workflow_url may be a relative path to one of the attachments.
+                additional_workflow_urls:
+                  type: string
+                  description: JSON-encoded array of additional workflow URLs (see RunRequest for how to encode)
                 workflow_attachment:
                   type: array
                   items:
                     type: string
                     format: binary
-                  description: Files to be staged for workflow execution
+                  description: Files to be staged for workflow execution.  You set the filename/path using the Content-Disposition header in the multipart form submission.  For example 'Content-Disposition: form-data; name="workflow_attachment"; filename="workflows/helper.wdl"'.  The files are staged to a temporary directory and can be referenced by relative path in the workflow_url.
               required:
                 - workflow_type
                 - workflow_type_version
@@ -910,6 +913,24 @@ components:
             REQUIRED
 
             The workflow document. When `workflow_attachments` is used to attach files, the `workflow_url` may be a relative path to one of the attachments.
+        additional_workflow_urls:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                description: URL to the workflow file (absolute URL or relative to uploaded attachments)
+              filename:
+                type: string
+                description: Target filename, possibly including relative path, where this file should be placed e.g. 'workflows/helper.wdl'. Subdirectories are allowed but parent directory references ('..') are prohibited for security purposes.
+            required:
+              - url
+              - filename
+          description: >-
+            OPTIONAL
+
+            Additional workflow files required for execution (e.g., imported workflows, subworkflows, or dependencies). Each entry specifies both the source URL and target file path for precise file placement.
       description: >-
         To execute a workflow, send a run request including all the details needed to begin downloading
 
