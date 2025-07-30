@@ -1463,42 +1463,6 @@ components:
           description: Named workflow outputs with structured metadata
           additionalProperties:
             $ref: '#/components/schemas/OutputObject'
-        workflow_metadata:
-          type: object
-          description: Overall workflow execution metadata
-          properties:
-            execution_id:
-              type: string
-              description: Unique identifier for this workflow execution
-            status:
-              $ref: '#/components/schemas/State'
-            start_time:
-              type: string
-              description: Workflow start time in ISO 8601 format
-            end_time:
-              type: string
-              description: Workflow completion time in ISO 8601 format
-            engine:
-              type: string
-              description: >-
-                Workflow engine used (cromwell, toil, cwltool, nextflow,
-                Snakemake)
-            engine_version:
-              type: string
-              description: Version of the workflow engine
-            resource_usage:
-              type: object
-              description: Resource consumption statistics
-              properties:
-                cpu_hours:
-                  type: number
-                  description: Total CPU hours consumed
-                memory_gb_hours:
-                  type: number
-                  description: Total memory GB-hours consumed
-                disk_gb:
-                  type: number
-                  description: Total disk space used in GB
     OutputObject:
       title: OutputObject
       type: object
