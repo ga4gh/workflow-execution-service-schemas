@@ -4,7 +4,7 @@ info:
   contact: {}
   version: '1.2.0'
   x-logo:
-    url: 'https://www.ga4gh.org/wp-content/themes/ga4gh-theme/gfx/GA-logo-horizontal-tag-RGB.svg'
+    url: 'https://www.ga4gh.org/wp-content/themes/ga4gh/dist/assets/svg/logos/logo-full-color.svg'
   description: |
     *Run standard workflows on workflow execution platforms in a platform-agnostic way.*
 
@@ -262,7 +262,7 @@ paths:
 
         **Parameter Formats:**
 
-        - **`workflow_params`**: Language-specific parameters (CWL, WDL, Nextflow, SnakeMake format).  This field is used to send the native parameterization file used by the workflow engine.
+        - **`workflow_params`**: Language-specific parameters (CWL, WDL, Nextflow, SnakeMake format).  This field is used to send the native parameterization file (encoded as a string) used by the workflow engine.
 
         - **`workflow_unified_params`**: Universal parameter format that WES server implementation converts to the target workflow language.  This allows for a more generic way to pass parameters that can be converted to the appropriate native format for the specified workflow_type.  This is an optional field, but if provided, it takes precedence over `workflow_params`.
 
