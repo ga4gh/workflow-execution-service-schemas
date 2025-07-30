@@ -10,14 +10,15 @@ info:
 
     ## Executive Summary
 
-    The Workflow Execution Service (WES) API provides a standard way for users to submit workflow requests to workflow execution systems, and to monitor their execution. This API lets users run a single workflow (currently [CWL](https://www.commonwl.org/), [WDL](http://www.openwdl.org/), [Nextflow](https://www.nextflow.io/), and [SnakeMake](https://snakemake.readthedocs.io/en/stable/) formatted workflows, other types may be supported in the future) on multiple different platforms, clouds, and environments.
+    The Workflow Execution Service (WES) API provides a standard way for users to submit workflow requests to workflow execution systems, and to monitor their execution. This API lets users run a single workflow (commonly [CWL](https://www.commonwl.org/), [WDL](http://www.openwdl.org/), [Nextflow](https://www.nextflow.io/), and [SnakeMake](https://snakemake.readthedocs.io/en/stable/) formatted workflows, WES servers describe what they support via service-info) on multiple different platforms, clouds, and environments.
 
     Key features of the API:
 
     - can request that a workflow be run
-    - can pass parameters to that workflow (e.g. input files, cmdline arguments) both workflow-type specific as well as a generalized parameter format
+    - can pass parameters to that workflow (e.g. input files, cmdline arguments) via both workflow-type specific parameter formats as well as a generalized parameter JSON format
     - can get information about running workflows (e.g. status, errors, output file locations)
     - can cancel a running workflow
+    - can retrieve logs and outputs file locations from a workflow run
 servers:
 - url: https://{defaultHost}/{basePath}/{apiVersion}
   variables:
