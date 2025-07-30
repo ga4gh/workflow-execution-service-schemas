@@ -798,7 +798,7 @@ components:
             OPTIONAL
 
             The workflow run parameterizations (JSON encoded), including input and output file locations.
-            Either `workflow_params` or `workflow_unified_params` must be provided, but not both.
+            Either `workflow_params` or `workflow_unified_params` must be provided, `workflow_unified_params` takes precedence.
         workflow_unified_params:
           type: object
           description: >-
