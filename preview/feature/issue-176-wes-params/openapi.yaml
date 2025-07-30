@@ -5,7 +5,7 @@ info:
   version: 1.2.0
   x-logo:
     url: >-
-      https://www.ga4gh.org/wp-content/themes/ga4gh-theme/gfx/GA-logo-horizontal-tag-RGB.svg
+      https://www.ga4gh.org/wp-content/themes/ga4gh/dist/assets/svg/logos/logo-full-color.svg
   description: >
     *Run standard workflows on workflow execution platforms in a
     platform-agnostic way.*
@@ -16,12 +16,12 @@ info:
 
     The Workflow Execution Service (WES) API provides a standard way for users
     to submit workflow requests to workflow execution systems, and to monitor
-    their execution. This API lets users run a single workflow (currently
+    their execution. This API lets users run a single workflow (commonly
     [CWL](https://www.commonwl.org/), [WDL](http://www.openwdl.org/),
     [Nextflow](https://www.nextflow.io/), and
-    [SnakeMake](https://snakemake.readthedocs.io/en/stable/) formatted
-    workflows, other types may be supported in the future) on multiple different
-    platforms, clouds, and environments.
+    [Snakemake](https://Snakemake.readthedocs.io/en/stable/) formatted
+    workflows, WES servers describe what they support via service-info) on
+    multiple different platforms, clouds, and environments.
 
 
     Key features of the API:
@@ -30,12 +30,15 @@ info:
     - can request that a workflow be run
 
     - can pass parameters to that workflow (e.g. input files, cmdline arguments)
-    both workflow-type specific as well as a generalized parameter format
+    via both workflow-type specific parameter formats as well as a generalized
+    parameter JSON format
 
     - can get information about running workflows (e.g. status, errors, output
     file locations)
 
     - can cancel a running workflow
+
+    - can retrieve logs and outputs file locations from a workflow run
 servers:
   - url: https://{defaultHost}/{basePath}/{apiVersion}
     variables:
@@ -53,7 +56,7 @@ tags:
   - name: Introduction
     description: >
       This document describes the WES API and provides details on the specific
-      endpoints, request formats, and response.  It is intended to provide key
+      endpoints, request formats, and responses.  It is intended to provide key
       information for developers of WES-compatible services as well as clients
       that will call these WES services.
 
@@ -62,19 +65,21 @@ tags:
 
 
       - "Bring your code to the data": a researcher who has built their own
-      custom analysis can submit it to run on a dataset owned by an external
-      organization, instead of having to make a copy of the data
+      custom analysis workflow can submit it to run on a dataset owned by an
+      external organization, instead of having to download a copy of the data
+      for local analysis.
 
       - Best-practices pipelines: a researcher who maintains their own
       controlled data environment can find useful workflows in a shared
-      directory (e.g. Dockstore.org), and run them over their data
+      repository (e.g. [Dockstore.org](https://dockstore.org)), and run them on
+      their data
 
 
       ## Standards
         
       The WES API specification is written in OpenAPI and embodies a RESTful
-      service philosophy. It uses JSON in requests and responses and standard
-      HTTP/HTTPS for information transport.
+      service philosophy. It uses JSON in requests and responses (where
+      applicable) and standard HTTP/HTTPS for information transport.
   - name: Authorization & Authentication
     description: >
       Users must supply credentials that establish their identity and
@@ -97,13 +102,15 @@ tags:
       jobs for input and output access.  In the current version of WES, the
       passing of credentials to authenticate and authorize access to inputs and
       outputs, as well as mandates about necessary file transfer protocols to
-      support, are out of scope.  However, parallel work on the GA4GH Data
-      Repository Service is addressing ways to pass around access credentials
-      with data object references, opening up the possibility that a future
-      version of WES will provide concrete mechanisms for workflow runs to
-      access data using credentials different than those used for WES.  This is
-      a work in progress and support of DRS in WES will be added in a future
-      release of WES.
+      support, are out of scope.  However, parallel work on the [GA4GH Data
+      Repository
+      Service](https://ga4gh.github.io/data-repository-service-schemas/) is
+      addressing ways to pass around access credentials with data object
+      references, opening up the possibility that a future version of WES will
+      provide concrete mechanisms for workflow runs to access data using
+      credentials different than those used for WES calls.  This is a work in
+      progress and support of DRS in WES will be added in a future release of
+      WES.
   - name: serviceinfo_model
     x-displayName: ServiceInfo
     description: |
@@ -205,9 +212,10 @@ paths:
         - Service Info
       summary: GetServiceInfo
       description: >-
-        May include information related (but not limited to) the workflow
-        descriptor formats, versions supported, the WES API versions supported,
-        and information about general service availability.
+        Includes information related, but not limited to, the workflow
+        descriptor formats, workflow engines, versions supported, the WES API
+        versions supported, and information about general service availability
+        and access.
       operationId: GetServiceInfo
       parameters: []
       responses:
@@ -326,43 +334,45 @@ paths:
         **Content Types Supported:**
 
 
-        1. **`application/json`** (Recommended): Submit a complete `RunRequest`
-        object with structured data and type validation.  The advantage of this
-        approach is full schema validation and OpenAPI tooling support along
-        with workflow_unified_params object support (see below for more info). 
-        Disadvantage is that it does not support multiple workflow file uploads
-        directly, which may be required for multi-file workflows.
+        1. **`application/json`** (Recommended for single workflows submitted by
+        URL): Submit a complete `RunRequest` object with structured data and
+        type validation.  The advantage of this approach is the schema is
+        explicitly defined by OpenAPI syntax (vs. just strings in
+        multipart-form) along with workflow_unified_params object support (see
+        below for more info).  Disadvantage is that it does not support workflow
+        file uploads directly, which may be required for multi-file workflows
+        not available as URLs.
 
 
         2. **`multipart/form-data`**: Submit for cases requiring workflow file
-        uploads. Fields are JSON-encoded strings that mirror the `RunRequest`
-        structure.  Advantage is you can upload one or more workflow files
-        directly while the disadvantage is you need to be careful in formating
-        the string encoded arguments correctly (multipart form submissions only
-        support strings hence the limitation). 
+        uploads (rather than just a URL). Fields are JSON-encoded strings that
+        mirror the `RunRequest` structure.  Advantage is you can upload one or
+        more workflow files directly while the disadvantage is you need to be
+        careful in formating the JSON-ended string arguments correctly
+        (multipart form submissions only support strings hence the limitation). 
 
 
         **File Handling:**
 
 
-        - **JSON requests**: Workflow file is referenced by URL or path. Use
-        `workflow_unified_params` with File objects for rich metadata and
-        generic parameterization.
+        - **`application/json` requests**: Workflow file is referenced by URL or
+        path. Use `workflow_unified_params` with File objects for rich metadata
+        and generic parameterization.
 
 
-        - **Multipart requests**: The `workflow_attachment` array uploads files
-        required for workflow execution. Files are staged to a temporary
-        directory with Content-Disposition headers containing filenames.
-        Subdirectories are allowed but parent directory references ('..') are
-        prohibited for security.
+        - **`multipart/form-data` requests**: The `workflow_attachment` array
+        uploads files required for workflow execution. Files are staged to a
+        temporary directory with Content-Disposition headers containing
+        filenames. Subdirectories are allowed but parent directory references
+        ('..') are prohibited for security purposes.
 
 
         **Parameter Formats:**
 
 
         - **`workflow_params`**: Language-specific parameters (CWL, WDL,
-        Nextflow, SnakeMake format).  This field is used to send the native
-        parameterization file used by the workflow engine.
+        Nextflow, Snakemake format).  This field is used to send the native
+        parameterization file (encoded as a string) used by the workflow engine.
 
 
         - **`workflow_unified_params`**: Universal parameter format that WES
@@ -377,7 +387,7 @@ paths:
 
 
         - `workflow_type`: Workflow language ("CWL", "WDL", "Nextflow",
-        "SnakeMake", or another alternative supported by this WES instance, see
+        "Snakemake", or another alternative supported by this WES instance, see
         service-info)
 
 
@@ -417,8 +427,9 @@ paths:
                 workflow_type:
                   type: string
                   description: >-
-                    Workflow descriptor type (CWL, WDL, Nextflow, SnakeMake,
-                    etc. see service-info for supported types)
+                    Workflow descriptor type must be "CWL", "WDL", "Nextflow",
+                    or "Snakemake" currently (or another alternative supported
+                    by this WES instance, see service-info)
                 workflow_type_version:
                   type: string
                   description: >-
@@ -454,12 +465,24 @@ paths:
                     The workflow document. When workflow_attachment is used to
                     attach files, the workflow_url may be a relative path to one
                     of the attachments.
+                additional_workflow_urls:
+                  type: string
+                  description: >-
+                    JSON-encoded array of additional workflow URLs (see
+                    RunRequest for how to encode)
                 workflow_attachment:
                   type: array
                   items:
                     type: string
                     format: binary
-                  description: Files to be staged for workflow execution
+                  description: >-
+                    Files to be staged for workflow execution. You set the
+                    filename/path using the Content-Disposition header in the
+                    multipart form submission. For example 'Content-Disposition:
+                    form-data; name="workflow_attachment";
+                    filename="workflows/helper.wdl"'. The files are staged to a
+                    temporary directory and can be referenced by relative path
+                    in the workflow_url.
               required:
                 - workflow_type
                 - workflow_type_version
@@ -812,6 +835,10 @@ components:
                 are possible and the terms beyond these core protocols are
                 currently not fixed.   This section reports those protocols
                 (either common or not) supported by this WES service.
+            workflow_engine:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/WorkflowEngine'
             workflow_engine_versions:
               type: object
               additionalProperties:
@@ -838,9 +865,7 @@ components:
               type: object
               additionalProperties:
                 type: string
-                description: >-
-                  A message containing useful information about the running
-                  service, including supported versions and default settings.
+                description: Tags containing useful information about the WES service.
           required:
             - workflow_type_versions
             - supported_wes_versions
@@ -1062,8 +1087,8 @@ components:
             REQUIRED
 
             The workflow descriptor type, must be "CWL", "WDL", "Nextflow", or
-            "SnakeMake" currently (or another alternative supported by this WES
-            instance)
+            "Snakemake" currently (or another alternative supported by this WES
+            instance, see service-info)
         workflow_type_version:
           type: string
           description: >-
@@ -1101,6 +1126,32 @@ components:
             The workflow document. When `workflow_attachments` is used to attach
             files, the `workflow_url` may be a relative path to one of the
             attachments.
+        additional_workflow_urls:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                description: >-
+                  URL to the workflow file (absolute URL or relative to uploaded
+                  attachments)
+              filename:
+                type: string
+                description: >-
+                  Target filename, possibly including relative path, where this
+                  file should be placed e.g. 'workflows/helper.wdl'.
+                  Subdirectories are allowed but parent directory references
+                  ('..') are prohibited for security purposes.
+            required:
+              - url
+              - filename
+          description: >-
+            OPTIONAL
+
+            Additional workflow files required for execution (e.g., imported
+            workflows, subworkflows, or dependencies). Each entry specifies both
+            the source URL and target file path for precise file placement.
       description: >-
         To execute a workflow, send a run request including all the details
         needed to begin downloading
@@ -1230,7 +1281,11 @@ components:
           type: array
           items:
             type: string
-          description: an array of one or more acceptable types for the `workflow_type`
+          description: >-
+            an array of one or more acceptable types for the `workflow_type`,
+            must be "CWL", "WDL", "Nextflow", or "Snakemake" currently (or
+            another alternative supported by this WES instance, see
+            service-info)
       description: Available workflow types supported by a given instance of the service.
     TaskListResponse:
       title: TaskListResponse
@@ -1294,10 +1349,27 @@ components:
             type: string
           description: >-
             An array of one or more acceptable engines versions for the
-            `workflow_engine`
+            `workflow_engine`. Since a server may support multiple engines and
+            version, the recommendation is to encode this array as
+            '<workflow_engine>_<version>' for clarity.
       description: >-
         Available workflow engine versions supported by a given instance of the
         service.
+    WorkflowEngine:
+      title: WorkflowEngine
+      type: object
+      properties:
+        workflow_engine:
+          type: array
+          items:
+            type: string
+          description: >-
+            An array of one or more acceptable workflow engines. Since a server
+            may support multiple engines and version, the recommendation is to
+            encode the workflow_engine_version array as
+            '<workflow_engine>_<version>' where workflow_engine values match
+            this array for clarity.
+      description: Available workflow engines supported by a given instance of the service.
     RunListResponse:
       title: RunListResponse
       type: object
@@ -1371,7 +1443,7 @@ components:
               type: string
               description: >-
                 Workflow engine used (cromwell, toil, cwltool, nextflow,
-                snakemake)
+                Snakemake)
             engine_version:
               type: string
               description: Version of the workflow engine

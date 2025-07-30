@@ -323,7 +323,8 @@ paths:
                   items:
                     type: string
                     format: binary
-                  description: Files to be staged for workflow execution.  You set the filename/path using the Content-Disposition header in the multipart form submission.  For example 'Content-Disposition: form-data; name="workflow_attachment"; filename="workflows/helper.wdl"'.  The files are staged to a temporary directory and can be referenced by relative path in the workflow_url.
+                  description: >-
+                    Files to be staged for workflow execution. You set the filename/path using the Content-Disposition header in the multipart form submission. For example 'Content-Disposition: form-data; name="workflow_attachment"; filename="workflows/helper.wdl"'. The files are staged to a temporary directory and can be referenced by relative path in the workflow_url.
               required:
                 - workflow_type
                 - workflow_type_version
@@ -1102,7 +1103,7 @@ components:
             type: string
           description: An array of one or more acceptable engines versions for the `workflow_engine`. Since a server may support multiple engines and version, the recommendation is to encode this array as '<workflow_engine>_<version>' for clarity.
       description: Available workflow engine versions supported by a given instance of the service.
-  WorkflowEngine:
+    WorkflowEngine:
       title: WorkflowEngine
       type: object
       properties:
