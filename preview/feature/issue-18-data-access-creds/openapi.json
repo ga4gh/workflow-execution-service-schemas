@@ -1224,6 +1224,9 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "$ref": "#/components/parameters/PassportRequestNotRequired"
           }
         ],
         "security": [
@@ -1475,7 +1478,7 @@
         "title": "PassportRunRequest",
         "allOf": [
           {
-            "$ref": "#/components/schemas/PassportRequest"
+            "$ref": "#/components/schemas/PassportRequestNotRequired"
           },
           {
             "$ref": "#/components/schemas/RunRequest"
@@ -2053,6 +2056,17 @@
       },
       "PassportRequest": {
         "title": "PassportRequest",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PassportRequestNotRequired"
+          }
+        ],
+        "required": [
+          "passport"
+        ]
+      },
+      "PassportRequestNotRequired": {
+        "title": "PassportRequestNotRequired",
         "type": "object",
         "description": "Request object for GA4GH passport-based authentication",
         "properties": {
@@ -2065,10 +2079,7 @@
             "description": "Array of GA4GH passport JWTs for authentication and authorization",
             "minItems": 1
           }
-        },
-        "required": [
-          "passport"
-        ]
+        }
       },
       "RunsListRequest": {
         "title": "RunsListRequest",
