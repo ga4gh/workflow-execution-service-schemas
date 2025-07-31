@@ -868,6 +868,7 @@ paths:
           style: simple
           schema:
             type: string
+        - $ref: '#/components/parameters/PassportRequestNotRequired'
       security:
         - BearerAuth: []
         - PassportAuth: []
@@ -1064,7 +1065,7 @@ components:
     PassportRunRequest:
       title: PassportRunRequest
       allOf:
-        - $ref: '#/components/schemas/PassportRequest'
+        - $ref: '#/components/schemas/PassportRequestNotRequired'
         - $ref: '#/components/schemas/RunRequest'
     RunRequest:
       title: RunRequest
@@ -1527,6 +1528,12 @@ components:
         - value
     PassportRequest:
       title: PassportRequest
+      allOf:
+        - $ref: '#/components/schemas/PassportRequestNotRequired'
+      required:
+        - passport
+    PassportRequestNotRequired:
+      title: PassportRequestNotRequired
       type: object
       description: Request object for GA4GH passport-based authentication
       properties:
@@ -1537,8 +1544,6 @@ components:
             format: jwt
           description: Array of GA4GH passport JWTs for authentication and authorization
           minItems: 1
-      required:
-        - passport
     RunsListRequest:
       title: RunsListRequest
       type: object
