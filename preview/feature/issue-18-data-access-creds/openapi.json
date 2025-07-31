@@ -1227,12 +1227,18 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "passport",
-            "$ref": "#/components/parameters/PassportRequestNotRequired"
           }
         ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PassportRequestNotRequired"
+              }
+            }
+          }
+        },
         "security": [
           {
             "BearerAuth": []
