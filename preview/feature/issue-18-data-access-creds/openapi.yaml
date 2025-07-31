@@ -328,10 +328,22 @@ paths:
     post:
       tags:
         - Workflow Runs
-      summary: RunWorkflow
+      summary: RunWorkflowOrListRuns
       description: >
-        This endpoint creates a new workflow run and returns a `RunId` to
-        monitor its progress.
+        This endpoint supports two operations based on the request body content:
+
+
+        1. **Submit Workflow Run**: When request body contains `RunRequest`
+        schema, creates a new workflow run and returns a `RunId` to monitor its
+        progress.
+
+
+        2. **List Runs with Passport**: When request body contains
+        `RunsListRequest` schema with GA4GH passport authentication, returns a
+        list of workflow runs (same as GET /runs but with passport auth).
+
+
+        **Workflow Submission (RunRequest)**:
 
 
         **Content Types Supported:**
@@ -420,9 +432,7 @@ paths:
             schema:
               oneOf:
                 - $ref: '#/components/schemas/RunRequest'
-                - allOf:
-                    - $ref: '#/components/schemas/RunRequest'
-                    - $ref: '#/components/schemas/PassportRequest'
+                - $ref: '#/components/schemas/RunsListRequest'
           multipart/form-data:
             encoding: {}
             schema:
@@ -508,12 +518,16 @@ paths:
         - {}
       responses:
         '200':
-          description: ''
+          description: >-
+            Success - returns either RunId (for workflow submission) or
+            RunListResponse (for passport-based listing)
           headers: {}
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RunId'
+                oneOf:
+                  - $ref: '#/components/schemas/RunId'
+                  - $ref: '#/components/schemas/RunListResponse'
         '400':
           description: The request is malformed.
           content:
@@ -596,6 +610,62 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       deprecated: false
+    post:
+      tags:
+        - Workflow Runs
+      summary: GetRunLogWithPassport
+      description: >-
+        Same as GetRunLog but supports GA4GH passport authentication via POST
+        body. This endpoint provides detailed information about a given workflow
+        run.
+      operationId: GetRunLogWithPassport
+      parameters:
+        - name: run_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PassportRequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunLog'
+        '401':
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The requested workflow run not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
   /runs/{run_id}/status:
     get:
       tags:
@@ -618,6 +688,61 @@ paths:
       security:
         - BearerAuth: []
         - {}
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunStatus'
+        '401':
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The requested workflow run wasn't found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
+    post:
+      tags:
+        - Workflow Runs
+      summary: GetRunStatusWithPassport
+      description: >-
+        Same as GetRunStatus but supports GA4GH passport authentication via POST
+        body. This provides an abbreviated status of the running workflow.
+      operationId: GetRunStatusWithPassport
+      parameters:
+        - name: run_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PassportRequest'
       responses:
         '200':
           description: ''
@@ -729,6 +854,62 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       deprecated: false
+    post:
+      tags:
+        - Workflow Runs
+      summary: ListTasksWithPassport
+      description: >-
+        Same as ListTasks but supports GA4GH passport authentication via POST
+        body. This endpoint provides a paginated list of tasks that were
+        executed as part of a given workflow run.
+      operationId: ListTasksWithPassport
+      parameters:
+        - name: run_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TasksListRequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponse'
+        '401':
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The requested workflow run wasn't found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
   /runs/{run_id}/tasks/{task_id}:
     get:
       tags:
@@ -756,6 +937,68 @@ paths:
       security:
         - BearerAuth: []
         - {}
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskLog'
+        '401':
+          description: The request is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The requester is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The requested task wasn't found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      deprecated: false
+    post:
+      tags:
+        - Workflow Runs
+      summary: GetTaskWithPassport
+      description: >-
+        Same as GetTask but supports GA4GH passport authentication via POST
+        body. This endpoint provides information on a specific task.
+      operationId: GetTaskWithPassport
+      parameters:
+        - name: run_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: task_id
+          in: path
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PassportRequest'
       responses:
         '200':
           description: ''
@@ -829,319 +1072,6 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: The requested workflow run wasn't found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: An unexpected error occurred.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      deprecated: false
-  /runs/passport:
-    post:
-      tags:
-        - Workflow Runs
-      summary: ListRunsWithPassport
-      description: >-
-        Same as ListRuns but supports GA4GH passport authentication via POST
-        body. This list should be provided in a stable ordering. When paging
-        through the list, the client should not make assumptions about live
-        updates, but should assume the contents of the list reflect the workflow
-        list at the moment that the request is made.
-      operationId: ListRunsWithPassport
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/PassportRequest'
-                - type: object
-                  properties:
-                    page_size:
-                      type: integer
-                      format: int64
-                      description: >-
-                        OPTIONAL The preferred number of workflow runs to return
-                        in a page.
-                    page_token:
-                      type: string
-                      description: >-
-                        OPTIONAL Token to use to indicate where to start getting
-                        results.
-      responses:
-        '200':
-          description: ''
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RunListResponse'
-        '400':
-          description: The request is malformed.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
-          description: The request is unauthorized.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
-          description: The requester is not authorized to perform this action.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: An unexpected error occurred.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      deprecated: false
-  /runs/{run_id}/passport:
-    post:
-      tags:
-        - Workflow Runs
-      summary: GetRunLogWithPassport
-      description: >-
-        Same as GetRunLog but supports GA4GH passport authentication via POST
-        body. This endpoint provides detailed information about a given workflow
-        run.
-      operationId: GetRunLogWithPassport
-      parameters:
-        - name: run_id
-          in: path
-          description: ''
-          required: true
-          style: simple
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PassportRequest'
-      responses:
-        '200':
-          description: ''
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RunLog'
-        '401':
-          description: The request is unauthorized.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
-          description: The requester is not authorized to perform this action.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: The requested workflow run not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: An unexpected error occurred.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      deprecated: false
-  /runs/{run_id}/status/passport:
-    post:
-      tags:
-        - Workflow Runs
-      summary: GetRunStatusWithPassport
-      description: >-
-        Same as GetRunStatus but supports GA4GH passport authentication via POST
-        body. This provides an abbreviated status of the running workflow.
-      operationId: GetRunStatusWithPassport
-      parameters:
-        - name: run_id
-          in: path
-          description: ''
-          required: true
-          style: simple
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PassportRequest'
-      responses:
-        '200':
-          description: ''
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RunStatus'
-        '401':
-          description: The request is unauthorized.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
-          description: The requester is not authorized to perform this action.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: The requested workflow run wasn't found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: An unexpected error occurred.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      deprecated: false
-  /runs/{run_id}/tasks/passport:
-    post:
-      tags:
-        - Workflow Runs
-      summary: ListTasksWithPassport
-      description: >-
-        Same as ListTasks but supports GA4GH passport authentication via POST
-        body. This endpoint provides a paginated list of tasks that were
-        executed as part of a given workflow run.
-      operationId: ListTasksWithPassport
-      parameters:
-        - name: run_id
-          in: path
-          description: ''
-          required: true
-          style: simple
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/PassportRequest'
-                - type: object
-                  properties:
-                    page_size:
-                      type: integer
-                      format: int64
-                      description: >-
-                        OPTIONAL The preferred number of task logs to return in
-                        a page.
-                    page_token:
-                      type: string
-                      description: >-
-                        OPTIONAL Token to use to indicate where to start getting
-                        results.
-      responses:
-        '200':
-          description: ''
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskListResponse'
-        '401':
-          description: The request is unauthorized.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
-          description: The requester is not authorized to perform this action.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: The requested workflow run wasn't found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: An unexpected error occurred.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      deprecated: false
-  /runs/{run_id}/tasks/{task_id}/passport:
-    post:
-      tags:
-        - Workflow Runs
-      summary: GetTaskWithPassport
-      description: >-
-        Same as GetTask but supports GA4GH passport authentication via POST
-        body. This endpoint provides information on a specific task.
-      operationId: GetTaskWithPassport
-      parameters:
-        - name: run_id
-          in: path
-          description: ''
-          required: true
-          style: simple
-          schema:
-            type: string
-        - name: task_id
-          in: path
-          description: ''
-          required: true
-          style: simple
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PassportRequest'
-      responses:
-        '200':
-          description: ''
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskLog'
-        '401':
-          description: The request is unauthorized.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
-          description: The requester is not authorized to perform this action.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: The requested task wasn't found.
           content:
             application/json:
               schema:
@@ -1898,6 +1828,42 @@ components:
           minItems: 1
       required:
         - passport
+    RunsListRequest:
+      title: RunsListRequest
+      type: object
+      description: Request object for listing runs with GA4GH passport authentication
+      allOf:
+        - $ref: '#/components/schemas/PassportRequest'
+        - type: object
+          properties:
+            page_size:
+              type: integer
+              format: int64
+              description: >-
+                OPTIONAL The preferred number of workflow runs to return in a
+                page.
+            page_token:
+              type: string
+              description: >-
+                OPTIONAL Token to use to indicate where to start getting
+                results.
+    TasksListRequest:
+      title: TasksListRequest
+      type: object
+      description: Request object for listing tasks with GA4GH passport authentication
+      allOf:
+        - $ref: '#/components/schemas/PassportRequest'
+        - type: object
+          properties:
+            page_size:
+              type: integer
+              format: int64
+              description: OPTIONAL The preferred number of task logs to return in a page.
+            page_token:
+              type: string
+              description: >-
+                OPTIONAL Token to use to indicate where to start getting
+                results.
     ServiceType:
       description: Type of a GA4GH service
       type: object
