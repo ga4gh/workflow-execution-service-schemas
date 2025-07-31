@@ -343,6 +343,7 @@ paths:
         required: true
       security:
         - BearerAuth: []
+        - PassportAuth: []
         - {}
       responses:
         200:
@@ -444,6 +445,9 @@ paths:
           style: simple
           schema:
             type: string
+      security:
+        - PassportAuth: []
+        - {}
       requestBody:
         required: true
         content:
@@ -548,6 +552,9 @@ paths:
           style: simple
           schema:
             type: string
+      security:
+        - PassportAuth: []
+        - {}
       requestBody:
         required: true
         content:
@@ -682,6 +689,9 @@ paths:
           style: simple
           schema:
             type: string
+      security:
+        - PassportAuth: []
+        - {}
       requestBody:
         required: true
         content:
@@ -801,6 +811,9 @@ paths:
           style: simple
           schema:
             type: string
+      security:
+        - PassportAuth: []
+        - {}
       requestBody:
         required: true
         content:
@@ -857,6 +870,7 @@ paths:
             type: string
       security:
         - BearerAuth: []
+        - PassportAuth: []
         - {}
       responses:
         200:
@@ -898,6 +912,13 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: Standard OAuth2 bearer token authentication
+    PassportAuth:
+      type: http
+      scheme: bearer
+      x-in: body
+      bearerFormat: JWT
+      description:
+        A valid GA4GH Passport must be passed in the body of an HTTP POST request as a passports[] array.
   schemas:
     ServiceInfo:
       title: ServiceInfo
