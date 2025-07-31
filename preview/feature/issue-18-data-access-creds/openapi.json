@@ -333,7 +333,7 @@
               "schema": {
                 "oneOf": [
                   {
-                    "$ref": "#/components/schemas/RunRequest"
+                    "$ref": "#/components/schemas/PassportRunRequest"
                   },
                   {
                     "$ref": "#/components/schemas/RunsListRequest"
@@ -1470,6 +1470,17 @@
           }
         ],
         "description": "Small description of a workflow run"
+      },
+      "PassportRunRequest": {
+        "title": "PassportRunRequest",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PassportRequest"
+          },
+          {
+            "$ref": "#/components/schemas/RunRequest"
+          }
+        ]
       },
       "RunRequest": {
         "title": "RunRequest",
