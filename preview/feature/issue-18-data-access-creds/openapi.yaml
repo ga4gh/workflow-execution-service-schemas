@@ -1362,6 +1362,13 @@ components:
                       last_modified:
                         type: string
                         description: Last modification time in ISO 8601 format
+                      credential_id:
+                        type: string
+                        description: >-
+                          Reference to a credential ID defined in the
+                          'credentials' section of the RunRequest. This
+                          credential will be used to authenticate and authorize
+                          access to this File or Directory resource.
                   description:
                     type: string
                     description: Human-readable parameter description
@@ -1486,6 +1493,21 @@ components:
             Additional workflow files required for execution (e.g., imported
             workflows, subworkflows, or dependencies). Each entry specifies both
             the source URL and target file path for precise file placement.
+        credentials:
+          type: object
+          description: >-
+            OPTIONAL
+
+            Named credentials that can be referenced by input parameters that
+            require authentication to access File or Directory resources. Each
+            credential is identified by a unique key and can be referenced
+            multiple times by different parameters to avoid duplicating large
+            authentication tokens.
+          additionalProperties:
+            oneOf:
+              - $ref: '#/components/schemas/PassportCredential'
+              - $ref: '#/components/schemas/BearerTokenCredential'
+              - $ref: '#/components/schemas/ApiKeyCredential'
       description: >-
         To execute a workflow, send a run request including all the details
         needed to begin downloading
@@ -1903,6 +1925,62 @@ components:
               description: >-
                 OPTIONAL Token to use to indicate where to start getting
                 results.
+    PassportCredential:
+      title: PassportCredential
+      type: object
+      description: GA4GH passport-based credential for accessing restricted resources
+      properties:
+        type:
+          type: string
+          enum:
+            - passport
+          description: Credential type identifier
+        passport:
+          type: array
+          items:
+            type: string
+            format: jwt
+          description: Array of GA4GH passport JWTs for authentication and authorization
+          minItems: 1
+      required:
+        - type
+        - passport
+    BearerTokenCredential:
+      title: BearerTokenCredential
+      type: object
+      description: Bearer token credential for accessing resources
+      properties:
+        type:
+          type: string
+          enum:
+            - bearer_token
+          description: Credential type identifier
+        token:
+          type: string
+          description: Bearer token for authentication
+      required:
+        - type
+        - token
+    ApiKeyCredential:
+      title: ApiKeyCredential
+      type: object
+      description: API key credential for accessing resources
+      properties:
+        type:
+          type: string
+          enum:
+            - api_key
+          description: Credential type identifier
+        key:
+          type: string
+          description: API key for authentication
+        header_name:
+          type: string
+          description: Header name for the API key (defaults to X-API-Key if not specified)
+          default: X-API-Key
+      required:
+        - type
+        - key
     ServiceType:
       description: Type of a GA4GH service
       type: object
