@@ -299,6 +299,8 @@ paths:
             schema:
               type: object
               properties:
+                passport:
+                  $ref: '#/components/schemas/PassportRequestNotRequired'
                 workflow_params:
                   type: string
                   description: JSON-encoded native workflow parameters (see RunRequest for how to encode)
