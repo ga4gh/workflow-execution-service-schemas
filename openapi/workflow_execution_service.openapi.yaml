@@ -1291,10 +1291,27 @@ components:
               specification (2.0.0)
         outputs:
           type: object
-          description: The outputs from the workflow run (legacy format)
+          description: >-
+            The outputs from the workflow run (legacy format). 
+            For outputs that require authentication to access (such as restricted files or directories), 
+            use the 'output_credentials' section of this response to obtain the necessary authentication 
+            credentials. The mapping between specific output files and credentials is implementation-specific 
+            for this legacy format - use 'structured_outputs' for explicit credential references.
         structured_outputs:
           $ref: '#/components/schemas/WorkflowOutputs'
           description: Structured workflow outputs with rich metadata and type safety
+        output_credentials:
+          type: object
+          description: >-
+            Named credentials required to access workflow output files and directories. 
+            Each credential is identified by a unique key and can be referenced by multiple 
+            outputs via their 'credential_id' field. These credentials allow clients to 
+            authenticate and authorize access to restricted output resources.
+          additionalProperties:
+            oneOf:
+              - $ref: '#/components/schemas/PassportCredential'
+              - $ref: '#/components/schemas/BearerTokenCredential'
+              - $ref: '#/components/schemas/ApiKeyCredential'
     Log:
       title: Log
       type: object
@@ -1544,6 +1561,9 @@ components:
         contents:
           type: string
           description: File contents for small files (≤64 KiB)
+        credential_id:
+          type: string
+          description: Reference to a credential ID defined in the 'output_credentials' section of the RunLog response. This credential is required to authenticate and authorize access to this File or Directory output resource.
       required:
         - class
         - value
