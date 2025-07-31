@@ -870,7 +870,8 @@ paths:
           style: simple
           schema:
             type: string
-        - $ref: '#/components/parameters/PassportRequestNotRequired'
+        - name: passport
+          $ref: '#/components/parameters/PassportRequestNotRequired'
       security:
         - BearerAuth: []
         - PassportAuth: []
