@@ -258,6 +258,12 @@
             }
           }
         ],
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {}
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -325,7 +331,21 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RunRequest"
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/RunRequest"
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/RunRequest"
+                      },
+                      {
+                        "$ref": "#/components/schemas/PassportRequest"
+                      }
+                    ]
+                  }
+                ]
               }
             },
             "multipart/form-data": {
@@ -392,6 +412,12 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {}
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -468,6 +494,12 @@
             }
           }
         ],
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {}
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -543,6 +575,12 @@
               "type": "string"
             }
           }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {}
         ],
         "responses": {
           "200": {
@@ -641,6 +679,12 @@
             }
           }
         ],
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {}
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -727,6 +771,12 @@
             }
           }
         ],
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {}
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -803,6 +853,12 @@
             }
           }
         ],
+        "security": [
+          {
+            "BearerAuth": []
+          },
+          {}
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -858,9 +914,482 @@
         },
         "deprecated": false
       }
+    },
+    "/runs/passport": {
+      "post": {
+        "tags": [
+          "Workflow Runs"
+        ],
+        "summary": "ListRunsWithPassport",
+        "description": "Same as ListRuns but supports GA4GH passport authentication via POST body. This list should be provided in a stable ordering. When paging through the list, the client should not make assumptions about live updates, but should assume the contents of the list reflect the workflow list at the moment that the request is made.",
+        "operationId": "ListRunsWithPassport",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PassportRequest"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "page_size": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "OPTIONAL The preferred number of workflow runs to return in a page."
+                      },
+                      "page_token": {
+                        "type": "string",
+                        "description": "OPTIONAL Token to use to indicate where to start getting results."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is malformed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The request is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The requester is not authorized to perform this action.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/runs/{run_id}/passport": {
+      "post": {
+        "tags": [
+          "Workflow Runs"
+        ],
+        "summary": "GetRunLogWithPassport",
+        "description": "Same as GetRunLog but supports GA4GH passport authentication via POST body. This endpoint provides detailed information about a given workflow run.",
+        "operationId": "GetRunLogWithPassport",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PassportRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunLog"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The request is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The requester is not authorized to perform this action.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested workflow run not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/runs/{run_id}/status/passport": {
+      "post": {
+        "tags": [
+          "Workflow Runs"
+        ],
+        "summary": "GetRunStatusWithPassport",
+        "description": "Same as GetRunStatus but supports GA4GH passport authentication via POST body. This provides an abbreviated status of the running workflow.",
+        "operationId": "GetRunStatusWithPassport",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PassportRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunStatus"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The request is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The requester is not authorized to perform this action.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested workflow run wasn't found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/runs/{run_id}/tasks/passport": {
+      "post": {
+        "tags": [
+          "Workflow Runs"
+        ],
+        "summary": "ListTasksWithPassport",
+        "description": "Same as ListTasks but supports GA4GH passport authentication via POST body. This endpoint provides a paginated list of tasks that were executed as part of a given workflow run.",
+        "operationId": "ListTasksWithPassport",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PassportRequest"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "page_size": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "OPTIONAL The preferred number of task logs to return in a page."
+                      },
+                      "page_token": {
+                        "type": "string",
+                        "description": "OPTIONAL Token to use to indicate where to start getting results."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The request is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The requester is not authorized to perform this action.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested workflow run wasn't found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/runs/{run_id}/tasks/{task_id}/passport": {
+      "post": {
+        "tags": [
+          "Workflow Runs"
+        ],
+        "summary": "GetTaskWithPassport",
+        "description": "Same as GetTask but supports GA4GH passport authentication via POST body. This endpoint provides information on a specific task.",
+        "operationId": "GetTaskWithPassport",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "task_id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PassportRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskLog"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The request is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The requester is not authorized to perform this action.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested task wasn't found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
     }
   },
   "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Standard OAuth2 bearer token authentication"
+      }
+    },
     "schemas": {
       "ServiceInfo": {
         "title": "ServiceInfo",
@@ -1591,6 +2120,25 @@
         "required": [
           "class",
           "value"
+        ]
+      },
+      "PassportRequest": {
+        "title": "PassportRequest",
+        "type": "object",
+        "description": "Request object for GA4GH passport-based authentication",
+        "properties": {
+          "passport": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "jwt"
+            },
+            "description": "Array of GA4GH passport JWTs for authentication and authorization",
+            "minItems": 1
+          }
+        },
+        "required": [
+          "passport"
         ]
       },
       "ServiceType": {
