@@ -409,6 +409,9 @@
           {
             "BearerAuth": []
           },
+          {
+            "PassportAuth": []
+          },
           {}
         ],
         "responses": {
@@ -573,6 +576,12 @@
               "type": "string"
             }
           }
+        ],
+        "security": [
+          {
+            "PassportAuth": []
+          },
+          {}
         ],
         "requestBody": {
           "required": true,
@@ -739,6 +748,12 @@
               "type": "string"
             }
           }
+        ],
+        "security": [
+          {
+            "PassportAuth": []
+          },
+          {}
         ],
         "requestBody": {
           "required": true,
@@ -927,6 +942,12 @@
             }
           }
         ],
+        "security": [
+          {
+            "PassportAuth": []
+          },
+          {}
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1113,6 +1134,12 @@
             }
           }
         ],
+        "security": [
+          {
+            "PassportAuth": []
+          },
+          {}
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1203,6 +1230,9 @@
           {
             "BearerAuth": []
           },
+          {
+            "PassportAuth": []
+          },
           {}
         ],
         "responses": {
@@ -1269,6 +1299,13 @@
         "scheme": "bearer",
         "bearerFormat": "JWT",
         "description": "Standard OAuth2 bearer token authentication"
+      },
+      "PassportAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "x-in": "body",
+        "bearerFormat": "JWT",
+        "description": "A valid GA4GH Passport must be passed in the body of an HTTP POST request as a passports[] array."
       }
     },
     "schemas": {
