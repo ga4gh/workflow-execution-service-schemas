@@ -632,6 +632,9 @@ components:
               additionalProperties:
                 type: integer
                 format: int64
+              description: >-
+                The system statistics, key is the statistic, value is the count of runs in that state.
+                See the State enum for the possible keys.
             auth_instructions_url:
               type: string
               description: A web page URL with human-readable instructions on how to get an authorization token for use with a specific WES endpoint.
