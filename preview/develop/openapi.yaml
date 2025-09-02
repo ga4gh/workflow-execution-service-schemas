@@ -731,6 +731,9 @@ components:
               additionalProperties:
                 type: integer
                 format: int64
+              description: >-
+                The system statistics, key is the statistic, value is the count
+                of runs in that state. See the State enum for the possible keys.
             auth_instructions_url:
               type: string
               description: >-
