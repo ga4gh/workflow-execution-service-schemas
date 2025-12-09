@@ -79,8 +79,20 @@ Possible Future Enhancements
 * a callback mechanism for monitoring status changes in running workflows (e.g., a webhook)
 * integration with GA4GH data access APIs (e.g., htsget, DOS)
 
+Known Implementations
+=====================
+
+Implementations listed here are community-provided. No guarantees are made on (level of) compliance, functionality,
+maturity, project status, etc. Nor should inclusion in this list be considered an endorsement by GA4GH.
+
+* https://github.com/common-workflow-language/workflow-service/
+* https://github.com/elixir-cloud-aai/cwl-WES
+* https://github.com/elixir-cloud-aai/proWES
+* https://github.com/sapporo-wes/sapporo
+* https://gitlab.com/one-touch-pipeline/weskit
+
 How to Contribute Changes
--------------------------
+=========================
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -88,12 +100,12 @@ If a security issue is identified with the specification, please send an email t
 detailing your concerns.
 
 License
--------
+=======
 
 See the [LICENSE](LICENSE).
 
 More Information
-----------------
+================
 
 * [Global Alliance for Genomics and Health](http://genomicsandhealth.org)
 * [GA4GH Cloud Work Stream](https://ga4gh.cloud)
