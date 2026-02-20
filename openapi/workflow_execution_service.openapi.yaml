@@ -143,32 +143,32 @@ paths:
       operationId: GetServiceInfo
       parameters: [ ]
       responses:
-        200:
+        '200':
           description: ''
           headers: { }
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServiceInfo'
-        400:
+        '400':
           description: The request is malformed.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        401:
+        '401':
           description: The request is unauthorized.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        403:
+        '403':
           description: The requester is not authorized to perform this action.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        500:
+        '500':
           description: An unexpected error occurred.
           content:
             application/json:
@@ -199,32 +199,32 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           headers: { }
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RunListResponse'
-        400:
+        '400':
           description: The request is malformed.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        401:
+        '401':
           description: The request is unauthorized.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        403:
+        '403':
           description: The requester is not authorized to perform this action.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        500:
+        '500':
           description: An unexpected error occurred.
           content:
             application/json:
@@ -286,32 +286,32 @@ paths:
                   description: ''
         required: false
       responses:
-        200:
+        '200':
           description: ''
           headers: { }
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RunId'
-        400:
+        '400':
           description: The request is malformed.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        401:
+        '401':
           description: The request is unauthorized.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        403:
+        '403':
           description: The requester is not authorized to perform this action.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        500:
+        '500':
           description: An unexpected error occurred.
           content:
             application/json:
@@ -334,32 +334,32 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           headers: { }
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RunLog'
-        401:
+        '401':
           description: The request is unauthorized.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        403:
+        '403':
           description: The requester is not authorized to perform this action.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        404:
+        '404':
           description: The requested workflow run not found.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        500:
+        '500':
           description: An unexpected error occurred.
           content:
             application/json:
@@ -382,32 +382,32 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           headers: { }
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RunStatus'
-        401:
+        '401':
           description: The request is unauthorized.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        403:
+        '403':
           description: The requester is not authorized to perform this action.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        404:
+        '404':
           description: The requested workflow run wasn't found.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        500:
+        '500':
           description: An unexpected error occurred.
           content:
             application/json:
@@ -460,32 +460,32 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           headers: {}
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskListResponse'
-        401:
+        '401':
           description: The request is unauthorized.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        403:
+        '403':
           description: The requester is not authorized to perform this action.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        404:
+        '404':
           description: The requested workflow run wasn't found.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        500:
+        '500':
           description: An unexpected error occurred.
           content:
             application/json:
@@ -516,32 +516,32 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           headers: { }
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskLog'
-        401:
+        '401':
           description: The request is unauthorized.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        403:
+        '403':
           description: The requester is not authorized to perform this action.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        404:
+        '404':
           description: The requested task wasn't found.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        500:
+        '500':
           description: An unexpected error occurred.
           content:
             application/json:
@@ -564,32 +564,32 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: ''
           headers: { }
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RunId'
-        401:
+        '401':
           description: The request is unauthorized.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        403:
+        '403':
           description: The requester is not authorized to perform this action.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        404:
+        '404':
           description: The requested workflow run wasn't found.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        500:
+        '500':
           description: An unexpected error occurred.
           content:
             application/json:
