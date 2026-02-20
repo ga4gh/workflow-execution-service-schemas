@@ -39,7 +39,7 @@ servers:
   - url: https://{defaultHost}/{basePath}/{apiVersion}
     variables:
       defaultHost:
-        default: wes.example.com
+        default: www.example.com
       basePath:
         default: ga4gh/wes
       apiVersion:
