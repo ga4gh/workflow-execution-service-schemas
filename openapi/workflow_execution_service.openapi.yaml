@@ -19,14 +19,14 @@ info:
     + can get information about running workflows (e.g. status, errors, output file locations)
     + can cancel a running workflow
 servers:
-- url: https://{defaultHost}/{basePath}/{apiVersion}
-  variables:
-    defaultHost:
-      default: www.example.com
-    basePath:
-      default: ga4gh/wes
-    apiVersion:
-      default: v1
+  - url: https://{defaultHost}/{basePath}/{apiVersion}
+    variables:
+      defaultHost:
+        default: www.example.com
+      basePath:
+        default: ga4gh/wes
+      apiVersion:
+        default: v1
 tags:
   - name: Service Info
     description: Get information about the workflow execution service
@@ -141,11 +141,11 @@ paths:
       summary: GetServiceInfo
       description: May include information related (but not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general service availability.
       operationId: GetServiceInfo
-      parameters: [ ]
+      parameters: []
       responses:
         '200':
           description: ''
-          headers: { }
+          headers: {}
           content:
             application/json:
               schema:
@@ -183,6 +183,7 @@ paths:
       description: This list should be provided in a stable ordering. (The actual ordering is implementation dependent.) When paging through the list, the client should not make assumptions about live updates, but should assume the contents of the list reflect the workflow list at the moment that the first page is requested.  To monitor a specific workflow run, use GetRunStatus or GetRunLog.
       operationId: ListRuns
       parameters:
+        # Existing pagination parameters
         - name: page_size
           in: query
           description: OPTIONAL The preferred number of workflow runs to return in a page. If not provided, the implementation should use a default page size. The implementation must not return more items than `page_size`, but it may return fewer.  Clients should not assume that if fewer than `page_size` items are returned that all items have been returned.  The availability of additional pages is indicated by the value of `next_page_token` in the response.
@@ -198,10 +199,140 @@ paths:
           explode: true
           schema:
             type: string
+        
+        # NEW FILTERING PARAMETERS
+        - name: state
+          in: query
+          description: |
+            OPTIONAL
+            Filter by workflow state. Multiple values may be provided to match 
+            any of the specified states (OR logic). If not provided, returns 
+            runs in all states.
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/State'
+          examples:
+            single:
+              value: RUNNING
+              summary: Get running workflows only
+            multiple:
+              value: [RUNNING, QUEUED]
+              summary: Get running or queued workflows
+        
+        - name: workflow_type
+          in: query
+          description: |
+            OPTIONAL
+            Filter by workflow type (e.g., "CWL", "WDL"). Exact match.
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: "WDL"
+        
+        - name: workflow_type_version
+          in: query
+          description: |
+            OPTIONAL
+            Filter by workflow type version. Exact match.
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: "1.0"
+        
+        - name: workflow_engine
+          in: query
+          description: |
+            OPTIONAL
+            Filter by workflow engine name. Exact match.
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: "Cromwell"
+        
+        - name: workflow_url
+          in: query
+          description: |
+            OPTIONAL
+            Filter by workflow URL. Exact match.
+          style: form
+          explode: true
+          schema:
+            type: string
+            format: uri
+          example: "https://github.com/user/workflow.wdl"
+        
+        - name: tag
+          in: query
+          description: |
+            OPTIONAL
+            Filter by tags using key:value syntax. Multiple tags are ANDed 
+            (run must have ALL specified tags). Tags are matched against the 
+            tags field in the RunRequest.
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              pattern: '^[^:]+:[^:]+$'
+          examples:
+            single:
+              value: "batch:12345"
+              summary: Filter by single tag
+            multiple:
+              value: ["batch:12345", "project:cancer-genomics"]
+              summary: Filter by multiple tags (must have both)
+        
+        - name: since
+          in: query
+          description: |
+            OPTIONAL
+            Filter runs that started on or after this timestamp. 
+            Uses ISO 8601 format "%Y-%m-%dT%H:%M:%SZ".
+            Filters based on the run's start_time field.
+          style: form
+          explode: true
+          schema:
+            type: string
+            format: date-time
+          example: "2025-01-01T00:00:00Z"
+        
+        - name: until
+          in: query
+          description: |
+            OPTIONAL
+            Filter runs that started before this timestamp.
+            Uses ISO 8601 format "%Y-%m-%dT%H:%M:%SZ".
+            Filters based on the run's start_time field.
+          style: form
+          explode: true
+          schema:
+            type: string
+            format: date-time
+          example: "2025-12-31T23:59:59Z"
+        
+        - name: search
+          in: query
+          description: |
+            OPTIONAL
+            Full-text search across workflow metadata. Implementation-specific 
+            behavior. Does NOT search log contents. May search workflow name, 
+            tags, or other metadata fields as determined by the implementation.
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: "cancer genome alignment"
       responses:
         '200':
           description: ''
-          headers: { }
+          headers: {}
           content:
             application/json:
               schema:
@@ -254,11 +385,11 @@ paths:
 
         See the `RunRequest` documentation for details about other fields.
       operationId: RunWorkflow
-      parameters: [ ]
+      parameters: []
       requestBody:
         content:
           multipart/form-data:
-            encoding: { }
+            encoding: {}
             schema:
               type: object
               properties:
@@ -288,7 +419,7 @@ paths:
       responses:
         '200':
           description: ''
-          headers: { }
+          headers: {}
           content:
             application/json:
               schema:
@@ -336,7 +467,7 @@ paths:
       responses:
         '200':
           description: ''
-          headers: { }
+          headers: {}
           content:
             application/json:
               schema:
@@ -384,7 +515,7 @@ paths:
       responses:
         '200':
           description: ''
-          headers: { }
+          headers: {}
           content:
             application/json:
               schema:
@@ -518,7 +649,7 @@ paths:
       responses:
         '200':
           description: ''
-          headers: { }
+          headers: {}
           content:
             application/json:
               schema:
@@ -566,7 +697,7 @@ paths:
       responses:
         '200':
           description: ''
-          headers: { }
+          headers: {}
           content:
             application/json:
               schema:
@@ -738,9 +869,9 @@ components:
       title: RunRequest
       type: object
       required:
-      - workflow_type
-      - workflow_type_version
-      - workflow_url
+        - workflow_type
+        - workflow_type_version
+        - workflow_url
       properties:
         workflow_params:
           type: object
@@ -816,11 +947,11 @@ components:
             anyOf:
               - $ref: '#/components/schemas/Log'
               - $ref: '#/components/schemas/TaskLog'
-          description:  >-
-              The logs, and other key info like timing and exit code, for each step in the workflow run.
-              This field is deprecated and the `task_logs_url` should be used to retrieve a paginated list
-              of steps from the workflow run. This field will be removed in the next major version of the 
-              specification (2.0.0)
+          description: >-
+            The logs, and other key info like timing and exit code, for each step in the workflow run.
+            This field is deprecated and the `task_logs_url` should be used to retrieve a paginated list
+            of steps from the workflow run. This field will be removed in the next major version of the 
+            specification (2.0.0)
         outputs:
           type: object
           description: The outputs from the workflow run.
@@ -856,7 +987,6 @@ components:
           type: array
           items:
             type: string
-
           description: |-
             System logs are any logs the system decides are relevant,
             which are not tied directly to a workflow.
@@ -919,7 +1049,6 @@ components:
               type: array
               items:
                 type: string
-
               description: |-
                 System logs are any logs the system decides are relevant,
                 which are not tied directly to a task.
@@ -966,10 +1095,10 @@ components:
           description: >-
             Total count of workflow runs that the service has executed or is executing and the caller has permission to see.
       description: >
-              The service will return a RunListResponse when receiving a successful RunListRequest.
-              DEPRECIATION WARNING: The use of `RunStatus` as the schema for `runs` array items will
-              not be permitted from the next major version of the specification (2.0.0) onwards. We
-              encourage implementers to use `RunSummary` instead.
+        The service will return a RunListResponse when receiving a successful RunListRequest.
+        DEPRECIATION WARNING: The use of `RunStatus` as the schema for `runs` array items will
+        not be permitted from the next major version of the specification (2.0.0) onwards. We
+        encourage implementers to use `RunSummary` instead.
     ErrorResponse:
       title: ErrorResponse
       type: object
@@ -982,10 +1111,3 @@ components:
           description: The integer representing the HTTP status code (e.g. 200, 404).
           format: int32
       description: An object that can optionally include information about the error.
-
-
-
-
-
-
-
