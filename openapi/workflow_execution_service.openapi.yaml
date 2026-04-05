@@ -91,6 +91,14 @@ tags:
     x-displayName: TaskLog
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/TaskLog" />
+  - name: structuredlog_model
+    x-displayName: Structured logging
+    description: |
+      Optional structured log models for engine-agnostic workflow and task events.
+      See
+      <SchemaDefinition schemaRef="#/components/schemas/StructuredLogEvent" />,
+      <SchemaDefinition schemaRef="#/components/schemas/WorkflowStructuredLog" />,
+      and related schemas.
   - name: tasklistresponse_model
     x-displayName: TaskListResponse
     description: |
@@ -129,6 +137,7 @@ x-tagGroups:
       - log_model
       - task_model
       - tasklog_model
+      - structuredlog_model
       - tasklistresponse_model
       - defaultworkflowengineparameter_model
       - workflowtypeversion_model
@@ -982,6 +991,103 @@ components:
           description: The integer representing the HTTP status code (e.g. 200, 404).
           format: int32
       description: An object that can optionally include information about the error.
+    StructuredLogLevel:
+      title: StructuredLogLevel
+      type: string
+      description: Severity of a structured log event. Implementations may map engine-specific levels to this set.
+      enum:
+        - TRACE
+        - DEBUG
+        - INFO
+        - WARN
+        - ERROR
+        - FATAL
+    StructuredError:
+      title: StructuredError
+      type: object
+      description: Machine-friendly error details complementing unstructured stderr or system logs.
+      properties:
+        code:
+          type: string
+          description: Short stable identifier (e.g. OOM, NONZERO_EXIT).
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+          description: Optional structured context (engine-specific keys allowed).
+    ResourceUsage:
+      title: ResourceUsage
+      type: object
+      description: Optional resource consumption for a task or workflow phase, when available from the engine or platform.
+      properties:
+        cpu_seconds:
+          type: number
+          format: double
+          description: CPU time consumed (e.g. user plus system), in seconds.
+        memory_peak_bytes:
+          type: integer
+          format: int64
+          description: Peak resident or requested memory, in bytes; semantics are implementation-defined.
+        wall_clock_seconds:
+          type: number
+          format: double
+        additional_metrics:
+          type: object
+          additionalProperties: true
+          description: Extra quantitative metrics (e.g. GPU seconds, disk read bytes).
+    StructuredLogEvent:
+      title: StructuredLogEvent
+      type: object
+      description: A single timestamped structured event for workflow or task execution.
+      required:
+        - timestamp
+        - message
+      properties:
+        timestamp:
+          type: string
+          description: When the event was recorded, in ISO 8601 format (e.g. "%Y-%m-%dT%H:%M:%SZ").
+        level:
+          $ref: '#/components/schemas/StructuredLogLevel'
+        message:
+          type: string
+        task_id:
+          type: string
+          description: When set, associates the event with the WES task `id` for that step.
+        step_name:
+          type: string
+          description: Engine-specific step, rule, or process name when distinct from WES `name`.
+        engine_source:
+          type: string
+          description: Producing engine or adapter (e.g. nextflow, snakemake, cwl).
+        exit_code:
+          type: integer
+          format: int32
+        error:
+          $ref: '#/components/schemas/StructuredError'
+        resources:
+          $ref: '#/components/schemas/ResourceUsage'
+        extra:
+          type: object
+          additionalProperties: true
+          description: Engine-specific fields not covered by standard properties; clients should treat as opaque unless documented by the implementation.
+    WorkflowStructuredLog:
+      title: WorkflowStructuredLog
+      type: object
+      description: Workflow-level structured log envelope. Optional on responses; does not replace raw `Log` stdout/stderr URLs.
+      properties:
+        workflow_engine:
+          type: string
+        workflow_engine_version:
+          type: string
+        mapping_version:
+          type: string
+          description: Version of the structured log schema or mapping used by the implementation (implementation-defined).
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/StructuredLogEvent'
+          description: Ordered sequence of workflow-level or aggregated events; may include task-scoped events with `task_id` set.
 
 
 
