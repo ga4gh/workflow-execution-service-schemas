@@ -5,22 +5,28 @@ This schema is developed by the [Cloud Work Stream](https://ga4gh.cloud) of the 
 
 ## Semantic Versioning
 
-We use [semantic versioning](https://semver.org/) for WES, this will determine if your proposed changes impact a major or minor release.
+We use [semantic versioning](https://semver.org/) for WES; this determines whether your proposed changes belong in a major or minor release.
 
 ## Suggesting Changes
 
-Suggested changes to this schema can be initiated as [**Issues**](https://github.com/ga4gh/workflow-execution-service-schemas/issues) or [**Pull Requests**](https://github.com/ga4gh/workflow-execution-service-schemas/pulls) to allow for discussion and review. 
+Suggested changes to this schema can be initiated as [**Issues**](https://github.com/ga4gh/workflow-execution-service-schemas/issues) or [**Pull Requests**](https://github.com/ga4gh/workflow-execution-service-schemas/pulls) to allow for discussion and review.
 
 Even those with write access to the main repository should in general create pull request branches within their own forks. This way when the main repository is forked again, the new fork is created with a minimum of extraneous volatile branches.
 
-> To facilitate review of external pull requests, users are encouraged to activate [**Travis CI**](https://travis-ci.org/) to monitor the build status (documentation, Swagger UI) of their fork. By following the documentation for [deployment to GitHub Pages](https://docs.travis-ci.com/user/deployment/pages/) and adding a `$GITHUB_TOKEN` environment variable to their repo configuration, pushes to the forked repo should be viewable relative to `https://[user-or-org].github.io/workflow-execution-service-schemas/preview/<branch>/`:
+## Fork previews and CI
+
+This repository uses [**GitHub Actions**](.github/workflows/) to lint and validate the OpenAPI definition. If you fork the project, enable **Actions** in the fork settings so the same workflows can run on your branches.
+
+To publish API docs from your fork to GitHub Pages (optional, for sharing preview URLs in pull request comments), see GitHub’s guide to [publishing from a custom GitHub Actions workflow](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-with-a-custom-github-actions-workflow) and add any secrets your workflow requires.
+
+When branch previews are deployed from a fork, URLs often follow this pattern:
 
 + https://[user-or-org].github.io/workflow-execution-service-schemas/preview/\<branch\>/docs/
 + https://[user-or-org].github.io/workflow-execution-service-schemas/preview/\<branch\>/swagger-ui/
 + https://[user-or-org].github.io/workflow-execution-service-schemas/preview/\<branch\>/swagger.json
 + https://[user-or-org].github.io/workflow-execution-service-schemas/preview/\<branch\>/swagger.yaml
 
-> Providing this base URL in the pull request comment is appreciated, but not required.
+Providing this base URL in the pull request comment is appreciated, but not required.
 
 If a security vulnerability is identified with the specification please send an email to security-notification@ga4gh.org detailing your concerns.
 

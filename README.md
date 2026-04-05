@@ -6,28 +6,14 @@
 Workflow Execution Service (WES) API
 ====================================
 
+This repository is the home for the schema for the GA4GH Workflow Execution Service API. The goal of the API is to provide a standardized way to submit and manage workflows described in a workflow language (e.g. WDL, CWL, Nextflow, Galaxy, Snakemake) against an execution backend.
 
-This repository is the home for the schema for the GA4GH Workflow Execution Service API. The Goal of the API is to
-provide
-a standardized way to submit and manage workflows described in a workflow language (eg. WDL, CWL, Nextflow, Galaxy,
-Snakemake)
-against an execution backend.
+See the human-readable [Reference Documentation](https://ga4gh.github.io/workflow-execution-service-schemas/docs/). You can also explore the specification in the [Swagger Editor](https://editor.swagger.io/?url=https://ga4gh.github.io/workflow-execution-service-schemas/openapi.yaml). The [published OpenAPI YAML](https://ga4gh.github.io/workflow-execution-service-schemas/openapi.yaml) is what those tools load from the live site; if you use a different branch or commit, point the editor at the spec from that revision instead. Preview documentation from [gh-openapi-docs](https://github.com/ga4gh/gh-openapi-docs) for the development branch [here](https://ga4gh.github.io/workflow-execution-service-schemas/preview/develop/docs/index.html).
 
-See the human-readable [Reference Documentation](https://ga4gh.github.io/workflow-execution-service-schemas/docs/)
-You can also explore the specification in
-the [Swagger Editor](https://editor.swagger.io/?url=https://ga4gh.github.io/workflow-execution-service-schemas/openapi.yaml)**
-*Manually load the JSON if working from a non-develop branch version.* Preview documentation from
-the [gh-openapi-docs](https://github.com/ga4gh/gh-openapi-docs) for the development
-branch [here](https://ga4gh.github.io/workflow-execution-service-schemas/preview/develop/docs/index.html)
-
-> All documentation and pages hosted at 'ga4gh.github.io/workflow-execution-service' reflect the latest API release from
-> the `master` branch. To monitor the latest development work, add 'preview/\<branch\>' to the URLs above (e.g., '
-> ga4gh.github.io/ga4gh.github.io/workflow-execution-service/preview/\<branch\>/docs'). To view the latest *stable*
-> development API specification, refer to the `develop` branch.
+> All documentation and pages hosted at `ga4gh.github.io/workflow-execution-service-schemas` reflect the latest API release from the `master` branch. To monitor the latest development work for a given branch, add `preview/<branch>/` after the site path (for example, `https://ga4gh.github.io/workflow-execution-service-schemas/preview/develop/docs/`). To view the latest stable development API specification, refer to the `develop` branch.
 
 
-The [Global Alliance for Genomics and Health](http://genomicsandhealth.org/) is an international coalition, formed to
-enable the sharing of genomic and clinical data.
+The [Global Alliance for Genomics and Health](https://genomicsandhealth.org/) is an international coalition, formed to enable the sharing of genomic and clinical data.
 
 Cloud Work Stream
 -----------------
@@ -61,13 +47,13 @@ Use cases include:
 * "Bring your code to the data": a researcher who has built their own custom analysis can submit it to run on a dataset
   owned by an external organization, instead of having to make a copy of the data
 * Best-practices pipelines: a researcher who maintains their own controlled data environment can find useful workflows
-  in a shared directory (e.g., [Dockstore.org](http://dockstore.org)), and run them over their data
+  in a shared directory (e.g., [Dockstore.org](https://dockstore.org)), and run them over their data
 
 Starter Kit
 -----------
-If you are a future implementor or would like to start using a WES API locally you can try
+If you are a future implementer or would like to start using a WES API locally you can try
 the [GA4GH WES Starter Kit](https://starterkit.ga4gh.org/docs/starter-kit-apis/wes/wes_overview/). This project provides
-a fully functioning WES API written in java and allows you to run workflows using the Nextflow workflow language.
+a fully functioning WES API written in Java and allows you to run workflows using the Nextflow workflow language.
 
 
 Possible Future Enhancements
@@ -77,7 +63,7 @@ Possible Future Enhancements
 * validation service for testing WES implementations' conformance to the spec
 * improved tools for troubleshooting execution failures, especially when there are 100s-1000s of tasks
 * a callback mechanism for monitoring status changes in running workflows (e.g., a webhook)
-* integration with GA4GH data access APIs (e.g., htsget, DOS)
+* integration with GA4GH data access APIs (e.g., htsget, DRS)
 
 Known Implementations
 =====================
@@ -85,11 +71,11 @@ Known Implementations
 Implementations listed here are community-provided. No guarantees are made on (level of) compliance, functionality,
 maturity, project status, etc. Nor should inclusion in this list be considered an endorsement by GA4GH.
 
-* https://github.com/common-workflow-language/workflow-service/
-* https://github.com/elixir-cloud-aai/cwl-WES
-* https://github.com/elixir-cloud-aai/proWES
-* https://github.com/sapporo-wes/sapporo
-* https://gitlab.com/one-touch-pipeline/weskit
+* [CWL workflow-service](https://github.com/common-workflow-language/workflow-service/)
+* [cwl-WES (Elixir Cloud & AAI)](https://github.com/elixir-cloud-aai/cwl-WES)
+* [proWES (Elixir Cloud & AAI)](https://github.com/elixir-cloud-aai/proWES)
+* [Sapporo WES](https://github.com/sapporo-wes/sapporo)
+* [WESKit](https://gitlab.com/one-touch-pipeline/weskit)
 
 How to Contribute Changes
 =========================
@@ -107,5 +93,5 @@ See the [LICENSE](LICENSE).
 More Information
 ================
 
-* [Global Alliance for Genomics and Health](http://genomicsandhealth.org)
+* [Global Alliance for Genomics and Health](https://genomicsandhealth.org)
 * [GA4GH Cloud Work Stream](https://ga4gh.cloud)
