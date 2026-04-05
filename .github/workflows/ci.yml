@@ -1,3 +1,5 @@
+# pull_request_target runs workflows in the base repository context for fork PRs.
+# Keep third-party actions here minimal and review updates carefully.
 name: Lint and validate OpenAPI specs
 on:
   - push
