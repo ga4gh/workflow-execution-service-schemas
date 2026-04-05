@@ -34,7 +34,7 @@ tags:
     description: Submit and monitor workflows in a WES environment
   - name: Introduction
     description: |
-      This document describes the WES API and provides details on the specific endpoints, request formats, and response.  It is intended to provide key information for developers of WES-compatible services as well as clients that will call these WES services.
+      This document describes the WES API and provides details on the specific endpoints, request formats, and responses.  It is intended to provide key information for developers of WES-compatible services as well as clients that will call these WES services.
 
       Use cases include:
       
@@ -127,7 +127,6 @@ x-tagGroups:
       - runrequest_model
       - runlog_model
       - log_model
-      - task_model
       - tasklog_model
       - tasklistresponse_model
       - defaultworkflowengineparameter_model
@@ -244,7 +243,7 @@ paths:
 
         The `workflow_params` JSON object specifies input parameters, such as input files.  The exact format of the JSON object depends on the conventions of the workflow language being used.  Input files should either be absolute URLs, or relative URLs corresponding to files uploaded using `workflow_attachment`.  The WES endpoint must understand and be able to access URLs supplied in the input.  This is implementation specific.
 
-        The `workflow_type` is the type of workflow language and must be "CWL" or "WDL" currently (or another alternative  supported by this WES instance).
+        The `workflow_type` is the type of workflow language and must be "CWL" or "WDL" currently (or another alternative supported by this WES instance).
 
         The `workflow_type_version` is the version of the workflow language submitted and must be one supported by this WES instance.
 
@@ -354,7 +353,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: The requested workflow run not found.
+          description: The requested workflow run was not found.
           content:
             application/json:
               schema:
@@ -371,7 +370,7 @@ paths:
       tags:
         - Workflow Runs
       summary: GetRunStatus
-      description: This provides an abbreviated (and likely fast depending on implementation) status of the running workflow, returning a simple result with the  overall state of the workflow run (e.g. RUNNING, see the State section).
+      description: This provides an abbreviated (and likely fast depending on implementation) status of the running workflow, returning a simple result with the overall state of the workflow run (e.g. RUNNING, see the State section).
       operationId: GetRunStatus
       parameters:
         - name: run_id
@@ -402,7 +401,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: The requested workflow run wasn't found.
+          description: The requested workflow run was not found.
           content:
             application/json:
               schema:
@@ -480,7 +479,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: The requested workflow run wasn't found.
+          description: The requested workflow run was not found.
           content:
             application/json:
               schema:
@@ -498,7 +497,7 @@ paths:
         - Workflow Runs
       summary: GetTask
       description: >-
-        This endpoint provides a mechanism to retrieve information on a specific task, if it exists
+        This endpoint provides a mechanism to retrieve information on a specific task, if it exists.
       operationId: GetTask
       parameters:
         - name: run_id
@@ -536,7 +535,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: The requested task wasn't found.
+          description: The requested task was not found.
           content:
             application/json:
               schema:
@@ -584,7 +583,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: The requested workflow run wasn't found.
+          description: The requested workflow run was not found.
           content:
             application/json:
               schema:
@@ -617,7 +616,7 @@ components:
               type: array
               items:
                 type: string
-              description: The filesystem protocols supported by this service, currently these may include common protocols using the terms 'http', 'https', 'sftp', 's3', 'gs', 'file', or 'synapse', but others  are possible and the terms beyond these core protocols are currently not fixed.   This section reports those protocols (either common or not) supported by this WES service.
+              description: The filesystem protocols supported by this service, currently these may include common protocols using the terms 'http', 'https', 'sftp', 's3', 'gs', 'file', or 'synapse', but others are possible and the terms beyond these core protocols are currently not fixed.   This section reports those protocols (either common or not) supported by this WES service.
             workflow_engine_versions:
               type: object
               additionalProperties:
@@ -694,7 +693,7 @@ components:
         this means that an Executor exited with a non-zero exit code.
 
           + SYSTEM_ERROR: The task was stopped due to a system error, but not from an Executor,
-        for example an upload failed due to network issues, the worker's ran out of disk space, etc.
+        for example an upload failed due to network issues, the worker ran out of disk space, etc.
 
           + CANCELED: The task was canceled by the user.
 
@@ -728,7 +727,7 @@ components:
               description: When the run stopped executing (completed, failed, or cancelled), in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
             tags:
               type: object
-              description: Arbitrary key/value tags added by the client during run creation 
+              description: Arbitrary key/value tags added by the client during run creation
               additionalProperties:
                 type: string
           required:
@@ -776,8 +775,9 @@ components:
           type: string
           description: >-
             The workflow engine version, must be one supported by this WES instance.
-            If workflow_engine is provided, but workflow_engine_version is not, servers can make no assumptions with regard to the engine version the WES instance uses to process the request if 
-            that WES instance supports multiple versions of the requested engine.
+            If workflow_engine is provided, but workflow_engine_version is not, servers can make no assumptions
+            with regard to the engine version the WES instance uses to process the request if that WES instance
+            supports multiple versions of the requested engine.
         workflow_url:
           type: string
           description: >-
@@ -786,12 +786,11 @@ components:
             The workflow CWL or WDL document. When `workflow_attachments` is used to attach files, the `workflow_url` may be a relative path to one of the attachments.
       description: >-
         To execute a workflow, send a run request including all the details needed to begin downloading
-
         and executing a given workflow.
 
-        If workflow_engine and workflow_engine_version are not provided, servers can use the most recent workflow_engine_version of workflow_engine that WES instance uses to process the request if 
-        
-        supports for the requested workflow_type.
+        If workflow_engine and workflow_engine_version are not provided, servers may use the most recent
+        workflow_engine_version of the workflow_engine that the WES instance uses to process the request
+        for the given workflow_type.
     RunLog:
       title: RunLog
       type: object
@@ -807,7 +806,7 @@ components:
           $ref: '#/components/schemas/Log'
         task_logs_url:
           type: string
-          description: A reference to the complete url which may be used to obtain a paginated list of task logs for this workflow
+          description: A reference to the complete URL which may be used to obtain a paginated list of task logs for this workflow
         task_logs:
           type: array
           deprecated: true
@@ -905,7 +904,7 @@ components:
           description: >-
             A token which may be supplied as `page_token` in workflow run task list request to get the next page
             of results.  An empty string indicates there are no more items to return.
-      description: The service will return a TaskListResponse when receiving a successful TaskListRequest.
+      description: The service returns a TaskListResponse from a successful ListTasks request.
     TaskLog:
       title: TaskLog
       allOf:
@@ -932,7 +931,7 @@ components:
                 a SYSTEM_ERROR state (e.g. disk is full), etc.
             tes_uri:
               type: string
-              description: An optional URL pointing to an extended task definition defined by a [TES api](https://github.com/ga4gh/task-execution-schemas)
+              description: An optional URL pointing to an extended task definition defined by a [TES API](https://github.com/ga4gh/task-execution-schemas)
       required:
         - id
         - name
@@ -945,7 +944,7 @@ components:
           type: array
           items:
             type: string
-          description: An array of one or more acceptable engines versions for the `workflow_engine`
+          description: An array of one or more acceptable engine versions for the `workflow_engine`
       description: Available workflow engine versions supported by a given instance of the service.
     RunListResponse:
       title: RunListResponse
@@ -966,8 +965,8 @@ components:
           description: >-
             Total count of workflow runs that the service has executed or is executing and the caller has permission to see.
       description: >
-              The service will return a RunListResponse when receiving a successful RunListRequest.
-              DEPRECIATION WARNING: The use of `RunStatus` as the schema for `runs` array items will
+              The service returns a RunListResponse from a successful ListRuns request.
+              DEPRECATION WARNING: The use of `RunStatus` as the schema for `runs` array items will
               not be permitted from the next major version of the specification (2.0.0) onwards. We
               encourage implementers to use `RunSummary` instead.
     ErrorResponse:

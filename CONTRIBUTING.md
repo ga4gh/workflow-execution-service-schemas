@@ -9,7 +9,7 @@ We use [semantic versioning](https://semver.org/) for WES, this will determine i
 
 ## Suggesting Changes
 
-Suggested changes to this schema can be initiated as [**Issues**](https://github.com/ga4gh/workflow-execution-service-schemas/issues) or [**Pull Requests**](https://github.com/ga4gh/workflow-execution-service-schemas/pulls) to allow for discussion and review. 
+Suggested changes to this schema can be initiated as [**Issues**](https://github.com/ga4gh/workflow-execution-service-schemas/issues) or [**Pull Requests**](https://github.com/ga4gh/workflow-execution-service-schemas/pulls) to allow for discussion and review.
 
 Even those with write access to the main repository should in general create pull request branches within their own forks. This way when the main repository is forked again, the new fork is created with a minimum of extraneous volatile branches.
 
