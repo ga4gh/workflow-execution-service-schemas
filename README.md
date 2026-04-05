@@ -15,15 +15,14 @@ against an execution backend.
 
 See the human-readable [Reference Documentation](https://ga4gh.github.io/workflow-execution-service-schemas/docs/)
 You can also explore the specification in
-the [Swagger Editor](https://editor.swagger.io/?url=https://ga4gh.github.io/workflow-execution-service-schemas/openapi.yaml)**
+the [Swagger Editor](https://editor.swagger.io/?url=https://ga4gh.github.io/workflow-execution-service-schemas/openapi.yaml).
 *Manually load the JSON if working from a non-develop branch version.* Preview documentation from
 the [gh-openapi-docs](https://github.com/ga4gh/gh-openapi-docs) for the development
 branch [here](https://ga4gh.github.io/workflow-execution-service-schemas/preview/develop/docs/index.html)
 
-> All documentation and pages hosted at 'ga4gh.github.io/workflow-execution-service' reflect the latest API release from
-> the `master` branch. To monitor the latest development work, add 'preview/\<branch\>' to the URLs above (e.g., '
-> ga4gh.github.io/ga4gh.github.io/workflow-execution-service/preview/\<branch\>/docs'). To view the latest *stable*
-> development API specification, refer to the `develop` branch.
+> All documentation and pages hosted at `ga4gh.github.io/workflow-execution-service-schemas` reflect the latest API release from
+> the `master` branch. To monitor the latest development work for a given branch, add `preview/<branch>/` after the site path (for example,
+> `https://ga4gh.github.io/workflow-execution-service-schemas/preview/develop/docs/`). To view the latest stable development API specification, refer to the `develop` branch.
 
 
 The [Global Alliance for Genomics and Health](http://genomicsandhealth.org/) is an international coalition, formed to
