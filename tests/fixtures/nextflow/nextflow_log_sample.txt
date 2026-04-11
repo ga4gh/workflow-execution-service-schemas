@@ -1,0 +1,2 @@
+Apr-11 10:00:00.123 [Task submitter] INFO  nextflow.Session - Launching `wf.nf` [sleepy/abc123]
+Apr-11 10:00:01.456 [Task monitor] DEBUG nextflow.processor.TaskProcessor - Task completed

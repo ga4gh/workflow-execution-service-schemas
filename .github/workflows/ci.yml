@@ -49,3 +49,18 @@ jobs:
         run: npm install -g @stoplight/spectral-cli
       - name: Validate OpenAPI definition
         run: spectral lint openapi/workflow_execution_service.openapi.yaml --ruleset .spectral.yaml
+
+  structured-log-parsers:
+    name: Test structured log parsers (Snakemake / Nextflow)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out head branch
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pytest
+        run: pip install pytest
+      - name: Run parser tests
+        run: python -m pytest tests -v

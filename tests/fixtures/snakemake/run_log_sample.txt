@@ -1,0 +1,8 @@
+Building DAG of jobs...
+[Wed Oct  9 16:19:28 2024]
+rule align:
+    input: reads/sample.fastq
+    output: aligned/sample.bam
+    jobid: 1
+[Wed Oct  9 16:20:00 2024]
+Finished jobid: 1 (rules: align).
