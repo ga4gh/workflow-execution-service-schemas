@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Workflow Execution Service
   contact: {}
-  version: '1.1.0'
+  version: '1.2.0'
   x-logo:
     url: 'https://www.ga4gh.org/wp-content/themes/ga4gh-theme/gfx/GA-logo-horizontal-tag-RGB.svg'
   description: >
@@ -824,6 +824,88 @@ components:
         outputs:
           type: object
           description: The outputs from the workflow run.
+    StructuredLogLine:
+      title: StructuredLogLine
+      type: object
+      properties:
+        ts:
+          type: string
+          description: >-
+            Timestamp for this line when known, in ISO 8601 format (for example
+            "%Y-%m-%dT%H:%M:%SZ" or with offset). Omitted when the engine log does not provide
+            a per-line time.
+        level:
+          type: string
+          description: >-
+            Parsed severity label when available (for example INFO, WARNING, ERROR). Format is
+            implementation-defined.
+        message:
+          type: string
+          description: A single line or segment of stdout/stderr text.
+      required:
+        - message
+      description: One parsed segment of structured standard output or standard error.
+    StructuredLogContent:
+      title: StructuredLogContent
+      type: object
+      properties:
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/StructuredLogLine'
+          description: >-
+            Ordered log lines or segments. Implementations may return a bounded tail of the
+            stream to keep responses small; see `truncated` and `total_bytes`.
+        truncated:
+          type: boolean
+          description: >-
+            If true, additional content exists beyond what is included in `lines` (for example
+            only the last N lines are returned).
+        total_bytes:
+          type: integer
+          format: int64
+          description: Total size of the stream in bytes when known (for example file size on disk).
+        content_encoding:
+          type: string
+          description: Character encoding of `message` values (for example utf-8). Defaults to utf-8 if omitted.
+      description: >-
+        Parsed stdout or stderr as structured data. The existing `stdout` and `stderr` URL fields
+        remain the canonical way to fetch full streams; this object is optional and intended for
+        programmatic consumption when a WES implementation can populate it.
+    LogResourceUsage:
+      title: LogResourceUsage
+      type: object
+      properties:
+        cpu_time_seconds:
+          type: number
+          format: double
+          description: >-
+            CPU time consumed for the command or task (total across CPUs), in seconds, when available.
+        wall_time_seconds:
+          type: number
+          format: double
+          description: Wall-clock duration from start to end of the command or task, in seconds, when available.
+        peak_memory_bytes:
+          type: integer
+          format: int64
+          description: Peak resident or requested memory in bytes when available.
+        avg_memory_bytes:
+          type: integer
+          format: int64
+          description: Average memory usage in bytes when available.
+        max_resident_set_kb:
+          type: integer
+          format: int64
+          description: Maximum resident set size in kilobytes when available (for example from GNU time or benchmarks).
+      description: Resource metrics for the workflow run log or a task log when the implementation can supply them.
+    EngineMetadata:
+      title: EngineMetadata
+      type: object
+      additionalProperties: true
+      description: >-
+        Engine-specific metadata for correlating a log with workflow engine concepts. Keys and
+        value types are implementation-defined. Examples: Snakemake `rule`, `wildcards`, job id;
+        Nextflow `process`, `task_id`, work directory path; CWL step identifier.
     Log:
       title: Log
       type: object
@@ -866,6 +948,20 @@ components:
 
             For example, the system may include an error message that caused
             a SYSTEM_ERROR state (e.g. disk is full), etc.
+        resource_usage:
+          $ref: '#/components/schemas/LogResourceUsage'
+        structured_stdout:
+          $ref: '#/components/schemas/StructuredLogContent'
+        structured_stderr:
+          $ref: '#/components/schemas/StructuredLogContent'
+        engine_metadata:
+          $ref: '#/components/schemas/EngineMetadata'
+        failure_reason:
+          type: string
+          description: >-
+            Short, implementation-defined summary of why a run or step failed when applicable
+            (for example exit reason or engine-reported error). Distinct from raw stderr; see
+            `structured_stderr` and the `stderr` URL.
       description: Log and other info
     DefaultWorkflowEngineParameter:
       title: DefaultWorkflowEngineParameter
@@ -933,6 +1029,18 @@ components:
             tes_uri:
               type: string
               description: An optional URL pointing to an extended task definition defined by a [TES api](https://github.com/ga4gh/task-execution-schemas)
+            execution_state:
+              description: >-
+                Lifecycle state of this task or step when the implementation tracks it separately
+                from the overall workflow `RunLog.state`. Optional; clients should treat a missing
+                value as unknown for that task.
+              allOf:
+                - $ref: '#/components/schemas/State'
+            failure_code:
+              type: string
+              description: >-
+                Optional machine-oriented token classifying the failure (for example OOM,
+                TIMEOUT, NONZERO_EXIT). Meaning is implementation-defined.
       required:
         - id
         - name
