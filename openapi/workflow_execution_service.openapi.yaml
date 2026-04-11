@@ -905,7 +905,36 @@ components:
       description: >-
         Engine-specific metadata for correlating a log with workflow engine concepts. Keys and
         value types are implementation-defined. Examples: Snakemake `rule`, `wildcards`, job id;
-        Nextflow `process`, `task_id`, work directory path; CWL step identifier.
+        Nextflow `process`, `task_id`, work directory path; CWL step identifier. Similar in spirit
+        to arbitrary string-valued `metadata` on TES task logs for implementation-defined context.
+    ExternalStructuredLog:
+      title: ExternalStructuredLog
+      type: object
+      required:
+        - schema_uri
+        - data
+      properties:
+        schema_uri:
+          type: string
+          format: uri
+          description: >-
+            URI that identifies the schema, format, or vocabulary that applies to `data` (for
+            example a JSON Schema `$id`, a registered GA4GH extension URI, or a stable
+            third-party identifier documented by the WES implementation).
+        schema_version:
+          type: string
+          description: Optional version label or tag for the schema or profile when applicable.
+        data:
+          type: object
+          additionalProperties: true
+          description: >-
+            Structured payload intended to conform to the schema identified by `schema_uri`.
+            Clients must not assume a fixed JSON shape without resolving that schema or its
+            documentation.
+      description: >-
+        Optional structured log content defined outside the core WES OpenAPI model so communities
+        or implementations can attach vendor- or domain-specific payloads without changing the
+        base specification for each format.
     Log:
       title: Log
       type: object
@@ -940,14 +969,22 @@ components:
             type: string
 
           description: |-
-            System logs are any logs the system decides are relevant,
-            which are not tied directly to a workflow.
-            Content is implementation specific: format, size, etc.
+            System logs are any logs the implementation decides are relevant that are not the
+            primary stdout/stderr of the workflow run or task step (see `stdout` and `stderr`).
+            Content is implementation-specific: format, size, etc.
 
             System logs may be collected here to provide convenient access.
 
-            For example, the system may include an error message that caused
-            a SYSTEM_ERROR state (e.g. disk is full), etc.
+            For example, the system may include the host where a task ran, or an error message that
+            caused a SYSTEM_ERROR state (e.g. disk is full), etc.
+        external_structured_logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalStructuredLog'
+          description: >-
+            Optional structured payloads keyed by external schema URIs. Use this when log
+            information is defined by a schema outside the core WES document (GA4GH extensions,
+            engine-native JSON, third-party observability formats, etc.). Omitted when unused.
         resource_usage:
           $ref: '#/components/schemas/LogResourceUsage'
         structured_stdout:
@@ -1011,21 +1048,6 @@ components:
             id:
               type: string
               description: A unique identifier which may be used to reference the task
-            system_logs:
-              type: array
-              items:
-                type: string
-
-              description: |-
-                System logs are any logs the system decides are relevant,
-                which are not tied directly to a task.
-                Content is implementation specific: format, size, etc.
-                
-                System logs may be collected here to provide convenient access.
-                
-                For example, the system may include the name of the host
-                where the task is executing, an error message that caused
-                a SYSTEM_ERROR state (e.g. disk is full), etc.
             tes_uri:
               type: string
               description: An optional URL pointing to an extended task definition defined by a [TES api](https://github.com/ga4gh/task-execution-schemas)
