@@ -5,9 +5,9 @@
     "contact": {},
     "version": "1.1.0",
     "x-logo": {
-      "url": "https://www.ga4gh.org/wp-content/themes/ga4gh-theme/gfx/GA-logo-horizontal-tag-RGB.svg"
+      "url": "https://www.ga4gh.org/wp-content/themes/ga4gh/dist/assets/svg/logos/logo-full-color.svg"
     },
-    "description": "*Run standard workflows on workflow execution platforms in a platform-agnostic way.*\n## Executive Summary\nThe Workflow Execution Service (WES) API provides a standard way for users to submit workflow requests to workflow execution systems, and to monitor their execution. This API lets users run a single workflow (currently [**CWL**](https://www.commonwl.org/) or [**WDL**](http://www.openwdl.org/) formatted workflows, other types may be supported in the future) on multiple different platforms, clouds, and environments.\nKey features of the API:\n+ can request that a workflow be run + can pass parameters to that workflow (e.g. input files, cmdline arguments) + can get information about running workflows (e.g. status, errors, output file locations) + can cancel a running workflow\n"
+    "description": "*Run standard workflows on workflow execution platforms in a platform-agnostic way.*\n\n## Executive Summary\n\nThe Workflow Execution Service (WES) API provides a standard way for users to submit workflow requests to workflow execution systems, and to monitor their execution. This API lets users run a single workflow (currently [**CWL**](https://www.commonwl.org/) or [**WDL**](http://www.openwdl.org/) formatted workflows, other types may be supported in the future) on multiple different platforms, clouds, and environments.\n\nKey features of the API:\n\n- can request that a workflow be run\n- can pass parameters to that workflow (e.g. input files, cmdline arguments)\n- can get information about running workflows (e.g. status, errors, output file locations)\n- can cancel a running workflow\n- can retrieve logs and outputs file locations from a workflow run\n"
   },
   "servers": [
     {
@@ -36,11 +36,11 @@
     },
     {
       "name": "Introduction",
-      "description": "This document describes the WES API and provides details on the specific endpoints, request formats, and response.  It is intended to provide key information for developers of WES-compatible services as well as clients that will call these WES services.\n\nUse cases include:\n\n+ \"Bring your code to the data\": a researcher who has built their own custom analysis can submit it to run on a dataset owned by an external organization, instead of having to make a copy of the data\n+ Best-practices pipelines: a researcher who maintains their own controlled data environment can find useful workflows in a shared directory (e.g. Dockstore.org), and run them over their data\n\n## Standards\n  \nThe WES API specification is written in OpenAPI and embodies a RESTful service philosophy. It uses JSON in requests and responses and standard HTTP/HTTPS for information transport.\n"
+      "description": "This document describes the WES API and provides details on the specific endpoints, request formats, and responses.  It is intended to provide key information for developers of WES-compatible services as well as clients that will call these WES services.\n\nUse cases include:\n\n- \"Bring your code to the data\": a researcher who has built their own custom analysis workflow can submit it to run on a dataset owned by an external organization, instead of having to download a copy of the data for local analysis.\n- Best-practices pipelines: a researcher who maintains their own controlled data environment can find useful workflows in a shared repository (e.g. [Dockstore.org](https://dockstore.org)), and run them on their data\n\n## Standards\n  \nThe WES API specification is written in OpenAPI and embodies a RESTful service philosophy. It uses JSON in requests and responses (where applicable) and standard HTTP/HTTPS for information transport.\n"
     },
     {
       "name": "Authorization & Authentication",
-      "description": "Users must supply credentials that establish their identity and authorization in order to use a WES endpoint. We recommend that WES implementations use an OAuth2 [**bearer token**](https://oauth.net/2/bearer-tokens/), although they can choose other mechanisms if appropriate. WES callers can use the `auth_instructions_url` from the [**`service-info` endpoint**](https://ga4gh.github.io/workflow-execution-service-schemas/#/WorkflowExecutionService/GetServiceInfo) to learn how to obtain and use a bearer token for a particular implementation.\nThe WES implementation is responsible for checking that a user is authorized to submit workflow run requests. The particular authorization policy is up to the WES implementer.\nSystems like WES need to also address the ability to pass credentials with jobs for input and output access.  In the current version of WES, the passing of credentials to authenticate and authorize access to inputs and outputs, as well as mandates about necessary file transfer protocols to support, are out of scope.  However, parallel work on the Data Object Service is addressing ways to pass around access credentials with data object references, opening up the possibility that a future version of WES will provide concrete mechanisms for workflow runs to access data using credentials different than those used for WES.  This is a work in progress and support of DOS in WES will be added in a future release of WES.\n"
+      "description": "Users must supply credentials that establish their identity and authorization in order to use a WES endpoint. We recommend that WES implementations use an OAuth2 [**bearer token**](https://oauth.net/2/bearer-tokens/), although they can choose other mechanisms if appropriate. WES callers can use the `auth_instructions_url` from the [**`service-info` endpoint**](https://ga4gh.github.io/workflow-execution-service-schemas/#/WorkflowExecutionService/GetServiceInfo) to learn how to obtain and use a bearer token for a particular implementation.\n\nThe WES implementation is responsible for checking that a user is authorized to submit workflow run requests. The particular authorization policy is up to the WES implementer.\n\nSystems like WES need to also address the ability to pass credentials with jobs for input and output access.  In the current version of WES, the passing of credentials to authenticate and authorize access to inputs and outputs, as well as mandates about necessary file transfer protocols to support, are out of scope.  However, parallel work on the [GA4GH Data Repository Service](https://ga4gh.github.io/data-repository-service-schemas/) is addressing ways to pass around access credentials with data object references, opening up the possibility that a future version of WES will provide concrete mechanisms for workflow runs to access data using credentials different than those used for WES calls.  This is a work in progress and support of DRS in WES will be added in a future release of WES.\n"
     },
     {
       "name": "serviceinfo_model",
@@ -156,7 +156,7 @@
           "Service Info"
         ],
         "summary": "GetServiceInfo",
-        "description": "May include information related (but not limited to) the workflow descriptor formats, versions supported, the WES API versions supported, and information about general service availability.",
+        "description": "Includes information related, but not limited to, the workflow descriptor formats, versions supported, the WES API versions supported, and information about general service availability and access.",
         "operationId": "GetServiceInfo",
         "parameters": [],
         "responses": {
@@ -306,7 +306,7 @@
           "Workflow Runs"
         ],
         "summary": "RunWorkflow",
-        "description": "This endpoint creates a new workflow run and returns a `RunId` to monitor its progress.\nThe `workflow_attachment` array may be used to upload files that are required to execute the workflow, including the primary workflow, tools imported by the workflow, other files referenced by the workflow, or files which are part of the input.  The implementation should stage these files to a temporary directory and execute the workflow from there. These parts must have a Content-Disposition header with a \"filename\" provided for each part.  Filenames may include subdirectories, but must not include references to parent directories with '..' -- implementations should guard against maliciously constructed filenames.\nThe `workflow_url` is either an absolute URL to a workflow file that is accessible by the WES endpoint, or a relative URL corresponding to one of the files attached using `workflow_attachment`.\nThe `workflow_params` JSON object specifies input parameters, such as input files.  The exact format of the JSON object depends on the conventions of the workflow language being used.  Input files should either be absolute URLs, or relative URLs corresponding to files uploaded using `workflow_attachment`.  The WES endpoint must understand and be able to access URLs supplied in the input.  This is implementation specific.\nThe `workflow_type` is the type of workflow language and must be \"CWL\" or \"WDL\" currently (or another alternative  supported by this WES instance).\nThe `workflow_type_version` is the version of the workflow language submitted and must be one supported by this WES instance.\nThe `workflow_engine` is the engine that supports the workflow_type and must be supported by this WES instance.\nThe `workflow_engine_version` is the version of workflow engine and must be supported by this WES instance.\nSee the `RunRequest` documentation for details about other fields.",
+        "description": "This endpoint creates a new workflow run and returns a `RunId` to monitor its progress.\nThe `workflow_attachment` array may be used to upload files that are required to execute the workflow, including the primary workflow, tools imported by the workflow, other files referenced by the workflow, or files which are part of the input.  The implementation should stage these files to a temporary directory and execute the workflow from there. These parts must have a Content-Disposition header with a \"filename\" provided for each part.  Filenames may include subdirectories, but must not include references to parent directories with '..' -- implementations should guard against maliciously constructed filenames.\nThe `workflow_url` is either an absolute URL to a workflow file that is accessible by the WES endpoint, or a relative URL corresponding to one of the files attached using `workflow_attachment`.\nThe `workflow_params` JSON object specifies input parameters, such as input files.  The exact format of the JSON object depends on the conventions of the workflow language being used.  Input files should either be absolute URLs, or relative URLs corresponding to files uploaded using `workflow_attachment`.  The WES endpoint must understand and be able to access URLs supplied in the input.  This is implementation specific.\nThe `workflow_type` is the type of workflow language and must be \"CWL\" or \"WDL\" currently (or another alternative supported by this WES instance).\nThe `workflow_type_version` is the version of the workflow language submitted and must be one supported by this WES instance.\nThe `workflow_engine` is the engine that supports the workflow_type and must be supported by this WES instance.\nThe `workflow_engine_version` is the version of workflow engine and must be supported by this WES instance.\nSee the `RunRequest` schema documentation for complete field descriptions.",
         "operationId": "RunWorkflow",
         "parameters": [],
         "requestBody": {
@@ -317,28 +317,36 @@
                 "type": "object",
                 "properties": {
                   "workflow_params": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "JSON-encoded workflow parameters (see RunRequest for details)"
                   },
                   "workflow_type": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Workflow descriptor type, must be \"CWL\" or \"WDL\" currently (or another alternative supported by this WES instance)"
                   },
                   "workflow_type_version": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "The workflow descriptor type version, must be one supported by this WES instance"
                   },
                   "tags": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "JSON-encoded object containing key-value tags for the workflow run"
                   },
                   "workflow_engine": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "The workflow engine, must be one supported by this WES instance. Required if workflow_engine_version is provided."
                   },
                   "workflow_engine_version": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "The workflow engine version, must be one supported by this WES instance."
                   },
                   "workflow_engine_parameters": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "JSON-encoded engine-specific parameters"
                   },
                   "workflow_url": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "The workflow document. When workflow_attachment is used to attach files, the workflow_url may be a relative path to one of the attachments."
                   },
                   "workflow_attachment": {
                     "type": "array",
@@ -346,13 +354,18 @@
                       "type": "string",
                       "format": "binary"
                     },
-                    "description": ""
+                    "description": "Files to be staged for workflow execution. You set the filename/path using the Content-Disposition header in the multipart form submission. The files are staged to a temporary directory and can be referenced by relative path in the workflow_url."
                   }
-                }
+                },
+                "required": [
+                  "workflow_type",
+                  "workflow_type_version",
+                  "workflow_url"
+                ]
               }
             }
           },
-          "required": false
+          "required": true
         },
         "responses": {
           "200": {
@@ -871,8 +884,7 @@
                 "additionalProperties": {
                   "type": "integer",
                   "format": "int64"
-                },
-                "description": "The system statistics, key is the statistic, value is the count of runs in that state. See the State enum for the possible keys."
+                }
               },
               "auth_instructions_url": {
                 "type": "string",
@@ -881,9 +893,9 @@
               "tags": {
                 "type": "object",
                 "additionalProperties": {
-                  "type": "string",
-                  "description": "A message containing useful information about the running service, including supported versions and default settings."
-                }
+                  "type": "string"
+                },
+                "description": "Tags containing useful information about the WES service."
               }
             },
             "required": [
@@ -925,7 +937,7 @@
           "PREEMPTED"
         ],
         "type": "string",
-        "description": "State can take any of the following values:\n\n  + UNKNOWN: The state of the task is unknown. This provides a safe default for messages where this field is missing, for example, so that a missing field does not accidentally imply that the state is QUEUED.\n\n  + QUEUED: The task is queued.\n\n  + INITIALIZING: The task has been assigned to a worker and is currently preparing to run. For example, the worker may be turning on, downloading input files, etc.\n\n  + RUNNING: The task is running. Input files are downloaded and the first Executor has been started.\n\n  + PAUSED: The task is paused. An implementation may have the ability to pause a task, but this is not required.\n\n  + COMPLETE: The task has completed running. Executors have exited without error\n  and output files have been successfully uploaded.\n\n  + EXECUTOR_ERROR: The task encountered an error in one of the Executor processes. Generally,\nthis means that an Executor exited with a non-zero exit code.\n\n  + SYSTEM_ERROR: The task was stopped due to a system error, but not from an Executor,\nfor example an upload failed due to network issues, the worker's ran out of disk space, etc.\n\n  + CANCELED: The task was canceled by the user.\n\n  + CANCELING: The task was canceled by the user, and is in the process of stopping.\n\n  + PREEMPTED: The task is stopped (preempted) by the system. The reasons for this would be tied to\nthe specific system running the job. Generally, this means that the system reclaimed the compute capacity for reallocation.\n"
+        "description": "State can take any of the following values:\n\n  + UNKNOWN: The state of the task is unknown. This provides a safe default for messages where this field is missing, for example, so that a missing field does not accidentally imply that the state is QUEUED.\n\n  + QUEUED: The task is queued.\n\n  + INITIALIZING: The task has been assigned to a worker and is currently preparing to run. For example, the worker may be turning on, downloading input files, etc.\n\n  + RUNNING: The task is running. Input files are downloaded and the first Executor has been started.\n\n  + PAUSED: The task is paused. An implementation may have the ability to pause a task, but this is not required.\n\n  + COMPLETE: The task has completed running. Executors have exited without error\n  and output files have been successfully uploaded.\n\n  + EXECUTOR_ERROR: The task encountered an error in one of the Executor processes. Generally,\nthis means that an Executor exited with a non-zero exit code.\n\n  + SYSTEM_ERROR: The task was stopped due to a system error, but not from an Executor,\nfor example an upload failed due to network issues, the worker's ran out of disk space, etc.\n\n  + CANCELED: The task was canceled by the user.\n\n  + CANCELING: The task was canceled by the user, and is in the process of stopping.\n\n  + PREEMPTED: The task is stopped (preempted) by the system. The reasons for this would be tied to\nthe specific system running the job. Generally, this means that the system reclaimed the compute\ncapacity for reallocation.\n"
       },
       "RunStatus": {
         "title": "RunStatus",
@@ -986,7 +998,7 @@
         "properties": {
           "workflow_params": {
             "type": "object",
-            "description": "REQUIRED\nThe workflow run parameterizations (JSON encoded), including input and output file locations"
+            "description": "OPTIONAL\nThe workflow run parameterizations (JSON encoded), including input and output file locations"
           },
           "workflow_type": {
             "type": "string",
@@ -1000,25 +1012,27 @@
             "type": "object",
             "additionalProperties": {
               "type": "string"
-            }
+            },
+            "description": "OPTIONAL\nArbitrary key-value tags to associate with the workflow run for organization, tracking, or metadata purposes. Examples include experiment names, user identifiers, sample IDs, or project codes."
           },
           "workflow_engine_parameters": {
             "type": "object",
             "additionalProperties": {
               "type": "string"
-            }
+            },
+            "description": "OPTIONAL\nAdditional engine-specific parameters to pass to the workflow engine."
           },
           "workflow_engine": {
             "type": "string",
-            "description": "The workflow engine, must be one supported by this WES instance. Required if workflow_engine_version is provided."
+            "description": "OPTIONAL\nThe workflow engine, must be one supported by this WES instance. Required if workflow_engine_version is provided."
           },
           "workflow_engine_version": {
             "type": "string",
-            "description": "The workflow engine version, must be one supported by this WES instance. If workflow_engine is provided, but workflow_engine_version is not, servers can make no assumptions with regard to the engine version the WES instance uses to process the request if  that WES instance supports multiple versions of the requested engine."
+            "description": "OPTIONAL\nThe workflow engine version, must be one supported by this WES instance. If workflow_engine is provided, but workflow_engine_version is not, servers can make no assumptions with regard to the engine version the WES instance uses to process the request if  that WES instance supports multiple versions of the requested engine."
           },
           "workflow_url": {
             "type": "string",
-            "description": "REQUIRED\nThe workflow CWL or WDL document. When `workflow_attachments` is used to attach files, the `workflow_url` may be a relative path to one of the attachments."
+            "description": "REQUIRED\nThe primary workflow document. When `workflow_attachments` is used to attach files, the `workflow_url` may be a relative path to one of the attachments."
           }
         },
         "description": "To execute a workflow, send a run request including all the details needed to begin downloading\nand executing a given workflow.\nIf workflow_engine and workflow_engine_version are not provided, servers can use the most recent workflow_engine_version of workflow_engine that WES instance uses to process the request if \nsupports for the requested workflow_type."
