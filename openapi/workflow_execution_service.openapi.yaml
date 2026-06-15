@@ -96,6 +96,10 @@ tags:
     x-displayName: TaskListResponse
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/TaskListResponse" />
+  - name: structuredlog_model
+    x-displayName: StructuredLog
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/StructuredLog" />
   - name: defaultworkflowengineparameter_model
     x-displayName: DefaultWorkflowEngineParameter
     description: |
@@ -131,6 +135,7 @@ x-tagGroups:
       - task_model
       - tasklog_model
       - tasklistresponse_model
+      - structuredlog_model
       - defaultworkflowengineparameter_model
       - workflowtypeversion_model
       - workflowengineversion_model
@@ -889,7 +894,11 @@ components:
 
             For example, the system may include an error message that caused
             a SYSTEM_ERROR state (e.g. disk is full), etc.
-      description: Log and other info
+        structured_log:
+          $ref: '#/components/schemas/StructuredLog'
+      description: >-
+        Log and other info. The structured_log field is the canonical location for
+        any structured logging information at the applicable logging level (workflow or task).
     DefaultWorkflowEngineParameter:
       title: DefaultWorkflowEngineParameter
       type: object
@@ -959,7 +968,9 @@ components:
       required:
         - id
         - name
-      description: Runtime information for a given task
+      description: >-
+        Runtime information for a given task. The structured_log field is the canonical
+        location for any structured logging information at the task level.
     WorkflowEngineVersion:
       title: WorkflowEngineVersion
       type: object
@@ -993,6 +1004,40 @@ components:
               DEPRECIATION WARNING: The use of `RunStatus` as the schema for `runs` array items will
               not be permitted from the next major version of the specification (2.0.0) onwards. We
               encourage implementers to use `RunSummary` instead.
+    StructuredLog:
+      title: StructuredLog
+      type: object
+      description: >-
+        A structured log entry conforming to an externally defined schema or profile.
+        Provides a single canonical location for structured logging information at
+        a given logging level (workflow or task), along with a schema reference so
+        that clients can interpret the content without prior knowledge of the
+        implementation.
+      properties:
+        schema_uri:
+          type: string
+          format: uri
+          description: >-
+            URI pointing to the schema or profile this structured log conforms to
+            (e.g., an RO-Crate profile URI or OPM specification URI). Clients can
+            use this to determine how to interpret the structured log content.
+        content_uri:
+          type: string
+          format: uri
+          description: >-
+            URI where the structured log content can be retrieved.
+        media_type:
+          type: string
+          description: >-
+            MIME type of the structured log content (e.g., "application/json",
+            "application/ld+json").
+        content:
+          type: object
+          nullable: true
+          description: >-
+            Optional inline structured log payload. Implementations SHOULD prefer
+            content_uri for large payloads and only use this field for small,
+            embedded log content.
     ErrorResponse:
       title: ErrorResponse
       type: object
