@@ -185,7 +185,7 @@ paths:
       parameters:
         - name: state
           description: |-
-            OPTIONAL. Filter rubs by state. If unspecified,
+            OPTIONAL. Filter runs by state. If unspecified,
             no run state filtering is done.
           in: query
           required: false
